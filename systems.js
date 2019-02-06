@@ -6,14 +6,11 @@ const distance = ([x1, y1], [x2, y2]) =>
 
 const MoveFinger = (entities, { touches, screen }) => {
 
-    //-- I'm choosing to update the game state (entities) directly for the sake of brevity and simplicity.
-    //-- There's nothing stopping you from treating the game state as immutable and returning a copy..
-    //-- Example: return { ...entities, t.id: { UPDATED COMPONENTS }};
-    //-- That said, it's probably worth considering performance implications in either case.
     let box_size = RADIUS; 
     let box_rad = ( box_size / 2);   
     
     Object.keys(entities).forEach(boxId => {
+        if(! boxId.startsWith("ball")) return;
         let box = entities[boxId];
         box.position = [
             box.position[0] + ( box.speed[0] * box.direction[0] ),
@@ -24,7 +21,7 @@ const MoveFinger = (entities, { touches, screen }) => {
             box.direction[0] *= -1; 
         }
 
-        if(box.position[1] > (screen.height - box_size) || box.position[1] < box_rad) {
+        if(box.position[1] > (screen.height - box_size - entities.floor.height) || box.position[1] < box_rad) {
             box.direction[1] *= -1; 
         }
     });
@@ -36,19 +33,21 @@ const SpawnFinger = (entities,  { touches }) => {
     touches.filter(t => t.type === "press").forEach(t => {
         let touchOrigin = [t.event.pageX, t.event.pageY];
 		let closestBoxes = _.sortBy(
-			Object.keys(entities)
-				.map(key => ({
+            Object.keys(entities)
+                .filter(key => entities[key].type == "ball")
+                .map(key => ({
 					id: key,
 					distance: distance(entities[key].position, touchOrigin)
 				}))
-				.filter(x => x.distance < RADIUS),
+				.filter(x => x.distance < RADIUS * 2),
 			["distance"]
 		);
 
 		if (closestBoxes[0]) {
             delete entities[closestBoxes[0].id];
         } else {
-            entities[++Object.keys(entities).length] = {
+            entities["ball" + ++Object.keys(entities).length] = {
+                type: "ball",
                 position: [t.event.pageX, t.event.pageY],
                 renderer: Finger,
                 speed: [2.0, 2.0], 
