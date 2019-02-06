@@ -24,11 +24,11 @@ export default class BestGameEver extends PureComponent {
         style={styles.container}
         systems={[MoveFinger, SpawnFinger]}
         entities={{
-          1: { position: [40,  200], speed: [1.0, 1.0], direction: [1,1], renderer: <Finger />}, //-- Notice that each entity has a unique id (required)
-          2: { position: [100, 200], speed: [1.8, 1.5], direction: [-1,1], renderer: <Finger />} //-- and a renderer property (optional). If no renderer          
+          1: { position: [40,  200], speed: [3.0, 1.0], direction: [1,1], renderer: <Finger />}, //-- Notice that each entity has a unique id (required)
+          2: { position: [100, 200], speed: [1.8, 3.5], direction: [-1,1], renderer: <Finger />} //-- and a renderer property (optional). If no renderer          
         }}>
 
-        <StatusBar hidden={true} />
+        <StatusBar />
 
       </GameEngine>
     );
@@ -38,6 +38,6 @@ export default class BestGameEver extends PureComponent {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF"
+    backgroundColor: "#000"
   }
 });

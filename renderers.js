@@ -1,7 +1,8 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, View } from "react-native";
 
-const RADIUS = 20;
+export const RADIUS = 10;
+export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
 
 class Finger extends PureComponent {
   render() {
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS * 2,
     width: RADIUS * 2,
     height: RADIUS * 2,
-    backgroundColor: "blue",
+    backgroundColor: "white",
     position: "absolute"
   }
 });

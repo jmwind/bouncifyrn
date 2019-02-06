@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Finger } from "./renderers";
+import { Finger, RADIUS } from "./renderers";
 
 const distance = ([x1, y1], [x2, y2]) =>
 	    Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
@@ -10,11 +10,9 @@ const MoveFinger = (entities, { touches, screen }) => {
     //-- There's nothing stopping you from treating the game state as immutable and returning a copy..
     //-- Example: return { ...entities, t.id: { UPDATED COMPONENTS }};
     //-- That said, it's probably worth considering performance implications in either case.
-    let box_size = 20; 
+    let box_size = RADIUS; 
     let box_rad = ( box_size / 2);   
-
     
-
     Object.keys(entities).forEach(boxId => {
         let box = entities[boxId];
         box.position = [
@@ -43,7 +41,7 @@ const SpawnFinger = (entities,  { touches }) => {
 					id: key,
 					distance: distance(entities[key].position, touchOrigin)
 				}))
-				.filter(x => x.distance < 30),
+				.filter(x => x.distance < RADIUS),
 			["distance"]
 		);
 
