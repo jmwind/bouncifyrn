@@ -10,7 +10,7 @@ class Ball extends PureComponent {
     const x = this.props.position[0] - RADIUS / 2;
     const y = this.props.position[1] - RADIUS / 2;
     return (
-      <View style={[styles.ball, { left: x, top: y }]} />
+      <View style={[styles.ball, { left: x, top: y, backgroundColor: this.props.color }]} />
     );
   }
 }
@@ -54,14 +54,14 @@ class AimLine extends PureComponent {
             <View>                
                 <Svg height={Dimensions.get("window").height} width={Dimensions.get("window").width}>
                     <Line
-                    x1="0"
-                    y1="0"
+                    x1={this.props.start[0]}
+                    y1={this.props.start[1]}
                     x2={this.props.end[0]}
                     y2={this.props.end[1]}
                     stroke="white"
                     strokeDasharray={[5, 10]}
                     strokeDashoffset="4"
-                    strokeWidth="2"
+                    strokeWidth="3"
                     />
                 </Svg>
             </View>
@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS * 2,
     width: RADIUS * 2,
     height: RADIUS * 2,
-    backgroundColor: "white",
     position: "absolute"
   },
   scorebar: {
