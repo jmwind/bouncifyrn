@@ -23,8 +23,7 @@ export default class BestGameEver extends PureComponent {
       <GameEngine
         style={styles.container}
         systems={[MoveFinger, SpawnFinger]}
-        entities={{
-          ball: { type: "ball", position: [40,  200], speed: [3.0, 1.0], direction: [1,1], renderer: <Finger />},
+        entities={{          
           floor: { height: 125, renderer: <Floor /> },
           scorebar: {height: 90, best: 276, balls: 1, score: 0, renderer: <ScoreBar />}           
         }}>

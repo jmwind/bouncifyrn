@@ -24,7 +24,7 @@ react-native run-ios
 ## TODOs
 
 - [x] Get balls moving around the screen with grade 2 level math
-- [ ] Define and draw playing surface and limit movement within
+- [x] Define and draw playing surface and limit movement within
 - [ ] Start ball from bottom on click with tail
 - [ ] Start angle touch motion calculation and display
 - [ ] Colision detection on box, bounce off
