@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Dimensions } from "react-native";
 
 export const RADIUS = 10;
 export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
@@ -25,10 +25,24 @@ class Floor extends PureComponent {
                     top: Dimensions.get("window").height - this.props.height,
                     width: Dimensions.get("window").width,
                     height: Dimensions.get("window").height,
-                    backgroundColor: "pink"
+                    backgroundColor: "#262626"
                 }
                 }
             />
+        );
+    }
+}
+
+class ScoreBar extends PureComponent {
+    render() {
+        return (
+            <View style={[styles.scorebar, {height: this.props.height}]}>
+                <View style={[styles.bestcontainer, {top: this.props.height / 2 - 10}]}>                    
+                    <Text style={styles.besttitle}>Best</Text>
+                    <Text style={styles.bestscore}>{this.props.best}</Text>
+                </View>                
+                <Text style={styles.currentscore}>{this.props.balls}</Text>
+            </View>
         );
     }
 }
@@ -42,7 +56,30 @@ const styles = StyleSheet.create({
     height: RADIUS * 2,
     backgroundColor: "white",
     position: "absolute"
+  },
+  scorebar: {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      width: Dimensions.get("window").width,
+      backgroundColor: "#262626"
+  },
+  bestcontainer: {      
+      left: 60,                
+  },
+  besttitle: {
+    fontSize: 14,
+    color: 'white'
+  },
+  bestscore: {
+    fontSize: 22,
+    color: 'white'
+  },
+  currentscore: {
+    left: Dimensions.get("window").width / 2 - 8,
+    fontSize: 22,
+    color: 'white'
   }
 });
 
-export { Finger, Floor };
+export { Finger, Floor, ScoreBar };

@@ -17,12 +17,17 @@ const MoveFinger = (entities, { touches, screen }) => {
             box.position[1] + ( box.speed[1] * box.direction[1] )
         ];
         
-        if(box.position[0] > ( screen.width - box_size ) || box.position[0] < box_rad) {
+        if(box.position[0] > ( screen.width - box_size - 7 ) || box.position[0] < box_rad) {
             box.direction[0] *= -1; 
         }
 
-        if(box.position[1] > (screen.height - box_size - entities.floor.height) || box.position[1] < box_rad) {
+        if(box.position[1] < box_rad + entities.scorebar.height + 3) {
             box.direction[1] *= -1; 
+        }
+
+        if(box.position[1] > (screen.height - box_size - entities.floor.height - 7)) {
+            box.direction[1] *= -1;
+            //delete entities[boxId]; 
         }
     });
     
@@ -50,9 +55,10 @@ const SpawnFinger = (entities,  { touches }) => {
                 type: "ball",
                 position: [t.event.pageX, t.event.pageY],
                 renderer: Finger,
-                speed: [2.0, 2.0], 
+                speed: [4.0, 2.0], 
                 direction: [-1,1]
             };
+            entities.scorebar.balls++;
         }
     });
 

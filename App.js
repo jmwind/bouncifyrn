@@ -10,7 +10,7 @@
 import React, { PureComponent } from "react";
 import { AppRegistry, StyleSheet, StatusBar } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { Finger, Floor } from "./renderers";
+import { Finger, Floor, ScoreBar } from "./renderers";
 import { MoveFinger, SpawnFinger } from "./systems"
 
 export default class BestGameEver extends PureComponent {
@@ -25,7 +25,8 @@ export default class BestGameEver extends PureComponent {
         systems={[MoveFinger, SpawnFinger]}
         entities={{
           ball: { type: "ball", position: [40,  200], speed: [3.0, 1.0], direction: [1,1], renderer: <Finger />},
-          floor: { height: 75, renderer: <Floor /> }           
+          floor: { height: 125, renderer: <Floor /> },
+          scorebar: {height: 90, best: 276, balls: 1, score: 0, renderer: <ScoreBar />}           
         }}>
 
         <StatusBar />
