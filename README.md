@@ -1,7 +1,7 @@
 # BouncifyRN
 
 [Ballz](https://itunes.apple.com/us/app/ballz/id1139609950) has enjoyed a lot of family competition in
-our home. But the app is getting bloated and I need a new side project. So I'm going to try and re-write
+our home. But the app is getting bloated with ads and I need a new side project. So I'm going to try and re-write
 in React Native and see what happens. React Native isn't the best gaming plaform, it's probably going
 to be terrible. But it will also be a fun test of the performance improvements coming in [Fabric](https://github.com/react-native-community/discussions-and-proposals/issues/4).
 

@@ -12,6 +12,8 @@ const MoveFinger = (entities, { touches, screen }) => {
     Object.keys(entities).forEach(boxId => {
         if(! boxId.startsWith("ball")) return;
         let box = entities[boxId];
+
+        if(box.state != "moving") return;
         box.position = [
             box.position[0] + ( box.speed[0] * box.direction[0] ),
             box.position[1] + ( box.speed[1] * box.direction[1] )
@@ -25,9 +27,9 @@ const MoveFinger = (entities, { touches, screen }) => {
             box.direction[1] *= -1; 
         }
 
-        if(box.position[1] > (screen.height - box_size - entities.floor.height - 7)) {
-            box.direction[1] *= -1;
-            //delete entities[boxId]; 
+        if(box.position[1] > (screen.height - box_size - entities.floor.height - 5)) {
+            //box.direction[1] *= -1;
+            delete entities[boxId]; 
         }
     });
     
@@ -36,32 +38,17 @@ const MoveFinger = (entities, { touches, screen }) => {
 
 const SpawnFinger = (entities,  { touches }) => {
     touches.filter(t => t.type === "press").forEach(t => {
-        let touchOrigin = [t.event.pageX, t.event.pageY];
-		let closestBoxes = _.sortBy(
-            Object.keys(entities)
-                .filter(key => entities[key].type == "ball")
-                .map(key => ({
-					id: key,
-					distance: distance(entities[key].position, touchOrigin)
-				}))
-				.filter(x => x.distance < RADIUS * 2),
-			["distance"]
-		);
-
-		if (closestBoxes[0]) {
-            delete entities[closestBoxes[0].id];
-        } else {
             entities["ball" + ++Object.keys(entities).length] = {
                 type: "ball",
+                state: "moving",
                 position: [t.event.pageX, t.event.pageY],
                 renderer: Finger,
-                speed: [4.0, 2.0], 
-                direction: [-1,1]
+                speed: [2.0, 2.0], 
+                direction: [-3.5,-0.5]
             };
             entities.scorebar.balls++;
         }
-    });
-
+    );
     return entities;
 };
   

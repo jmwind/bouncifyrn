@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, Dimensions } from "react-native";
 
-export const RADIUS = 10;
+export const RADIUS = 7;
 export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
 
 class Finger extends PureComponent {

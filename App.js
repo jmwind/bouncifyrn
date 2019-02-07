@@ -8,10 +8,13 @@
  */
 
 import React, { PureComponent } from "react";
-import { AppRegistry, StyleSheet, StatusBar } from "react-native";
+import { AppRegistry, StyleSheet, StatusBar, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { Finger, Floor, ScoreBar } from "./renderers";
+import { Finger, Floor, ScoreBar, RADIUS } from "./renderers";
 import { MoveFinger, SpawnFinger } from "./systems"
+
+const screen = Dimensions.get("window");
+const ball_start = 674;
 
 export default class BestGameEver extends PureComponent {
   constructor() {
@@ -23,8 +26,9 @@ export default class BestGameEver extends PureComponent {
       <GameEngine
         style={styles.container}
         systems={[MoveFinger, SpawnFinger]}
-        entities={{          
-          floor: { height: 125, renderer: <Floor /> },
+        entities={{
+          ball: { type: "ball", state: "stopped", position: [200,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Finger />},
+          floor: { height: 125, ball_start: ball_start, renderer: <Floor /> },
           scorebar: {height: 90, best: 276, balls: 1, score: 0, renderer: <ScoreBar />}           
         }}>
 
