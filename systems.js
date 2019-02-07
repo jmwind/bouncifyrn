@@ -49,6 +49,7 @@ const MoveBall = (entities, { touches, screen }) => {
 const AimBallsStart = (entities, { touches }) => {
     touches.filter(x => x.type === "start").forEach(t => {
         aim_vector.start = [t.event.pageX, t.event.pageY];
+        aim_vector.current = [t.event.pageX, t.event.pageY];
         aim_line = [
             entities.ball.position[0] + RADIUS / 2,
             entities.ball.position[1] + RADIUS / 2
@@ -56,21 +57,19 @@ const AimBallsStart = (entities, { touches }) => {
         entities['aimline'] = {
             start: aim_line,
             end: aim_line,
+            strokewidth: 3,
             renderer: AimLine
         };
 	});
     
     touches.filter(t => t.type === "move").forEach(t => {
         aim_vector.current = [t.event.pageX, t.event.pageY];
-        entities.aimline.end = aim_vector.current;
         let d = distance(aim_vector.start, aim_vector.current);
-        if(d > 5) {
-            console.log("START: " + aim_vector.start + " END: " + aim_vector.current);
-            console.log("DISTANCE: " + d);        
-            entities.aimline.end = [
-                aim_vector.current[0],
-                aim_vector.current[1]
-            ]            
+        if(d > 10) {
+            let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
+            let end_y = entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2)));
+            entities.aimline.end = [end_x, end_y];
+            entities.aimline.strokewidth = (d/5); 
         }
 	});
 
@@ -83,14 +82,12 @@ const AimBallsRelease = (entities, { touches }) => {
         delete entities.aimline;
         let d = distance(aim_vector.start, aim_vector.current);
         if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
-            console.log("FINISHED DRAG");
-            let x1 = (aim_vector.current[0] - aim_vector.start[0]) / 10;
-            let y1 = (aim_vector.current[1] - aim_vector.start[1]) / 10;
-            console.log(x1);
-            console.log(y1);
-            console.log("DISTANCE: " + d);
+            let x1 = (aim_vector.current[0] - aim_vector.start[0]);
+            let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
             entities.ball.direction[0] = x1 * -1;
             entities.ball.direction[1] = y1 * -1;
+            entities.ball.speed[0] = 1;
+            entities.ball.speed[1] = 1;
             entities.ball.state = "moving";
         }
 	});

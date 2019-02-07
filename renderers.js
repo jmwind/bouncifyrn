@@ -59,9 +59,10 @@ class AimLine extends PureComponent {
                     x2={this.props.end[0]}
                     y2={this.props.end[1]}
                     stroke="white"
+                    strokeLinecap="round"
                     strokeDasharray={[5, 10]}
                     strokeDashoffset="4"
-                    strokeWidth="3"
+                    strokeWidth={this.props.strokewidth}
                     />
                 </Svg>
             </View>
