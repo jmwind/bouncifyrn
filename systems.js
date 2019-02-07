@@ -6,7 +6,7 @@ const distance = ([x1, y1], [x2, y2]) =>
         
 let aim_vector = {start: [0,0], current: [0,0]};        
 
-const MoveBall = (entities, { touches, screen }) => {
+const MoveBall = (entities, { time, screen }) => {
 
     let box_size = RADIUS; 
     let box_rad = ( box_size / 2);   
@@ -14,8 +14,8 @@ const MoveBall = (entities, { touches, screen }) => {
     Object.keys(entities).forEach(boxId => {
         if(! boxId.startsWith("ball")) return;
         let box = entities[boxId];
-
         if(box.state != "moving") return;
+        
         box.position = [
             box.position[0] + ( box.speed[0] * box.direction[0] ),
             box.position[1] + ( box.speed[1] * box.direction[1] )
@@ -29,8 +29,7 @@ const MoveBall = (entities, { touches, screen }) => {
             box.direction[1] *= -1; 
         }
 
-        if(box.position[1] > (screen.height - box_size - entities.floor.height - 5)) {
-            //box.direction[1] *= -1;
+        if(box.position[1] > (screen.height - box_size - entities.floor.height - 5)) {        
             if(boxId == "ball") {
                 entities.ball.state = "stopped";
                 entities.ball.position = [
@@ -47,36 +46,38 @@ const MoveBall = (entities, { touches, screen }) => {
 };
 
 const AimBallsStart = (entities, { touches }) => {
-    touches.filter(x => x.type === "start").forEach(t => {
-        aim_vector.start = [t.event.pageX, t.event.pageY];
-        aim_vector.current = [t.event.pageX, t.event.pageY];
-        aim_line = [
-            entities.ball.position[0] + RADIUS / 2,
-            entities.ball.position[1] + RADIUS / 2
-        ];
-        entities['aimline'] = {
-            start: aim_line,
-            end: aim_line,
-            strokewidth: 3,
-            renderer: AimLine
-        };
-	});
+    if(entities.ball.state == "stopped") {
+        touches.filter(x => x.type === "start").forEach(t => {        
+            aim_vector.start = [t.event.pageX, t.event.pageY];
+            aim_vector.current = [t.event.pageX, t.event.pageY];
+            aim_line = [
+                entities.ball.position[0] + RADIUS / 2,
+                entities.ball.position[1] + RADIUS / 2
+            ];
+            entities['aimline'] = {
+                start: aim_line,
+                end: aim_line,
+                strokewidth: 3,
+                renderer: AimLine
+            };        
+	    });
     
-    touches.filter(t => t.type === "move").forEach(t => {
-        aim_vector.current = [t.event.pageX, t.event.pageY];
-        let d = distance(aim_vector.start, aim_vector.current);
-        if(d > 10) {
-            let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
-            let end_y = entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2)));
-            entities.aimline.end = [end_x, end_y];
-            entities.aimline.strokewidth = (d/5); 
-        }
-	});
+        touches.filter(t => t.type === "move").forEach(t => {
+            aim_vector.current = [t.event.pageX, t.event.pageY];
+            let d = distance(aim_vector.start, aim_vector.current);
+            if(d > 10) {
+                let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
+                let end_y = entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2)));
+                entities.aimline.end = [end_x, end_y];
+                entities.aimline.strokewidth = (d/5); 
+            }
+        });
+    }
 
 	return entities;
 };
 
-const AimBallsRelease = (entities, { touches }) => {
+const AimBallsRelease = (entities, { time, touches }) => {
 	touches.filter(t => t.type === "end").forEach(t => {
         aim_vector.current = [t.event.pageX, t.event.pageY];
         delete entities.aimline;
@@ -89,6 +90,7 @@ const AimBallsRelease = (entities, { touches }) => {
             entities.ball.speed[0] = 1;
             entities.ball.speed[1] = 1;
             entities.ball.state = "moving";
+            last_ball_spawn = time.current;
         }
 	});
 	return entities;

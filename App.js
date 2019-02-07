@@ -27,9 +27,9 @@ export default class BouncifyGame extends PureComponent {
         style={styles.container}
         systems={[MoveBall, SpawnBall, AimBallsStart, AimBallsRelease]}
         entities={{
-          ball: { type: "ball", color: "red", state: "stopped", start: [200, ball_start], position: [200,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Ball />},
+          ball: { type: "ball", color: "blue", state: "stopped", start: [200, ball_start], position: [200,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Ball />},
           floor: { height: 125, ball_start: ball_start, renderer: <Floor /> },
-          scorebar: {height: 90, best: 276, balls: 1, score: 0, renderer: <ScoreBar />}
+          scorebar: { height: 90, best: 276, balls: 3, balls_in_play: 0, score: 0, renderer: <ScoreBar /> }
           //aimline: { start: [200, ball_start], end: [100, ball_start - 100], renderer: <AimLine />}           
         }}>
       </GameEngine>
