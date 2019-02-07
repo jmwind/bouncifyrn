@@ -8,7 +8,7 @@
  */
 
 import React, { PureComponent } from "react";
-import { AppRegistry, StyleSheet, StatusBar, Dimensions } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, RADIUS } from "./renderers";
 import { MoveBall, SpawnBall } from "./systems"
@@ -16,7 +16,7 @@ import { MoveBall, SpawnBall } from "./systems"
 const screen = Dimensions.get("window");
 const ball_start = 674;
 
-export default class BestGameEver extends PureComponent {
+export default class BouncifyGame extends PureComponent {
   constructor() {
     super();
   }
@@ -31,9 +31,6 @@ export default class BestGameEver extends PureComponent {
           floor: { height: 125, ball_start: ball_start, renderer: <Floor /> },
           scorebar: {height: 90, best: 276, balls: 1, score: 0, renderer: <ScoreBar />}           
         }}>
-
-        <StatusBar />
-
       </GameEngine>
     );
   }
