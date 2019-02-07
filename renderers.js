@@ -4,12 +4,12 @@ import { StyleSheet, View, Text, Dimensions } from "react-native";
 export const RADIUS = 7;
 export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
 
-class Finger extends PureComponent {
+class Ball extends PureComponent {
   render() {
     const x = this.props.position[0] - RADIUS / 2;
     const y = this.props.position[1] - RADIUS / 2;
     return (
-      <View style={[styles.finger, { left: x, top: y }]} />
+      <View style={[styles.ball, { left: x, top: y }]} />
     );
   }
 }
@@ -48,7 +48,7 @@ class ScoreBar extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-  finger: {
+  ball: {
     borderColor: "#CCC",
     borderWidth: 1,
     borderRadius: RADIUS * 2,
@@ -82,4 +82,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { Finger, Floor, ScoreBar };
+export { Ball, Floor, ScoreBar };

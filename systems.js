@@ -1,10 +1,10 @@
 import _ from "lodash";
-import { Finger, RADIUS } from "./renderers";
+import { Ball, RADIUS } from "./renderers";
 
 const distance = ([x1, y1], [x2, y2]) =>
 	    Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
 
-const MoveFinger = (entities, { touches, screen }) => {
+const MoveBall = (entities, { touches, screen }) => {
 
     let box_size = RADIUS; 
     let box_rad = ( box_size / 2);   
@@ -36,13 +36,13 @@ const MoveFinger = (entities, { touches, screen }) => {
     return entities;
 };
 
-const SpawnFinger = (entities,  { touches }) => {
+const SpawnBall = (entities,  { touches }) => {
     touches.filter(t => t.type === "press").forEach(t => {
             entities["ball" + ++Object.keys(entities).length] = {
                 type: "ball",
                 state: "moving",
                 position: [t.event.pageX, t.event.pageY],
-                renderer: Finger,
+                renderer: Ball,
                 speed: [2.0, 2.0], 
                 direction: [-3.5,-0.5]
             };
@@ -52,4 +52,4 @@ const SpawnFinger = (entities,  { touches }) => {
     return entities;
 };
   
-export { MoveFinger, SpawnFinger };
+export { MoveBall, SpawnBall };
