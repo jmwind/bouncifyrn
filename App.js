@@ -11,7 +11,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, RADIUS } from "./renderers";
-import { MoveBall, SpawnBall } from "./systems"
+import { MoveBall, SpawnBall, AimBallsStart, AimBallsRelease } from "./systems"
 
 const screen = Dimensions.get("window");
 const ball_start = 674;
@@ -25,7 +25,7 @@ export default class BouncifyGame extends PureComponent {
     return (
       <GameEngine
         style={styles.container}
-        systems={[MoveBall, SpawnBall]}
+        systems={[MoveBall, SpawnBall, AimBallsStart, AimBallsRelease]}
         entities={{
           ball: { type: "ball", state: "stopped", position: [200,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Ball />},
           floor: { height: 125, ball_start: ball_start, renderer: <Floor /> },
