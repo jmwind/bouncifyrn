@@ -50,9 +50,13 @@ const AimBallsStart = (entities, { touches }) => {
     touches.filter(t => t.type === "move").forEach(t => {
         aim_vector.current = [t.event.pageX, t.event.pageY];
         let d = distance(aim_vector.start, aim_vector.current);
-        if(d > 1) {
+        if(d > 5) {
             console.log("START: " + aim_vector.start + " END: " + aim_vector.current);
             console.log("DISTANCE: " + d);        
+            entities.aimline.end = [
+                aim_vector.current[0],
+                aim_vector.current[1]
+            ]            
         }
 	});
 
@@ -72,8 +76,6 @@ const AimBallsRelease = (entities, { touches }) => {
             console.log("DISTANCE: " + d);
             entities.ball.direction[0] = x1 * -1;
             entities.ball.direction[1] = y1 * -1;
-            //entities.ball.speed[0] = d / 10;
-            //entities.ball.speed[1] = d / 10;
             entities.ball.state = "moving";
         }
 	});

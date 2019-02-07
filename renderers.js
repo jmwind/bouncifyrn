@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, View, Text, Dimensions } from "react-native";
+import { Line, Svg } from "react-native-svg";
 
 export const RADIUS = 7;
 export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
@@ -28,7 +29,7 @@ class Floor extends PureComponent {
                     backgroundColor: "#262626"
                 }
                 }
-            />
+            />            
         );
     }
 }
@@ -41,10 +42,31 @@ class ScoreBar extends PureComponent {
                     <Text style={styles.besttitle}>Best</Text>
                     <Text style={styles.bestscore}>{this.props.best}</Text>
                 </View>                
-                <Text style={styles.currentscore}>{this.props.balls}</Text>
+                <Text style={styles.currentscore}>{this.props.balls}</Text>               
             </View>
         );
     }
+}
+
+class AimLine extends PureComponent {
+    render() {
+        return (
+            <View>                
+                <Svg height={Dimensions.get("window").height} width={Dimensions.get("window").width}>
+                    <Line
+                    x1="0"
+                    y1="0"
+                    x2={this.props.end[0]}
+                    y2={this.props.end[1]}
+                    stroke="white"
+                    strokeDasharray={[5, 10]}
+                    strokeDashoffset="4"
+                    strokeWidth="2"
+                    />
+                </Svg>
+            </View>
+        );
+    }    
 }
 
 const styles = StyleSheet.create({
@@ -82,4 +104,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { Ball, Floor, ScoreBar };
+export { Ball, Floor, ScoreBar, AimLine };
