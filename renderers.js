@@ -24,11 +24,11 @@ function hitsToColor(hits) {
     return COLORS[0];    
 }
 
-function colToLeftPosition(col) {
+export function colToLeftPosition(col) {
     return BOX_TILE_SPACE + ((col * BOX_TILE_SPACE) + (col * BOX_TILE_SIZE));
 }
 
-function rowToTopPosition(row) {
+export function rowToTopPosition(row) {
     return SCOREBOARD_HEIGHT + BOX_TILE_SPACE + ((row * BOX_TILE_SPACE) + (row * BOX_TILE_SIZE));
 }
 

@@ -1,43 +1,70 @@
 import _ from "lodash";
-import { Ball, RADIUS, AimLine } from "./renderers";
+import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE } from "./renderers";
 
+const NO_COLISION = 0;
+const SIDE = 1;
+const TOP_BOTTOM = 2;
 const distance = ([x1, y1], [x2, y2]) =>
         Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
         
 let aim_vector = {start: [0,0], current: [0,0]};        
 
+function collides(x1, y1, width1, x2, y2, width2) {
+    if (((y1 + width1) < (y2)) || (y1 > (y2 + width2)) 
+        || ((x1 + width1) < x2) || (x1 > (x2 + width2))) {
+        return NO_COLISION;            
+    }
+    return NO_COLISION;
+}
+
+function collidesWithBox(entities, ball) {
+    let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
+    let colType = NO_COLISION;
+    for(var boxId in boxes) {
+        let box = entities[boxes[boxId]];
+         colType = collides(
+            colToLeftPosition(box.row), rowToTopPosition(box.col), BOX_TILE_SIZE,
+            ball.position[0], ball.position[1], RADIUS * 2
+        );
+        if(colType != NO_COLISION) break;
+    }
+    return colType;
+}
+
 const MoveBall = (entities, { time, screen }) => {
 
-    let box_size = RADIUS; 
-    let box_rad = ( box_size / 2);   
+    let ball_size = RADIUS; 
+    let ball_rad = ( ball_size / 2);   
     
-    Object.keys(entities).forEach(boxId => {
-        if(! boxId.startsWith("ball")) return;
-        let box = entities[boxId];
-        if(box.state != "moving") return;
+    Object.keys(entities).forEach(ballId => {
+        if(! ballId.startsWith("ball")) return;
+        let ball = entities[ballId];
+        if(ball.state != "moving") return;
         
-        box.position = [
-            box.position[0] + ( box.speed[0] * box.direction[0] ),
-            box.position[1] + ( box.speed[1] * box.direction[1] )
+        ball.position = [
+            ball.position[0] + ( ball.speed[0] * ball.direction[0] ),
+            ball.position[1] + ( ball.speed[1] * ball.direction[1] )
         ];
         
-        if(box.position[0] > ( screen.width - box_size - 7 ) || box.position[0] < box_rad) {
-            box.direction[0] *= -1; 
+        let isCollision = collidesWithBox(entities, ball);
+
+        if(ball.position[0] > ( screen.width - ball_size - 7 ) || ball.position[0] < ball_rad || isCollision == SIDE) {
+            ball.direction[0] *= -1; 
         }
 
-        if(box.position[1] < box_rad + entities.scorebar.height + 3) {
-            box.direction[1] *= -1; 
+        if(ball.position[1] < ball_rad + entities.scorebar.height + 3 || isCollision == TOP_BOTTOM) {
+            ball.direction[1] *= -1; 
         }
 
-        if(box.position[1] > (screen.height - box_size - entities.floor.height - 5)) {        
-            if(boxId == "ball") {
+        if(ball.position[1] > (screen.height - ball_size - entities.floor.height - 5)) {        
+            if(ballId == "ball") {
                 entities.ball.state = "stopped";
                 entities.ball.position = [
                     entities.ball.position[0],
                     entities.ball.start[1],
                 ];
             } else {
-                delete entities[boxId]; 
+                delete entities[ballId]; 
             }
         }
     });

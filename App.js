@@ -28,6 +28,9 @@ export default class BouncifyGame extends PureComponent {
         systems={[MoveBall, SpawnBall, AimBallsStart, AimBallsRelease]}
         entities={{
           box2: {row: 1, col: 0, hits: 11, renderer: <BoxTile />}, 
+          box21: {row: 1, col: 1, hits: 11, renderer: <BoxTile />}, 
+          box22: {row: 1, col: 2, hits: 21, renderer: <BoxTile />}, 
+          box23: {row: 1, col: 3, hits: 31, renderer: <BoxTile />}, 
           box3: {row: 2, col: 0, hits: 22, renderer: <BoxTile />}, 
           box4: {row: 3, col: 0, hits: 33, renderer: <BoxTile />}, 
           box5: {row: 4, col: 0, hits: 1, renderer: <BoxTile />}, 
