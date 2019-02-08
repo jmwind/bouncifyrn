@@ -3,7 +3,34 @@ import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { Line, Svg } from "react-native-svg";
 
 export const RADIUS = 7;
-export const COLORS = ["#86E9BE", "#8DE986", "#B8E986", "#E9E986"];
+export const SCOREBOARD_HEIGHT = 90;
+export const BOX_TILE_SIZE = 40;
+export const BOX_TILE_SPACE = 6;
+
+export const COLORS = [
+    "#DFB44F", // yellow 1-10
+    "#8CB453", // green 11-20
+    "#EA225E", // red 21-30
+];
+
+function hitsToColor(hits) {
+    if(hits <= 10) {
+        return COLORS[0];
+    } else if(hits <=20) {
+        return COLORS[1];
+    } else if(hits <= 30) {
+        return COLORS[2];
+    }
+    return COLORS[0];    
+}
+
+function colToLeftPosition(col) {
+    return BOX_TILE_SPACE + ((col * BOX_TILE_SPACE) + (col * BOX_TILE_SIZE));
+}
+
+function rowToTopPosition(row) {
+    return SCOREBOARD_HEIGHT + BOX_TILE_SPACE + ((row * BOX_TILE_SPACE) + (row * BOX_TILE_SIZE));
+}
 
 class Ball extends PureComponent {
   render() {
@@ -70,6 +97,22 @@ class AimLine extends PureComponent {
     }    
 }
 
+class BoxTile extends PureComponent {
+    render() {
+        return (
+            <View style={[styles.boxcontainer, {
+                backgroundColor: hitsToColor(this.props.hits),
+                top: rowToTopPosition(this.props.row),
+                left: colToLeftPosition(this.props.col)
+                }]}> 
+                <Text style={{color: "#262626", fontSize: 16}}>
+                    {this.props.hits}
+                </Text>
+            </View>
+        );
+    }
+}
+
 const styles = StyleSheet.create({
   ball: {
     borderColor: "#CCC",
@@ -78,6 +121,14 @@ const styles = StyleSheet.create({
     width: RADIUS * 2,
     height: RADIUS * 2,
     position: "absolute"
+  },
+  boxcontainer: {
+    position: "absolute",
+    width: BOX_TILE_SIZE,
+    height: BOX_TILE_SIZE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex:1,    
   },
   scorebar: {
       position: "absolute",
@@ -104,4 +155,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { Ball, Floor, ScoreBar, AimLine };
+export { Ball, Floor, ScoreBar, AimLine, BoxTile };
