@@ -11,30 +11,38 @@ let aim_vector = {start: [0,0], current: [0,0]};
 
 function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
-    let colType = NO_COLISION;
     for(var boxId in boxes) {
-        let box = entities[boxes[boxId]];
-         let box_y = rowToTopPosition(box.col);
-         let box_x = colToLeftPosition(box.row);
-         if (ball.position[0] + RADIUS + ball.speed[0] > box_x && 
-            ball.position[0] + ball.speed[0] < box_x + BOX_TILE_SIZE && 
+         let box = entities[boxes[boxId]];
+         let box_y = rowToTopPosition(box.row);
+         let box_x = colToLeftPosition(box.col);
+         let next_position = [
+            ( ball.speed[0] * ball.direction[0] ),
+            ( ball.speed[1] * ball.direction[1] )
+        ];  
+        
+        if (ball.position[0] + RADIUS + next_position[0] > box_x && 
+            ball.position[0] + next_position[0] < box_x + BOX_TILE_SIZE && 
             ball.position[1] + RADIUS > box_y && 
             ball.position[1] < box_y + BOX_TILE_SIZE) {
+                box.hits--;
                 return SIDE;
         } else if (ball.position[0] + RADIUS > box_x && 
-            ball.position[0] < box_x + BOX_TILE_SIZE && 
-            ball.position[1] + RADIUS + ball.speed[1] > box_y && 
-            ball.position[1] + ball.speed[1] < box_y + BOX_TILE_SIZE) {
+                ball.position[0] < box_x + BOX_TILE_SIZE && 
+                ball.position[1] + RADIUS + next_position[1] > box_y && 
+                ball.position[1] + next_position[1] < box_y + BOX_TILE_SIZE) {
+                box.hits--;
                 return TOP_BOTTOM;
         }
+        if(box.hits == 0)
+            delete entities[boxes[boxId]];
     }
-    return colType;
+
+    return NO_COLISION;
 }
 
 const MoveBall = (entities, { time, screen }) => {
 
-    let ball_size = RADIUS; 
-    let ball_rad = ( ball_size / 2);   
+    let ball_size = RADIUS;  
     
     Object.keys(entities).forEach(ballId => {
         if(! ballId.startsWith("ball")) return;
@@ -45,18 +53,27 @@ const MoveBall = (entities, { time, screen }) => {
             ball.position[0] + ( ball.speed[0] * ball.direction[0] ),
             ball.position[1] + ( ball.speed[1] * ball.direction[1] )
         ];
+        let next_direction = [
+            ball.direction[0],
+            ball.direction[1]
+        ];
         
         let isCollision = collidesWithBox(entities, ball);
 
-        if(next_position[0] > ( screen.width - ball_size - 7 ) || next_position[0] < ball_rad) {
-            ball.direction[0] *= -1; 
+        // Test box collision before walls
+        if(isCollision == SIDE) {
+            next_direction[0] *= -1; 
+        } else if(next_position[0] > ( screen.width - RADIUS) || next_position[0] < 0) {
+            next_direction[0] *= -1; 
+        }
+                
+        if(isCollision == TOP_BOTTOM) {
+            next_direction[1] *= -1; 
+        } else if(next_position[1] < RADIUS + entities.scorebar.height) {
+            next_direction[1] *= -1; 
         }
 
-        if(next_position[1] < ball_rad + entities.scorebar.height + 3) {
-            ball.direction[1] *= -1; 
-        }
-
-        if(next_position[1] > (screen.height - ball_size - entities.floor.height - 5)) {        
+        if(next_position[1] > (screen.height - RADIUS - entities.floor.height)) {        
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
                 entities.ball.position = [
@@ -67,8 +84,13 @@ const MoveBall = (entities, { time, screen }) => {
                 delete entities[ballId]; 
             }
         } else {
+            next_position = [
+                ball.position[0] + ( ball.speed[0] * next_direction[0] ),
+                ball.position[1] + ( ball.speed[1] * next_direction[1] )
+            ];
             // all is good, update new position now
-            ball.position = next_position;        
+            ball.position = next_position; 
+            ball.direction = next_direction;
         }
         
     });
@@ -116,8 +138,8 @@ const AimBallsRelease = (entities, { time, touches }) => {
         if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
             let x1 = (aim_vector.current[0] - aim_vector.start[0]);
             let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
-            entities.ball.direction[0] = x1 * -1;
-            entities.ball.direction[1] = y1 * -1;
+            entities.ball.direction[0] = (x1 * -1)/5;
+            entities.ball.direction[1] = (y1 * -1)/5;
             entities.ball.speed[0] = 1;
             entities.ball.speed[1] = 1;
             entities.ball.state = "moving";
@@ -129,6 +151,7 @@ const AimBallsRelease = (entities, { time, touches }) => {
 
 const SpawnBall = (entities,  { touches }) => {
     touches.filter(t => t.type === "press").forEach(t => {
+            
             entities["ball" + ++Object.keys(entities).length] = {
                 type: "ball",
                 state: "moving",
@@ -138,7 +161,18 @@ const SpawnBall = (entities,  { touches }) => {
                 speed: [2.0, 2.0], 
                 direction: [-3.5,-0.5]
             };
+            
             entities.scorebar.balls++;
+            
+            /*
+            let ball = {
+                position: [t.event.pageX, t.event.pageY],
+                direction: [0,0],
+                speed: [1,1]
+            }
+            collidesWithBox(entities, ball);
+            */
+            
         }
     );
     return entities;
