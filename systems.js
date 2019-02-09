@@ -9,24 +9,24 @@ const distance = ([x1, y1], [x2, y2]) =>
         
 let aim_vector = {start: [0,0], current: [0,0]};        
 
-function collides(x1, y1, width1, x2, y2, width2) {
-    if (((y1 + width1) < (y2)) || (y1 > (y2 + width2)) 
-        || ((x1 + width1) < x2) || (x1 > (x2 + width2))) {
-        return NO_COLISION;            
-    }
-    return NO_COLISION;
-}
-
 function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let colType = NO_COLISION;
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
-         colType = collides(
-            colToLeftPosition(box.row), rowToTopPosition(box.col), BOX_TILE_SIZE,
-            ball.position[0], ball.position[1], RADIUS * 2
-        );
-        if(colType != NO_COLISION) break;
+         let box_y = rowToTopPosition(box.col);
+         let box_x = colToLeftPosition(box.row);
+         if (ball.position[0] + RADIUS + ball.speed[0] > box_x && 
+            ball.position[0] + ball.speed[0] < box_x + BOX_TILE_SIZE && 
+            ball.position[1] + RADIUS > box_y && 
+            ball.position[1] < box_y + BOX_TILE_SIZE) {
+                return SIDE;
+        } else if (ball.position[0] + RADIUS > box_x && 
+            ball.position[0] < box_x + BOX_TILE_SIZE && 
+            ball.position[1] + RADIUS + ball.speed[1] > box_y && 
+            ball.position[1] + ball.speed[1] < box_y + BOX_TILE_SIZE) {
+                return TOP_BOTTOM;
+        }
     }
     return colType;
 }
@@ -41,32 +41,36 @@ const MoveBall = (entities, { time, screen }) => {
         let ball = entities[ballId];
         if(ball.state != "moving") return;
         
-        ball.position = [
+        let next_position = [
             ball.position[0] + ( ball.speed[0] * ball.direction[0] ),
             ball.position[1] + ( ball.speed[1] * ball.direction[1] )
         ];
         
         let isCollision = collidesWithBox(entities, ball);
 
-        if(ball.position[0] > ( screen.width - ball_size - 7 ) || ball.position[0] < ball_rad || isCollision == SIDE) {
+        if(next_position[0] > ( screen.width - ball_size - 7 ) || next_position[0] < ball_rad) {
             ball.direction[0] *= -1; 
         }
 
-        if(ball.position[1] < ball_rad + entities.scorebar.height + 3 || isCollision == TOP_BOTTOM) {
+        if(next_position[1] < ball_rad + entities.scorebar.height + 3) {
             ball.direction[1] *= -1; 
         }
 
-        if(ball.position[1] > (screen.height - ball_size - entities.floor.height - 5)) {        
+        if(next_position[1] > (screen.height - ball_size - entities.floor.height - 5)) {        
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
                 entities.ball.position = [
-                    entities.ball.position[0],
+                    next_position[0],
                     entities.ball.start[1],
                 ];
             } else {
                 delete entities[ballId]; 
             }
+        } else {
+            // all is good, update new position now
+            ball.position = next_position;        
         }
+        
     });
     
     return entities;
