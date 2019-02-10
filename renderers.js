@@ -69,7 +69,7 @@ class ScoreBar extends PureComponent {
                     <Text style={styles.besttitle}>Best</Text>
                     <Text style={styles.bestscore}>{this.props.best}</Text>
                 </View>                
-                <Text style={styles.currentscore}>{this.props.balls}</Text>               
+                <Text style={styles.currentscore}>{this.props.level}</Text>               
             </View>
         );
     }

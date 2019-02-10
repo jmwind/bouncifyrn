@@ -6,10 +6,14 @@ const NO_COLISION = 0;
 const SIDE = 1;
 const TOP_BOTTOM = 2;
 
+const randomKey = () =>
+    (Math.random() + 1).toString(36).substring(7);
+
 // Vector distance for initial ball launch aiming
 const distance = ([x1, y1], [x2, y2]) =>
         Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));        
-let aim_vector = {start: [0,0], current: [0,0]};        
+let aim_vector = {start: [0,0], current: [0,0]};  
+let last_ball_start_time = 0; 
 
 function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
@@ -74,14 +78,25 @@ const MoveBall = (entities, { time, screen }) => {
         }
 
         if(next_position[1] > (screen.height - RADIUS - entities.floor.height)) {        
+            entities.scorebar.balls_returned++;
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
+                // ensure rested nicely on top of floor
                 entities.ball.position = [
                     next_position[0],
                     entities.ball.start[1],
-                ];
+                ];                
             } else {
                 delete entities[ballId]; 
+            }
+            if(entities.scorebar.balls_returned >= entities.scorebar.balls) {
+                entities.scorebar.state = "stopped";
+                entities.scorebar.balls_in_play = 0;
+                // save next start position to ball trail
+                entities.ball.start = [
+                    entities.ball.position[0],
+                    entities.ball.position[1],
+                ];
             }
         } else {
             next_position = [
@@ -140,19 +155,47 @@ const AimBallsRelease = (entities, { time, touches }) => {
             let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
             entities.ball.direction[0] = (x1 * -1)/3;
             entities.ball.direction[1] = (y1 * -1)/3;
+            entities.ball.start_direction = [(x1 * -1)/3, (y1 * -1)/3];
             entities.ball.speed[0] = 1;
             entities.ball.speed[1] = 1;
+            entities.start = [entities.ball.position[0], entities.ball.position[1]];
             entities.ball.state = "moving";
-            last_ball_spawn = time.current;
+            entities.scorebar.state = "started";
+            entities.scorebar.balls_in_play++;
+            entities.scorebar.balls_returned = 0;
+            last_ball_start_time = time.current;
         }
 	});
 	return entities;
 };
 
+const CreateBallTail = (entities, { time }) => {
+    let scorebar = entities.scorebar;
+    if(scorebar.state == "started" && scorebar.balls_in_play <= scorebar.balls) {
+        if((time.current - last_ball_start_time) > 200 /* ms */) {
+            let position = [entities.ball.start[0], entities.ball.start[1]];
+            let direction = [entities.ball.start_direction[0], entities.ball.start_direction[1]];
+            let speed = [entities.ball.speed[0], entities.ball.speed[1]];
+            entities["ball" + randomKey()] = {
+                type: "ball",
+                state: "moving",
+                color: "white",
+                position: position,
+                renderer: Ball,
+                speed: speed, 
+                direction: direction
+            };
+            scorebar.balls_in_play++;
+            last_ball_start_time = time.current;
+        }
+    }
+    return entities;
+}
+
 const SpawnBall = (entities,  { touches }) => {
     touches.filter(t => t.type === "press").forEach(t => {
             
-            entities["ball" + ++Object.keys(entities).length] = {
+            entities["ball" + randomKey()] = {
                 type: "ball",
                 state: "moving",
                 color: "white",
@@ -162,7 +205,7 @@ const SpawnBall = (entities,  { touches }) => {
                 direction: [-3.5,-0.5]
             };
             
-            entities.scorebar.balls++;
+            //entities.scorebar.balls++;
             
             /*
             let ball = {
@@ -178,4 +221,4 @@ const SpawnBall = (entities,  { touches }) => {
     return entities;
 };
   
-export { MoveBall, SpawnBall, AimBallsStart, AimBallsRelease };
+export { MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail };

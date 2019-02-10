@@ -26,13 +26,20 @@ react-native run-ios
 - [x] Get balls moving around the screen with grade 2 level math
 - [x] Define and draw playing surface and limit movement within
 - [ ] Start ball from bottom on click with tail
-- [ ] Start angle touch motion calculation and display
-- [ ] Colision detection on box, bounce off
-- [ ] Colision angular velocity near object edges (irregular bounces)
-- [ ] Have balls stop and hide when they hit bottom surface
-- [ ] Add ball addition hot spots on screen
-- [ ] Colision count and box disappear
+- [x] Start angle touch motion calculation and display
+- [x] Colision detection on box, bounce off
+- [x] Colision angular velocity near object edges (irregular bounces)
+- [x] Have balls stop and hide when they hit bottom surface
+- [ ] Add ball addition hot spots on screen with nice animation
+- [x] Colision count and box disappear
 - [ ] Top score section with ball count and level
-- [ ] Box bounce count calculation and display
+- [ ] Show ball count beside first ball
+- [ ] Calculate level and display at top
+- [x] Box bounce count calculation and display
 - [ ] First ball landing spot calculation and animation
 - [ ] Add box layers and advancing
+- [ ] Determine end of game when boxes advance to bottom row
+- [ ] Add speed-up button
+- [ ] Splash screen and icon
+- [ ] Start scren
+- [ ] End of game screen
