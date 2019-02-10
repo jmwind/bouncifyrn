@@ -133,7 +133,7 @@ const AimBallsStart = (entities, { touches }) => {
         touches.filter(t => t.type === "move").forEach(t => {
             aim_vector.current = [t.event.pageX, t.event.pageY];
             let d = distance(aim_vector.start, aim_vector.current);
-            if(d > 10) {
+            if(aim_vector.current[1] - aim_vector.start[1] > 0) {
                 let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
                 let end_y = entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2)));
                 entities.aimline.end = [end_x, end_y];

@@ -14,7 +14,7 @@ import { Ball, Floor, ScoreBar, BoxTile } from "./renderers";
 import { MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail } from "./systems"
 
 // TODO: hack to set the first lead ball at right spot on the floor
-const ball_start = 674;
+const ball_start = 676;
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
