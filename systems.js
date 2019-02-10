@@ -114,7 +114,7 @@ const MoveBall = (entities, { time, screen }) => {
 };
 
 const AimBallsStart = (entities, { touches }) => {
-    if(entities.ball.state == "stopped") {
+    if(entities.scorebar.state == "stopped") {
         touches.filter(x => x.type === "start").forEach(t => {        
             aim_vector.start = [t.event.pageX, t.event.pageY];
             aim_vector.current = [t.event.pageX, t.event.pageY];
@@ -146,33 +146,36 @@ const AimBallsStart = (entities, { touches }) => {
 };
 
 const AimBallsRelease = (entities, { time, touches }) => {
-	touches.filter(t => t.type === "end").forEach(t => {
-        aim_vector.current = [t.event.pageX, t.event.pageY];
-        delete entities.aimline;
-        let d = distance(aim_vector.start, aim_vector.current);
-        if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
-            let x1 = (aim_vector.current[0] - aim_vector.start[0]);
-            let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
-            entities.ball.direction[0] = (x1 * -1)/3;
-            entities.ball.direction[1] = (y1 * -1)/3;
-            entities.ball.start_direction = [(x1 * -1)/3, (y1 * -1)/3];
-            entities.ball.speed[0] = 1;
-            entities.ball.speed[1] = 1;
-            entities.start = [entities.ball.position[0], entities.ball.position[1]];
-            entities.ball.state = "moving";
-            entities.scorebar.state = "started";
-            entities.scorebar.balls_in_play++;
-            entities.scorebar.balls_returned = 0;
-            last_ball_start_time = time.current;
-        }
-	});
+    if(entities.scorebar.state == "stopped") {
+        touches.filter(t => t.type === "end").forEach(t => {
+            aim_vector.current = [t.event.pageX, t.event.pageY];
+            delete entities.aimline;
+            let d = distance(aim_vector.start, aim_vector.current);
+            if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
+                let x1 = (aim_vector.current[0] - aim_vector.start[0]);
+                let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
+                entities.ball.direction[0] = (x1 * -1)/3;
+                entities.ball.direction[1] = (y1 * -1)/3;
+                entities.ball.start_direction = [(x1 * -1)/3, (y1 * -1)/3];
+                entities.ball.speed[0] = 1;
+                entities.ball.speed[1] = 1;
+                entities.start = [entities.ball.position[0], entities.ball.position[1]];
+                entities.ball.state = "moving";
+                entities.scorebar.state = "started";
+                entities.scorebar.balls_returned = 0;
+                entities.scorebar.balls_in_play = 1;
+                last_ball_start_time = time.current;
+                
+            }
+        });
+    }
 	return entities;
 };
 
 const CreateBallTail = (entities, { time }) => {
     let scorebar = entities.scorebar;
-    if(scorebar.state == "started" && scorebar.balls_in_play <= scorebar.balls) {
-        if((time.current - last_ball_start_time) > 200 /* ms */) {
+    if(scorebar.state == "started" && scorebar.balls_in_play < scorebar.balls) {
+        if((time.current - last_ball_start_time) > 150 /* ms */) {
             let position = [entities.ball.start[0], entities.ball.start[1]];
             let direction = [entities.ball.start_direction[0], entities.ball.start_direction[1]];
             let speed = [entities.ball.speed[0], entities.ball.speed[1]];
@@ -192,32 +195,15 @@ const CreateBallTail = (entities, { time }) => {
     return entities;
 }
 
-const SpawnBall = (entities,  { touches }) => {
+const SpawnBall = (entities,  { touches, screen }) => {
     touches.filter(t => t.type === "press").forEach(t => {
-            
-            entities["ball" + randomKey()] = {
-                type: "ball",
-                state: "moving",
-                color: "white",
-                position: [t.event.pageX, t.event.pageY],
-                renderer: Ball,
-                speed: [2.0, 2.0], 
-                direction: [-3.5,-0.5]
-            };
-            
-            //entities.scorebar.balls++;
-            
-            /*
-            let ball = {
-                position: [t.event.pageX, t.event.pageY],
-                direction: [0,0],
-                speed: [1,1]
-            }
-            collidesWithBox(entities, ball);
-            */
-            
+        // Hack to add more balls quickly without needing to play all levels
+        if(t.event.pageY < entities.scorebar.height && t.event.pageX > screen.width / 2) {
+            entities.scorebar.balls++;
+        } else if(t.event.pageY < entities.scorebar.height && t.event.pageX < screen.width / 2 && entities.scorebar.balls > 1) {
+            entities.scorebar.balls--;
         }
-    );
+    });
     return entities;
 };
   

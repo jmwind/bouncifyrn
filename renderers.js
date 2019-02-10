@@ -69,7 +69,8 @@ class ScoreBar extends PureComponent {
                     <Text style={styles.besttitle}>Best</Text>
                     <Text style={styles.bestscore}>{this.props.best}</Text>
                 </View>                
-                <Text style={styles.currentscore}>{this.props.level}</Text>               
+                <Text style={styles.currentscore}>{this.props.level}</Text>
+                <Text style={styles.currentscore}>{this.props.balls}/{this.props.balls - this.props.balls_in_play}</Text>               
             </View>
         );
     }
@@ -151,6 +152,15 @@ const styles = StyleSheet.create({
   currentscore: {
     left: Dimensions.get("window").width / 2 - 8,
     fontSize: 22,
+    color: 'white'
+  },
+  ballcounter_container: {
+    position: "absolute",
+    left: 0,
+    top: 0
+  },
+  ballcounter_text: {
+    fontSize: 14,
     color: 'white'
   }
 });

@@ -46,9 +46,9 @@ export default class BouncifyGame extends PureComponent {
           box17: {row: 8, col: 2, hits: 44, renderer: <BoxTile />},  
           box18: {row: 9, col: 6, hits: 33, renderer: <BoxTile />},  
           box19: {row: 9, col: 7, hits: 22, renderer: <BoxTile />},    
-          ball: { type: "ball", color: "blue", state: "stopped", start: [300, ball_start], position: [300,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Ball />},          
+          ball: { type: "ball", color: "blue", state: "stopped", start: [300, ball_start], position: [300,  ball_start], speed: [3.0, 1.0], direction: [1,1], renderer: <Ball />},
           floor: { height: 125, ball_start: ball_start, renderer: <Floor /> },          
-          scorebar: { height: 90, best: 276, state: "stopped", level: 1, balls: 30, balls_in_play: 0, score: 0, renderer: <ScoreBar />}          
+          scorebar: { height: 90, best: 276, state: "stopped", level: 1, balls: 1, balls_in_play: 0, score: 0, renderer: <ScoreBar />}          
           }}>
       </GameEngine>
     );
