@@ -1,12 +1,14 @@
 import _ from "lodash";
 import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE } from "./renderers";
 
+// Collision detection
 const NO_COLISION = 0;
 const SIDE = 1;
 const TOP_BOTTOM = 2;
+
+// Vector distance for initial ball launch aiming
 const distance = ([x1, y1], [x2, y2]) =>
-        Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
-        
+        Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));        
 let aim_vector = {start: [0,0], current: [0,0]};        
 
 function collidesWithBox(entities, ball) {
@@ -42,8 +44,6 @@ function collidesWithBox(entities, ball) {
 
 const MoveBall = (entities, { time, screen }) => {
 
-    let ball_size = RADIUS;  
-    
     Object.keys(entities).forEach(ballId => {
         if(! ballId.startsWith("ball")) return;
         let ball = entities[ballId];
@@ -138,8 +138,8 @@ const AimBallsRelease = (entities, { time, touches }) => {
         if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
             let x1 = (aim_vector.current[0] - aim_vector.start[0]);
             let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
-            entities.ball.direction[0] = (x1 * -1)/5;
-            entities.ball.direction[1] = (y1 * -1)/5;
+            entities.ball.direction[0] = (x1 * -1)/3;
+            entities.ball.direction[1] = (y1 * -1)/3;
             entities.ball.speed[0] = 1;
             entities.ball.speed[1] = 1;
             entities.ball.state = "moving";
