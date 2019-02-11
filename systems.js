@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE } from "./renderers";
+import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile } from "./renderers";
 
 // Collision detection
 const NO_COLISION = 0;
@@ -46,8 +46,32 @@ function collidesWithBox(entities, ball) {
     return NO_COLISION;
 }
 
-const MoveBall = (entities, { time, screen }) => {
+function calculateNextLevel(entities) {
+    let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
+    let max_row = 0;
+    entities.scorebar.level++;
+    for(var boxId in boxes) {
+        let box = entities[boxes[boxId]];
+        if(++box.row > max_row) {
+            max_row = box.row;
+        }
+    }
+    if(max_row >= 12) {
+        // game over
+    }
+    // random number of blocks for colums 0-7
+    let num_new_blocks = Math.floor(Math.random() * 8);
+    let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
+    entities["box" + randomKey()] = {
+        row: 1, 
+        col: num_new_blocks, 
+        hits: new_hits, 
+        renderer: BoxTile, 
+    };
+}
 
+const MoveBall = (entities, { screen }) => {
+    
     Object.keys(entities).forEach(ballId => {
         if(! ballId.startsWith("ball")) return;
         let ball = entities[ballId];
@@ -97,6 +121,7 @@ const MoveBall = (entities, { time, screen }) => {
                     entities.ball.position[0],
                     entities.ball.position[1],
                 ];
+                calculateNextLevel(entities);
             }
         } else {
             next_position = [
