@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, View, Text, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Line, Svg } from "react-native-svg";
 
 export const RADIUS = 7;
@@ -115,17 +115,37 @@ class AimLine extends PureComponent {
 }
 
 class BoxTile extends PureComponent {
+
+    state = {
+        animateTop: new Animated.Value(rowToTopPosition(0)),
+        animated: false
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(!this.state.animated || this.props.row != nextProps.row) {
+            let starting_row = this.state.animated ? this.props.row : 0;
+            this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
+            Animated.spring(this.state.animateTop, {
+                toValue: rowToTopPosition(nextProps.row),
+                friction: 10,
+                tension: 60
+              }).start();
+            this.setState({animated: true});
+        }
+    }
+
     render() {
+        //let topPosition = this.props.topx != 0 ? this.props.topx : rowToTopPosition(this.props.row);
         return (
-            <View style={[styles.boxcontainer, {
+            <Animated.View style={[styles.boxcontainer, {
                 backgroundColor: hitsToColor(this.props.hits),
-                top: rowToTopPosition(this.props.row),
+                top: this.state.animateTop,
                 left: colToLeftPosition(this.props.col)
                 }]}> 
                 <Text style={{color: "#262626", fontSize: 16}}>
                     {this.props.hits}
                 </Text>
-            </View>
+            </Animated.View>
         );
     }
 }

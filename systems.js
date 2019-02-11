@@ -62,7 +62,8 @@ function calculateNextLevel(entities) {
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
     let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
-    entities["box" + randomKey()] = {
+    let key = randomKey();
+    entities["box" + key] = {
         row: 1, 
         col: num_new_blocks, 
         hits: new_hits, 
