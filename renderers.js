@@ -10,7 +10,11 @@ export const BOX_TILE_SPACE = 6;
 export const COLORS = [
     "#DFB44F", // yellow 1-10
     "#8CB453", // green 11-20
-    "#EA225E", // red 21-30
+    "#EA225E", // red 21-30,
+    "#59B9F9", // light blue 31-50,
+    "#265BF6", // darker blue 51-99,
+    "#7112F5"  // purple 100-150 
+
 ];
 
 function hitsToColor(hits) {
@@ -20,6 +24,12 @@ function hitsToColor(hits) {
         return COLORS[1];
     } else if(hits <= 30) {
         return COLORS[2];
+    } else if(hits <= 50) {
+        return COLORS[3]
+    } else if(hits <= 99) {
+        return COLORS[4];
+    } else if(hits <= 150) {
+        return COLORS[5];
     }
     return COLORS[0];    
 }
@@ -65,12 +75,18 @@ class ScoreBar extends PureComponent {
     render() {
         return (
             <View style={[styles.scorebar, {height: this.props.height}]}>
-                <View style={[styles.bestcontainer, {top: this.props.height / 2 - 10}]}>                    
+                <View style={styles.bestcontainer}>                    
                     <Text style={styles.besttitle}>Best</Text>
                     <Text style={styles.bestscore}>{this.props.best}</Text>
-                </View>                
-                <Text style={styles.currentscore}>{this.props.level}</Text>
-                <Text style={styles.currentscore}>{this.props.balls}/{this.props.balls - this.props.balls_in_play}</Text>               
+                </View>  
+                <View style={styles.levelcontainer}>              
+                <Text style={styles.besttitle}>Level</Text>
+                    <Text style={styles.currentscore}>{this.props.level}</Text>
+                </View>
+                <View style={styles.ballscontainer}>
+                    <Text style={styles.besttitle}>Balls</Text>              
+                    <Text style={styles.currentscore}>{this.props.balls - this.props.balls_in_play}</Text>               
+                </View>
             </View>
         );
     }
@@ -135,11 +151,32 @@ const styles = StyleSheet.create({
       position: "absolute",
       left: 0,
       top: 0,
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      justifyContent: 'space-between',
+      //justifyContent: 'flex-start', // main axis
+      //alignItems: 'center', // cross axis
       width: Dimensions.get("window").width,
       backgroundColor: "#262626"
   },
-  bestcontainer: {      
-      left: 60,                
+  bestcontainer: {  
+    flex: 1,
+    alignItems: 'center',  
+    marginBottom: 5,    
+    justifyContent: 'flex-end'              
+  },
+  levelcontainer: {   
+    flex: 1,
+    alignItems: 'center',   
+    marginBottom: 5,    
+    justifyContent: 'flex-end'           
+  },
+  ballscontainer: { 
+    flex: 1,
+    alignItems: 'center',
+    marginBottom: 5,    
+    justifyContent: 'flex-end'           
   },
   besttitle: {
     fontSize: 14,
@@ -150,17 +187,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   currentscore: {
-    left: Dimensions.get("window").width / 2 - 8,
     fontSize: 22,
-    color: 'white'
-  },
-  ballcounter_container: {
-    position: "absolute",
-    left: 0,
-    top: 0
-  },
-  ballcounter_text: {
-    fontSize: 14,
     color: 'white'
   }
 });
