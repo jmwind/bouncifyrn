@@ -32,8 +32,8 @@ react-native run-ios
 - [x] Have balls stop and hide when they hit bottom surface
 - [ ] Add ball addition hot spots on screen with nice animation
 - [x] Colision count and box disappear
-- [ ] Top score section with ball count and level
-- [ ] Show ball count beside first ball (on top for now)
+- [~] Top score section with ball count and level and layout
+- [x] Show ball count beside first ball (on top for now)
 - [ ] Calculate level and display at top
 - [x] Box bounce count calculation and display
 - [ ] First ball landing spot calculation and animation
@@ -44,3 +44,5 @@ react-native run-ios
 - [ ] Start scren
 - [ ] End of game screen
 - [x] Add cheat mode to add / remove balls for testing
+- [ ] Fix all the crappy hard coded sizes and test on other device sizes
+- [ ] Get with the times, go Typescript!

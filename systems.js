@@ -39,7 +39,7 @@ function collidesWithBox(entities, ball) {
                 box.hits--;
                 return TOP_BOTTOM;
         }
-        if(box.hits == 0)
+        if(box.hits <= 0)
             delete entities[boxes[boxId]];
     }
 
