@@ -104,7 +104,7 @@ class AimLine extends PureComponent {
                     y2={this.props.end[1]}
                     stroke="white"
                     strokeLinecap="round"
-                    strokeDasharray={[5, 10]}
+                    strokeDasharray={[5, 15]}
                     strokeDashoffset="6"
                     strokeWidth={this.props.strokewidth}
                     />
@@ -126,9 +126,9 @@ class BoxTile extends PureComponent {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
             Animated.spring(this.state.animateTop, {
-                toValue: rowToTopPosition(nextProps.row),
-                friction: 10,
-                tension: 60
+                toValue: rowToTopPosition(nextProps.row),                
+                bounciness: 15,
+                speed: 8
               }).start();
             this.setState({animated: true});
         }
