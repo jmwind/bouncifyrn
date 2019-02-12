@@ -171,7 +171,9 @@ const AimBallsStart = (entities, { touches }) => {
             let d = distance(aim_vector.start, aim_vector.current);
             if(aim_vector.current[1] - aim_vector.start[1] > 0) {
                 let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
-                let end_y = entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2)));
+                let end_y = Math.max(
+                    entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2))), 
+                    entities.scorebar.height);
                 entities.aimline.end = [end_x, end_y];
                 entities.aimline.strokewidth = (d/6); 
             }
@@ -190,9 +192,9 @@ const AimBallsRelease = (entities, { time, touches }) => {
             if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
                 let x1 = (aim_vector.current[0] - aim_vector.start[0]);
                 let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
-                entities.ball.direction[0] = (x1 * -1)/6;
-                entities.ball.direction[1] = (y1 * -1)/6;
-                entities.ball.start_direction = [(x1 * -1)/6, (y1 * -1)/6];
+                entities.ball.direction[0] = (x1 * -1)/5;
+                entities.ball.direction[1] = (y1 * -1)/5;
+                entities.ball.start_direction = [entities.ball.direction[0], entities.ball.direction[1]];
                 entities.ball.speed[0] = 1;
                 entities.ball.speed[1] = 1;
                 entities.start = [entities.ball.position[0], entities.ball.position[1]];
