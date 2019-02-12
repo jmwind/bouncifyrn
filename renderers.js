@@ -127,7 +127,7 @@ class BoxTile extends PureComponent {
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
             Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
-                bounciness: 15,
+                bounciness: 8,
                 speed: 8
               }).start();
             this.setState({animated: true});
@@ -178,20 +178,32 @@ class BallPowerUp extends PureComponent {
           ).start();
     }
 
+    updateRadius(value) {
+
+    }
+
     componentWillReceiveProps(nextProps) {
-        if(!this.state.animated || this.props.row != nextProps.row) {
+        if(this.props.falling != nextProps.falling && nextProps.falling == true) {
+            this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
+            Animated.timing(this.state.animateTop, {
+                toValue: 676 - BOX_TILE_SIZE / 2,
+                easing: Easing.back(),
+                duration: 700,
+              }).start();                        
+        } else if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
             Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
-                bounciness: 15,
-                speed: 8
+                bounciness: 8,
+                speed: 2
               }).start();
             this.setState({animated: true});
-        }
+        }       
     }
 
-    render() {        
+    render() { 
+        let color = !this.props.falling ? "white" : "#8CB453";       
         return (
             <Animated.View style={[styles.boxcontainer, {
                 top: this.state.animateTop,
@@ -202,15 +214,15 @@ class BallPowerUp extends PureComponent {
                             cx={BOX_TILE_SIZE / 2}
                             cy={BOX_TILE_SIZE / 2}
                             r={this.state.radius}
-                            stroke="white"
+                            stroke={color}
                             strokeWidth="3"
                         />
                         <Circle
                             cx={BOX_TILE_SIZE / 2}
                             cy={BOX_TILE_SIZE / 2}
                             r="7"
-                            stroke="white"
-                            fill="white"
+                            stroke={color}
+                            fill={color}
                         />
                 </Svg>
             </Animated.View>

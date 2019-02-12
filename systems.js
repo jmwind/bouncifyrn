@@ -41,9 +41,11 @@ function collidesWithBox(entities, ball) {
 
         if(collision != NO_COLISION) {
             if(box.type && box.type == "powerup") {
-                entities.scorebar.new_balls++;
-                delete entities[boxes[boxId]];
-                collision = NO_COLISION;
+                collision = NO_COLISION;                
+                if(!box.falling) {
+                    entities.scorebar.new_balls++;  
+                    box.falling = true;
+                }                          
             } else {
                 box.hits--;
                 if(box.hits <= 0) {
@@ -104,6 +106,16 @@ function calculateNextLevel(entities) {
     }
 }
 
+function deleteBallPowerups(entities) {
+    let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
+    for(var boxId in boxes) {
+        let box = entities[boxes[boxId]];
+        if(box.type && box.type == "powerup" && box.falling) {
+            delete entities[boxes[boxId]];
+        }
+    }
+}
+
 const MoveBall = (entities, { screen }) => {
     
     Object.keys(entities).forEach(ballId => {
@@ -157,6 +169,7 @@ const MoveBall = (entities, { screen }) => {
                     entities.ball.position[0],
                     entities.ball.position[1],
                 ];
+                deleteBallPowerups(entities);
                 calculateNextLevel(entities);
             }
         } else {
