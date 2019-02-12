@@ -153,48 +153,30 @@ class BallPowerUp extends PureComponent {
 
     state = {
         animateTop: new Animated.Value(rowToTopPosition(0)),
+        anim_radius: new Animated.Value(8),
         animated: false,
-        r: new Animated.Value(8),
-        anim: new Animated.Value(8),
-        radius: 8
+        radius: 10
     }
 
-    mounted = true;
-
-    componentDidMount(){
-        //this.timer = setInterval(() => {
-            //this.updatePulse();
-        //}, 200);
-        this.state.anim.addListener(({value}) => this.setState({radius: value}));        
+    componentDidMount(){       
+        this.state.anim_radius.addListener(({value}) => this.setState({radius: value}));        
         Animated.loop(
             Animated.sequence([
-              Animated.timing(this.state.anim, {
-                toValue: 14,
-                duration: 500,
+              Animated.timing(this.state.anim_radius, {
+                toValue: 18,
+                duration: 300,
                 ease: Easing.linear,
                 useNativeDriver: true
               }),
-              Animated.timing(this.state.anim, {
-                toValue: 8,
-                duration: 1000,
+              Animated.timing(this.state.anim_radius, {
+                toValue: 10,
+                duration: 600,
                 ease: Easing.linear,
                 useNativeDriver: true
               })
             ])
           ).start();
     }
-
-    componentWillUnmount(){
-        this.mounted = false;
-        //clearInterval(this.timer);
-    }
-
-    updatePulse = () => {
-        if (this.mounted) {
-            //let new_r = this.state.r == 12 ? 14 : 12;
-            //this.setState({r: new_r});
-        }
-    }   
 
     componentWillReceiveProps(nextProps) {
         if(!this.state.animated || this.props.row != nextProps.row) {
@@ -212,8 +194,8 @@ class BallPowerUp extends PureComponent {
     render() {        
         return (
             <Animated.View style={[styles.boxcontainer, {
-                top: 200,
-                left: 200
+                top: this.state.animateTop,
+                left: colToLeftPosition(this.props.col)
                 }]}> 
                 <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE}>
                     <Circle

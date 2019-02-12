@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile } from "./renderers";
+import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile, BallPowerUp } from "./renderers";
 
 // Collision detection
 const NO_COLISION = 0;
@@ -25,22 +25,33 @@ function collidesWithBox(entities, ball) {
             ( ball.speed[0] * ball.direction[0] ),
             ( ball.speed[1] * ball.direction[1] )
         ];  
+        let collision = NO_COLISION;
         
         if (ball.position[0] + RADIUS + next_position[0] > box_x && 
             ball.position[0] + next_position[0] < box_x + BOX_TILE_SIZE && 
             ball.position[1] + RADIUS > box_y && 
-            ball.position[1] < box_y + BOX_TILE_SIZE) {
-                box.hits--;
-                return SIDE;
+            ball.position[1] < box_y + BOX_TILE_SIZE) {                
+                collision = SIDE;
         } else if (ball.position[0] + RADIUS > box_x && 
                 ball.position[0] < box_x + BOX_TILE_SIZE && 
                 ball.position[1] + RADIUS + next_position[1] > box_y && 
                 ball.position[1] + next_position[1] < box_y + BOX_TILE_SIZE) {
-                box.hits--;
-                return TOP_BOTTOM;
+                collision = TOP_BOTTOM;
         }
-        if(box.hits <= 0)
-            delete entities[boxes[boxId]];
+
+        if(collision != NO_COLISION) {
+            if(box.type && box.type == "powerup") {
+                entities.scorebar.new_balls++;
+                delete entities[boxes[boxId]];
+                collision = NO_COLISION;
+            } else {
+                box.hits--;
+                if(box.hits <= 0) {
+                    delete entities[boxes[boxId]];
+                }
+                return collision;
+            }
+        }
     }
 
     return NO_COLISION;
@@ -62,6 +73,7 @@ function calculateNextLevel(entities) {
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
     let new_cols = new Array(8);
+    let powerups = 1;
     for (i = 0; i < num_new_blocks; i++) {
         let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
         let key = randomKey();
@@ -72,12 +84,23 @@ function calculateNextLevel(entities) {
                 col = next_col;
             }
         }
-        entities["box" + key] = {
-            row: 1, 
-            col: col, 
-            hits: new_hits, 
-            renderer: BoxTile, 
-        };
+        // pick one slot to be a power up
+        Math.floor(Math.random() * num_new_blocks);
+        if(powerups-- > 0) {
+            entities["box" + key] = {
+                row: 1, 
+                col: col, 
+                type: "powerup", 
+                renderer: BallPowerUp, 
+            };
+        } else {
+            entities["box" + key] = {
+                row: 1, 
+                col: col, 
+                hits: new_hits, 
+                renderer: BoxTile, 
+            };
+        }
     }
 }
 
@@ -127,6 +150,8 @@ const MoveBall = (entities, { screen }) => {
             if(entities.scorebar.balls_returned >= entities.scorebar.balls) {
                 entities.scorebar.state = "stopped";
                 entities.scorebar.balls_in_play = 0;
+                entities.scorebar.balls += entities.scorebar.new_balls;
+                entities.scorebar.new_balls = 0;
                 // save next start position to ball trail
                 entities.ball.start = [
                     entities.ball.position[0],
