@@ -61,14 +61,24 @@ function calculateNextLevel(entities) {
     }
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
-    let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
-    let key = randomKey();
-    entities["box" + key] = {
-        row: 1, 
-        col: num_new_blocks, 
-        hits: new_hits, 
-        renderer: BoxTile, 
-    };
+    let new_cols = new Array(8);
+    for (i = 0; i < num_new_blocks; i++) {
+        let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
+        let key = randomKey();
+        let col = -1;
+        while(col == -1) {
+            let next_col = Math.floor(Math.random() * 8);
+            if(new_cols[next_col] != 1) {
+                col = next_col;
+            }
+        }
+        entities["box" + key] = {
+            row: 1, 
+            col: col, 
+            hits: new_hits, 
+            renderer: BoxTile, 
+        };
+    }
 }
 
 const MoveBall = (entities, { screen }) => {
