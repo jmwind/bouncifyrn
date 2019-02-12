@@ -237,9 +237,9 @@ const SpawnBall = (entities,  { touches, screen }) => {
     touches.filter(t => t.type === "press").forEach(t => {
         // Hack to add more balls quickly without needing to play all levels
         if(t.event.pageY < entities.scorebar.height && t.event.pageX > screen.width / 2) {
-            entities.scorebar.balls++;
+            entities.scorebar.balls+=5;
         } else if(t.event.pageY < entities.scorebar.height && t.event.pageX < screen.width / 2 && entities.scorebar.balls > 1) {
-            entities.scorebar.balls--;
+            entities.scorebar.balls-=5;
         }
     });
     return entities;

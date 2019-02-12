@@ -1,6 +1,6 @@
-import React, { PureComponent } from "react";
-import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
-import { Line, Svg } from "react-native-svg";
+import React, { PureComponent, Component } from "react";
+import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
+import { Line, Svg, Circle } from "react-native-svg";
 
 export const RADIUS = 7;
 export const SCOREBOARD_HEIGHT = 90;
@@ -135,7 +135,6 @@ class BoxTile extends PureComponent {
     }
 
     render() {
-        //let topPosition = this.props.topx != 0 ? this.props.topx : rowToTopPosition(this.props.row);
         return (
             <Animated.View style={[styles.boxcontainer, {
                 backgroundColor: hitsToColor(this.props.hits),
@@ -145,6 +144,93 @@ class BoxTile extends PureComponent {
                 <Text style={{color: "#262626", fontSize: 16}}>
                     {this.props.hits}
                 </Text>
+            </Animated.View>
+        );
+    }
+}
+
+class BallPowerUp extends PureComponent {
+
+    state = {
+        animateTop: new Animated.Value(rowToTopPosition(0)),
+        animated: false,
+        r: new Animated.Value(8),
+        anim: new Animated.Value(8),
+        radius: 8
+    }
+
+    mounted = true;
+
+    componentDidMount(){
+        //this.timer = setInterval(() => {
+            //this.updatePulse();
+        //}, 200);
+        this.state.anim.addListener(({value}) => this.setState({radius: value}));        
+        Animated.loop(
+            Animated.sequence([
+              Animated.timing(this.state.anim, {
+                toValue: 14,
+                duration: 500,
+                ease: Easing.linear,
+                useNativeDriver: true
+              }),
+              Animated.timing(this.state.anim, {
+                toValue: 8,
+                duration: 1000,
+                ease: Easing.linear,
+                useNativeDriver: true
+              })
+            ])
+          ).start();
+    }
+
+    componentWillUnmount(){
+        this.mounted = false;
+        //clearInterval(this.timer);
+    }
+
+    updatePulse = () => {
+        if (this.mounted) {
+            //let new_r = this.state.r == 12 ? 14 : 12;
+            //this.setState({r: new_r});
+        }
+    }   
+
+    componentWillReceiveProps(nextProps) {
+        if(!this.state.animated || this.props.row != nextProps.row) {
+            let starting_row = this.state.animated ? this.props.row : 0;
+            this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
+            Animated.spring(this.state.animateTop, {
+                toValue: rowToTopPosition(nextProps.row),                
+                bounciness: 15,
+                speed: 8
+              }).start();
+            this.setState({animated: true});
+        }
+    }
+
+    render() {        
+        return (
+            <Animated.View style={[styles.boxcontainer, {
+                top: 200,
+                left: 200
+                }]}> 
+                <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE}>
+                    <Circle
+                            cx={BOX_TILE_SIZE / 2}
+                            cy={BOX_TILE_SIZE / 2}
+                            r={this.state.radius}
+                            stroke="white"
+                            strokeWidth="3"
+                        />
+                        <Circle
+                            cx={BOX_TILE_SIZE / 2}
+                            cy={BOX_TILE_SIZE / 2}
+                            r="7"
+                            stroke="white"
+                            fill="white"
+                        />
+                </Svg>
             </Animated.View>
         );
     }
@@ -209,7 +295,17 @@ const styles = StyleSheet.create({
   currentscore: {
     fontSize: 22,
     color: 'white'
+  },
+  ballpowerupcontainer: {
+    position: 'absolute',
+    left: 100,    
+    top: 100,
+    alignItems: 'center'
+  },
+  ballpowerup: {
+    position: 'absolute',
+    flex: 1
   }
 });
 
-export { Ball, Floor, ScoreBar, AimLine, BoxTile };
+export { Ball, Floor, ScoreBar, AimLine, BoxTile, BallPowerUp };
