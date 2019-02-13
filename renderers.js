@@ -6,7 +6,7 @@ export const RADIUS = 7;
 export const SCOREBOARD_HEIGHT = 90;
 export const BOX_TILE_SIZE = 40;
 export const BOX_TILE_SPACE = 6;
-export const FLOOR_HEIGHT = 600;
+export const FLOOR_HEIGHT = 640;
 
 export const COLORS = [
     "#DFB44F", // yellow 1-10
@@ -211,13 +211,14 @@ class BallPowerUp extends PureComponent {
                 top: this.state.animateTop,
                 left: colToLeftPosition(this.props.col)
                 }]}> 
-                <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE}>
+                <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE} >
                     <Circle
                             cx={BOX_TILE_SIZE / 2}
                             cy={BOX_TILE_SIZE / 2}
                             r={this.state.radius}
                             stroke={color}
                             strokeWidth="3"
+                            fill="#202020"
                         />
                     <Circle
                         cx={BOX_TILE_SIZE / 2}
@@ -296,7 +297,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 100,    
     top: 100,
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: "#202020"
   },
   ballpowerup: {
     position: 'absolute',
