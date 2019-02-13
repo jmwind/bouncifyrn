@@ -7,7 +7,7 @@ to be terrible. This will be a fun test of the performance improvements coming i
 
 *Update: Feb 8, 2019*
 
-I was able to make a lot more progress than originally anticipated. Quite the surprise honestly. Used [React Native Game Engine](https://github.com/bberak/react-native-game-engine) as a super light-weight starting point of a game loop. The code is crappy, but it works.
+I was able to make a lot more progress than originally anticipated. It's still a very shitty first version, but quite the surprise honestly how far it got quickly. There are so many rough edges left to fill! Used [React Native Game Engine](https://github.com/bberak/react-native-game-engine) as a super light-weight starting point of a game loop. The code is crappy, but it works.
 
 Original game is on the left and React Native version (source in this repo) on the right.
 
