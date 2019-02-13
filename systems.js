@@ -69,7 +69,7 @@ function calculateNextLevel(entities) {
             max_row = box.row;
         }
     }
-    if(max_row >= 12) {
+    if(max_row >= 10) {
         // game over
     }
     // random number of blocks for colums 0-7
@@ -147,7 +147,7 @@ const MoveBall = (entities, { screen }) => {
             next_direction[1] *= -1; 
         }
 
-        if(next_position[1] > (screen.height - RADIUS - entities.floor.height)) {        
+        if(next_position[1] > (entities.floor.height - RADIUS*2)) {        
             entities.scorebar.balls_returned++;
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
@@ -205,15 +205,17 @@ const AimBallsStart = (entities, { touches }) => {
 	    });
     
         touches.filter(t => t.type === "move").forEach(t => {
-            aim_vector.current = [t.event.pageX, t.event.pageY];
-            let d = distance(aim_vector.start, aim_vector.current);
-            if(aim_vector.current[1] - aim_vector.start[1] > 0) {
-                let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
-                let end_y = Math.max(
-                    entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2))), 
-                    entities.scorebar.height);
-                entities.aimline.end = [end_x, end_y];
-                entities.aimline.strokewidth = (d/6); 
+            if(entities.aimline) {
+                aim_vector.current = [t.event.pageX, t.event.pageY];
+                let d = distance(aim_vector.start, aim_vector.current);
+                if(aim_vector.current[1] - aim_vector.start[1] > 0) {
+                    let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
+                    let end_y = Math.max(
+                        entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2))), 
+                        entities.scorebar.height);
+                    entities.aimline.end = [end_x, end_y];
+                    entities.aimline.strokewidth = (d/5); 
+                }
             }
         });
     }

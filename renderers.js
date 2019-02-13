@@ -6,6 +6,7 @@ export const RADIUS = 7;
 export const SCOREBOARD_HEIGHT = 90;
 export const BOX_TILE_SIZE = 40;
 export const BOX_TILE_SPACE = 6;
+export const FLOOR_HEIGHT = 600;
 
 export const COLORS = [
     "#DFB44F", // yellow 1-10
@@ -60,7 +61,7 @@ class Floor extends PureComponent {
                 {
                     position: "absolute",
                     left: 0,
-                    top: Dimensions.get("window").height - this.props.height,
+                    top: this.props.height,
                     width: Dimensions.get("window").width,
                     height: Dimensions.get("window").height,
                     backgroundColor: "#262626"
@@ -153,12 +154,15 @@ class BallPowerUp extends PureComponent {
 
     state = {
         animateTop: new Animated.Value(rowToTopPosition(0)),
+        animateLeft: new Animated.Value(0),
+        animateOpacity: new Animated.Value(0),
         anim_radius: new Animated.Value(8),
         animated: false,
         radius: 10
     }
 
-    componentDidMount(){       
+    componentDidMount() {
+        // Breathing animation of outer circle       
         this.state.anim_radius.addListener(({value}) => this.setState({radius: value}));        
         Animated.loop(
             Animated.sequence([
@@ -178,18 +182,16 @@ class BallPowerUp extends PureComponent {
           ).start();
     }
 
-    updateRadius(value) {
-
-    }
-
     componentWillReceiveProps(nextProps) {
-        if(this.props.falling != nextProps.falling && nextProps.falling == true) {
+        // Animate down to the floor
+        if(this.props.falling != nextProps.falling && nextProps.falling) {
             this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
             Animated.timing(this.state.animateTop, {
-                toValue: 676 - BOX_TILE_SIZE / 2,
+                toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 11,
                 easing: Easing.back(),
                 duration: 700,
-              }).start();                        
+              }).start(); 
+        // Animate into the next row            
         } else if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
@@ -199,7 +201,7 @@ class BallPowerUp extends PureComponent {
                 speed: 2
               }).start();
             this.setState({animated: true});
-        }       
+        }   
     }
 
     render() { 
@@ -217,13 +219,13 @@ class BallPowerUp extends PureComponent {
                             stroke={color}
                             strokeWidth="3"
                         />
-                        <Circle
-                            cx={BOX_TILE_SIZE / 2}
-                            cy={BOX_TILE_SIZE / 2}
-                            r="7"
-                            stroke={color}
-                            fill={color}
-                        />
+                    <Circle
+                        cx={BOX_TILE_SIZE / 2}
+                        cy={BOX_TILE_SIZE / 2}
+                        r="7"
+                        stroke={color}
+                        fill={color}
+                    />
                 </Svg>
             </Animated.View>
         );
