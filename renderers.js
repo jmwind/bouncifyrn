@@ -156,9 +156,9 @@ class BallPowerUp extends PureComponent {
         animateTop: new Animated.Value(rowToTopPosition(0)),
         animateLeft: new Animated.Value(0),
         animateOpacity: new Animated.Value(0),
-        anim_radius: new Animated.Value(8),
+        anim_radius: new Animated.Value(12),
         animated: false,
-        radius: 10
+        radius: 12
     }
 
     componentDidMount() {
@@ -167,14 +167,14 @@ class BallPowerUp extends PureComponent {
         Animated.loop(
             Animated.sequence([
               Animated.timing(this.state.anim_radius, {
-                toValue: 18,
-                duration: 300,
+                toValue: 14,
+                duration: 100,
                 ease: Easing.linear,
                 useNativeDriver: true
               }),
               Animated.timing(this.state.anim_radius, {
-                toValue: 10,
-                duration: 600,
+                toValue: 12,
+                duration: 100,
                 ease: Easing.linear,
                 useNativeDriver: true
               })
@@ -187,7 +187,7 @@ class BallPowerUp extends PureComponent {
         if(this.props.falling != nextProps.falling && nextProps.falling) {
             this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
             Animated.timing(this.state.animateTop, {
-                toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 11,
+                toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 10,
                 easing: Easing.back(),
                 duration: 700,
               }).start(); 
@@ -212,6 +212,7 @@ class BallPowerUp extends PureComponent {
                 left: colToLeftPosition(this.props.col)
                 }]}> 
                 <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE} >
+                    {!this.props.falling && 
                     <Circle
                             cx={BOX_TILE_SIZE / 2}
                             cy={BOX_TILE_SIZE / 2}
@@ -220,6 +221,7 @@ class BallPowerUp extends PureComponent {
                             strokeWidth="3"
                             fill="#202020"
                         />
+                    }
                     <Circle
                         cx={BOX_TILE_SIZE / 2}
                         cy={BOX_TILE_SIZE / 2}
