@@ -3,9 +3,18 @@
 [Ballz](https://itunes.apple.com/us/app/ballz/id1139609950) has enjoyed a lot of family competition in
 our home. But the app is getting bloated with ads and I need a new side project. So I'm going to try and re-write
 in React Native and see what happens. React Native isn't the best gaming plaform, it's probably going
-to be terrible. But it will also be a fun test of the performance improvements coming in [Fabric](https://github.com/react-native-community/discussions-and-proposals/issues/4).
+to be terrible. This will be a fun test of the performance improvements coming in [Fabric](https://github.com/react-native-community/discussions-and-proposals/issues/4).
 
-![Ballz img](https://is3-ssl.mzstatic.com/image/thumb/Purple111/v4/38/e0/de/38e0ded6-96be-9593-830c-3e5a11dcc44c/pr_source.png/300x0w.png)
+*Update: Feb 8, 2019*
+
+I was able to make a lot more progress than originally anticipated. Quite the surprise honestly. Used [React Native Game Engine](https://github.com/bberak/react-native-game-engine) as a super light-weight starting point of a game loop. The code is crappy, but it works.
+
+Original game is on the left and React Native version (source in this repo) on the right.
+
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/199530/52727452-44065e00-2f83-11e9-808c-d4709217862b.gif" alt="Single Touch Preview" height="450" />
+    <img src="https://user-images.githubusercontent.com/199530/52727460-4799e500-2f83-11e9-83fc-53e4ca5c4907.gif" alt="Multi Touch Preview" height="450" />
+</p>
 
 ## Quick Start iOS
 
@@ -38,7 +47,7 @@ react-native run-ios
 - [x] Box bounce count calculation and display
 - [ ] First ball landing spot calculation and animation
 - [x] Add box layers and advancing
-- [ ] Determine end of game when boxes advance to bottom row
+- [ ] Determine end of game when boxes advance to bottom row and add screen and show end screen
 - [ ] Add speed-up button
 - [ ] Splash screen and icon
 - [ ] Start scren
@@ -46,3 +55,8 @@ react-native run-ios
 - [x] Add cheat mode to add / remove balls for testing
 - [ ] Fix all the crappy hard coded sizes and test on other device sizes
 - [ ] Get with the times, go Typescript!
+- [ ] Smooth out aiming movement
+- [ ] Save high score locally
+- [ ] Nice box tile explosion animation
+= [ ] Ball power up hit explosion animation that drops down to floor
+- [ ] Get working on Android
