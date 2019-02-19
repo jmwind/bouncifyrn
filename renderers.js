@@ -35,6 +35,10 @@ function hitsToColor(hits) {
     return COLORS[0];    
 }
 
+/**
+ * Box tiles deal in colum and row number only. 
+ *
+ */
 export function colToLeftPosition(col) {
     return BOX_TILE_SPACE + ((col * BOX_TILE_SPACE) + (col * BOX_TILE_SIZE));
 }
@@ -180,6 +184,10 @@ class BallPowerUp extends PureComponent {
               })
             ])
           ).start();
+    }
+
+    componentWillUnmount() {
+        this.state.anim_radius.removeAllListeners();
     }
 
     componentWillReceiveProps(nextProps) {

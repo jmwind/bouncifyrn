@@ -273,6 +273,10 @@ const CreateBallTail = (entities, { time }) => {
     return entities;
 }
 
+/**
+ * Easter egg which allows adding or removing balls by clicking hotspots at the 
+ * top of the screen in the scoreboard section. 
+ */
 const SpawnBall = (entities,  { touches, screen }) => {
     touches.filter(t => t.type === "press").forEach(t => {
         // Hack to add more balls quickly without needing to play all levels

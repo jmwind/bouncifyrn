@@ -1,9 +1,14 @@
 # BouncifyRN
 
 [Ballz](https://itunes.apple.com/us/app/ballz/id1139609950) has enjoyed a lot of family competition in
-our home. But the app is getting bloated with ads and I need a new side project. So I'm going to try and re-write
-in React Native and see what happens. React Native isn't the best gaming plaform, it's probably going
-to be terrible. This will be a fun test of the performance improvements coming in [Fabric](https://github.com/react-native-community/discussions-and-proposals/issues/4).
+our home. This project is meant to help learn React Native by writting a Ballz-inspired game
+with some tweaks and see what happens. This app should never be published to the app store as it's
+just for learning purposes. React Native isn't the best gaming plaform, it's probably going
+to be terrible. This will be a fun test of the performance improvements coming in [Fabric](https://github.com/react-native-community/discussions-and-proposals/issues/4). Maybe even use fancy
+hooks coming in React Native 0.59!
+
+Beware, I'm not responsible for the hours you'll waste playing the game or evolving the game. It's
+a quite addictive. 
 
 *Update: Feb 8, 2019*
 
@@ -39,7 +44,7 @@ react-native run-ios
 - [x] Colision detection on box, bounce off
 - [x] Colision angular velocity near object edges (irregular bounces)
 - [x] Have balls stop and hide when they hit bottom surface
-- [ ] Add ball addition hot spots on screen with nice animation
+- [x] Add ball addition hot spots on screen with nice animation
 - [x] Colision count and box disappear
 - [x] Top score section with ball count and level and layout
 - [x] Show ball count beside first ball (on top for now)
@@ -53,10 +58,13 @@ react-native run-ios
 - [ ] Start scren
 - [ ] End of game screen
 - [x] Add cheat mode to add / remove balls for testing
-- [ ] Fix all the crappy hard coded sizes and test on other device sizes
+- [ ] Fix all the crappy hard coded sizes and make it work on iPad
 - [ ] Get with the times, go Typescript!
+- [ ] Ball power up hit explosion animation that drops down to floor
+- [ ] Get working on Android
+- [ ] Flexible layout 
 - [ ] Smooth out aiming movement
 - [ ] Save high score locally
 - [ ] Nice box tile explosion animation
-= [ ] Ball power up hit explosion animation that drops down to floor
-- [ ] Get working on Android
+- [ ] Add tests and CI
+- [ ] Automate production builds
