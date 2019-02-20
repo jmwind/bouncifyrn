@@ -12,6 +12,8 @@ const randomKey = () =>
 // Vector distance for initial ball launch aiming
 const distance = ([x1, y1], [x2, y2]) =>
         Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));        
+
+// Tracking of vector sizing between drag. Maybe this should be in some state instead?
 let aim_vector = {start: [0,0], current: [0,0]};  
 let last_ball_start_time = 0; 
 
@@ -121,7 +123,7 @@ function deleteBallPowerups(entities) {
     }
 }
 
-const StartGame = (entities,  { touches }) => {    
+const StartGame = (entities) => {    
     if(entities.scorebar.state == "stopped" && entities.scorebar.level == 0) {
         calculateNextLevel(entities);
     }

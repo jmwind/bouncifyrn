@@ -14,8 +14,8 @@ export const COLORS = [
     "#EA225E", // red 21-30,
     "#59B9F9", // light blue 31-50,
     "#265BF6", // darker blue 51-99,
-    "#7112F5"  // purple 100-150 
-
+    "#7112F5", // purple 100-150 
+    "#449b8e", // dull green 151+
 ];
 
 function hitsToColor(hits) {
@@ -32,7 +32,7 @@ function hitsToColor(hits) {
     } else if(hits <= 150) {
         return COLORS[5];
     }
-    return COLORS[0];    
+    return COLORS[6];    
 }
 
 /**
