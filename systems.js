@@ -59,7 +59,11 @@ function collidesWithBox(entities, ball) {
     return NO_COLISION;
 }
 
-function calculateNextLevel(entities) {
+/**
+ * TODO: there seems to be a case where a powerup spawns below a box tile?
+ * TODO: need to start a new level with a random generated row
+ */
+export function calculateNextLevel(entities) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
     entities.scorebar.level++;
@@ -71,6 +75,7 @@ function calculateNextLevel(entities) {
     }
     if(max_row >= 10) {
         // game over
+        // set dispatch({game:"over"}); => handle in top level Game component
     }
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
@@ -115,6 +120,13 @@ function deleteBallPowerups(entities) {
         }
     }
 }
+
+const StartGame = (entities,  { touches }) => {    
+    if(entities.scorebar.state == "stopped" && entities.scorebar.level == 0) {
+        calculateNextLevel(entities);
+    }
+    return entities;
+};
 
 const MoveBall = (entities, { screen }) => {
     
@@ -289,4 +301,4 @@ const SpawnBall = (entities,  { touches, screen }) => {
     return entities;
 };
   
-export { MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail };
+export { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail };
