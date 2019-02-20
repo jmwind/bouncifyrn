@@ -37,6 +37,8 @@ react-native run-ios
 
 ## TODOs
 
+What's here is the shitty first 20%. There's a lot left.
+
 - [x] Get balls moving around the screen with grade 2 level math
 - [x] Define and draw playing surface and limit movement within
 - [x] Start ball from bottom on click with tail
@@ -68,3 +70,5 @@ react-native run-ios
 - [ ] Nice box tile explosion animation
 - [ ] Add tests and CI
 - [ ] Automate production builds
+- [ ] Ball power up hit explosion animation that drops down to floor
+- [ ] Get working on Android
