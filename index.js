@@ -4,7 +4,7 @@
  */
 
 import {AppRegistry} from 'react-native';
-import BouncifyGame from './App';
+import Container from './src/container';
 import {name as appName} from './app.json';
 
-AppRegistry.registerComponent(appName, () => BouncifyGame);
+AppRegistry.registerComponent(appName, () => Container);

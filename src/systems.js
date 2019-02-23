@@ -65,7 +65,7 @@ function collidesWithBox(entities, ball) {
  * TODO: there seems to be a case where a powerup spawns below a box tile?
  * TODO: need to start a new level with a random generated row
  */
-export function moveToNextLevel(entities) {
+export function moveToNextLevel(entities, dispatch) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
     entities.scorebar.level++;
@@ -75,9 +75,8 @@ export function moveToNextLevel(entities) {
             max_row = box.row;
         }
     }
-    if(max_row >= 10) {
-        // game over
-        // set dispatch({game:"over"}); => handle in top level Game component
+    if(max_row >= 11) {
+        dispatch({ type: "game-over" });        
     }
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
@@ -113,7 +112,7 @@ export function moveToNextLevel(entities) {
     }
 }
 
-function deleteBallPowerups(entities) {
+function deleteFallenBallPowerups(entities) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
@@ -123,18 +122,17 @@ function deleteBallPowerups(entities) {
     }
 }
 
-const StartGame = (entities) => {    
+const StartGame = (entities, dispatch) => {    
     if(entities.scorebar.state == "stopped" && entities.scorebar.level == 0) {
-        moveToNextLevel(entities);
+        moveToNextLevel(entities, dispatch);
     }
     return entities;
 };
 
-const MoveBall = (entities, { screen }) => {
-    
+const MoveBall = (entities, { screen, dispatch }) => {  
     Object.keys(entities).forEach(ballId => {
-        if(! ballId.startsWith("ball")) return;
         let ball = entities[ballId];
+        if(! ballId.startsWith("ball")) return;        
         if(ball.state != "moving") return;
         
         let next_position = [
@@ -163,6 +161,8 @@ const MoveBall = (entities, { screen }) => {
 
         if(next_position[1] > (entities.floor.height - RADIUS*2)) {        
             entities.scorebar.balls_returned++;
+            // there's only one ball that is the tracer ball and will remain on the floor while
+            // all other balls will dissapear when they hit the floor.
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
                 // ensure rested nicely on top of floor
@@ -173,6 +173,8 @@ const MoveBall = (entities, { screen }) => {
             } else {
                 delete entities[ballId]; 
             }
+
+            // decide when all balls have returned and stop the current level
             if(entities.scorebar.balls_returned >= entities.scorebar.balls) {
                 entities.scorebar.state = "stopped";
                 entities.scorebar.balls_in_play = 0;
@@ -183,8 +185,8 @@ const MoveBall = (entities, { screen }) => {
                     entities.ball.position[0],
                     entities.ball.position[1],
                 ];
-                deleteBallPowerups(entities);
-                moveToNextLevel(entities);
+                deleteFallenBallPowerups(entities);
+                moveToNextLevel(entities, dispatch);
             }
         } else {
             next_position = [
@@ -289,11 +291,11 @@ const CreateBallTail = (entities, { time }) => {
 
 /**
  * Easter egg which allows adding or removing balls by clicking hotspots at the 
- * top of the screen in the scoreboard section. 
+ * top of the screen in the scoreboard section. If the game is still in progress
+ * the new balls will start moving as they are added.
  */
 const SpawnBall = (entities,  { touches, screen }) => {
     touches.filter(t => t.type === "press").forEach(t => {
-        // Hack to add more balls quickly without needing to play all levels
         if(t.event.pageY < entities.scorebar.height && t.event.pageX > screen.width / 2) {
             entities.scorebar.balls+=5;
         } else if(t.event.pageY < entities.scorebar.height && t.event.pageX < screen.width / 2 && entities.scorebar.balls > 1) {
