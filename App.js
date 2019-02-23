@@ -11,7 +11,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS } from "./renderers";
-import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, calculateNextLevel } from "./systems"
+import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, moveToNextLevel } from "./systems"
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
