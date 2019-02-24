@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import Button from "./button";
 import Item from "./item";
+import * as Animatable from "react-native-animatable";
+
 
 export default class MainMenu extends PureComponent {
   render() {
@@ -18,6 +20,7 @@ export default class MainMenu extends PureComponent {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
+        <Animatable.Text style={styles.title} animation="slideInDown" iterationCount="infinite" direction="alternate">Bouncify</Animatable.Text>
         <Button onPress={this.props.onPlayGame}>Play</Button>
         <Item
           onPress={_ =>
@@ -25,7 +28,7 @@ export default class MainMenu extends PureComponent {
               "https://github.com/jmwind/bouncifyrn"
             )}
         >
-          Shopify React Native Game Hack
+          Shopify React Native Experiment
         </Item>               
       </ScrollView>
     );
@@ -38,11 +41,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#000"
   },
   contentContainer: {
-    maxWidth: 500,
+    maxWidth: 400,
     flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignSelf: "center",
     alignItems: "center"
+  },
+  title: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    fontSize: 70,
+    color: "#FFF"
   }
 });

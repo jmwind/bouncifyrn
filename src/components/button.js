@@ -53,7 +53,7 @@ export default class Button extends PureComponent {
 const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: "#EA225E",
-    borderRadius: 11,
+    borderRadius: 15,
     flexDirection: "row",
     marginLeft: 30,
     marginRight: 30,
