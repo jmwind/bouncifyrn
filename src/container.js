@@ -14,17 +14,21 @@ export default class Container extends PureComponent {
     };
   }
 
-  toggleGame = (gameStarted, lastScore, topScore) => {
+  toggleGame = (gameStarted, lastScore, topScore) => {    
     this.setState({
       gameStarted
     });
+    if(! gameStarted) {
+      this.setState({
+        gamesPlayed: this.state.gamesPlayed + 1
+      });
+    }
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle={"light-content"} hidden={this.state.gameStarted} animated showHideTransition={"slide"} />
-        <MainMenu onPlayGame={_ => this.toggleGame(true)} />
+      <View style={styles.container}>        
+        <MainMenu onPlayGame={_ => this.toggleGame(true)} gamesPlayed={this.state.gamesPlayed} />
         <BouncifyGame
           visible={this.state.gameStarted}
           onClose={(lastScore, topScore) => this.toggleGame(false, lastScore, topScore)}

@@ -67,9 +67,27 @@ export default class BouncifyGame extends PureComponent {
           // is below but the bulk of the game happens witin the systems as they add/remove entities based on the 
           // state of the game.
           entities={{
-            floor: { height: FLOOR_HEIGHT, renderer: <Floor /> },          
-            scorebar: { height: 90, best: 276, state: "stopped", level: 0, balls: 1, new_balls: 0, balls_in_play: 0, score: 0, renderer: <ScoreBar />},               
-            ball: { color: "white", state: "stopped", start: [300, FLOOR_HEIGHT - RADIUS*2], position: [300,  FLOOR_HEIGHT - RADIUS*2], speed: [1.0, 1.0], direction: [1,1], renderer: <Ball />}          
+            floor: { 
+              height: FLOOR_HEIGHT, 
+              renderer: <Floor /> },          
+            scorebar: { 
+              height: 90, 
+              best: 276, 
+              state: "stopped", 
+              level: 0, 
+              balls: 1, 
+              new_balls: 0, 
+              balls_in_play: 0, 
+              score: 0, 
+              renderer: <ScoreBar />},               
+            ball: { 
+              color: "white", 
+              state: "stopped", 
+              start: [300, FLOOR_HEIGHT - RADIUS*2], 
+              position: [300,  FLOOR_HEIGHT - RADIUS*2], 
+              speed: [1.0, 1.0], 
+              direction: [1,1], 
+              renderer: <Ball />}          
             }}>
         </GameEngine>
       </Modal>

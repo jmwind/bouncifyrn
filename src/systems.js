@@ -5,6 +5,7 @@ import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SI
 const NO_COLISION = 0;
 const SIDE = 1;
 const TOP_BOTTOM = 2;
+const LAST_ROW = 11;
 
 const randomKey = () =>
     (Math.random() + 1).toString(36).substring(7);
@@ -75,7 +76,7 @@ export function moveToNextLevel(entities, dispatch) {
             max_row = box.row;
         }
     }
-    if(max_row >= 11) {
+    if(max_row >= LAST_ROW) {
         dispatch({ type: "game-over" });        
     }
     // random number of blocks for colums 0-7
