@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile, BallPowerUp } from "./renderers";
+import utils from "./utils";
 
 // Collision detection
 const NO_COLISION = 0;
@@ -10,12 +11,12 @@ const LAST_ROW = 11;
 const randomKey = () =>
     (Math.random() + 1).toString(36).substring(7);
 
-// Vector distance for initial ball launch aiming
-const distance = ([x1, y1], [x2, y2]) =>
-        Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));        
-
 // Tracking of vector sizing between drag. Maybe this should be in some state instead?
-let aim_vector = {start: [0,0], current: [0,0]};  
+let aim_vector = {
+    start: [0,0],
+    delta: [0,0],
+    final: [0,0]
+};
 let last_ball_start_time = 0; 
 
 function collidesWithBox(entities, ball) {
@@ -204,34 +205,51 @@ const MoveBall = (entities, { screen, dispatch }) => {
     return entities;
 };
 
+const accelerationX = 1;
+const accelerationY = 10;
+const maxLength = 420; // This should probably be a function of screen height
+const minLength = 20;
+const minDeg = -75;
+const maxDeg = 75;
+
 const AimBallsStart = (entities, { touches }) => {
     if(entities.scorebar.state == "stopped") {
-        touches.filter(x => x.type === "start").forEach(t => {        
+        touches.filter(x => x.type === "start").forEach(t => {
             aim_vector.start = [t.event.pageX, t.event.pageY];
-            aim_vector.current = [t.event.pageX, t.event.pageY];
+            aim_vector.delta = [0, 0];
+            aim_vector.final = [0, 0];
             aim_line = [
                 entities.ball.position[0] + RADIUS / 2,
                 entities.ball.position[1] + RADIUS / 2
             ];
-            entities['aimline'] = {
+            entities["aimline"] = {
                 start: aim_line,
                 end: aim_line,
-                strokewidth: 3,
                 renderer: AimLine
-            };        
+            };
 	    });
     
         touches.filter(t => t.type === "move").forEach(t => {
-            if(entities.aimline) {
-                aim_vector.current = [t.event.pageX, t.event.pageY];
-                let d = distance(aim_vector.start, aim_vector.current);
-                if(aim_vector.current[1] - aim_vector.start[1] > 0) {
-                    let end_x = entities.aimline.start[0] + ((aim_vector.current[0] - aim_vector.start[0])*(-1*(d/2)));
-                    let end_y = Math.max(
-                        entities.aimline.start[1] + ((aim_vector.current[1] - aim_vector.start[1])*(-1*(d/2))), 
-                        entities.scorebar.height);
-                    entities.aimline.end = [end_x, end_y];
-                    entities.aimline.strokewidth = (d/5); 
+            if(entities.aimline && t.delta) {
+                // Track delta movements and allow variable acceleration per axis
+                aim_vector.delta[0] += t.delta.pageX * accelerationX;
+                aim_vector.delta[1] += t.delta.pageY * accelerationY;
+
+                 // Give the aimline a circular curvature, let the change in
+                 // y-axis delta control length and x-axis delta the degree of
+                 // the aim line.
+                let length = Math.min(maxLength, aim_vector.delta[1]);
+                let deg = (aim_vector.delta[0] % 360);
+                let x2 = length * Math.sin(deg * Math.PI / 180);
+                let y2 = length * Math.cos(deg * Math.PI / 180);
+
+                if(length > minLength && deg > minDeg && deg < maxDeg) {
+                    aim_vector.final = utils.getPointsDeltas([x2 + RADIUS, y2 + RADIUS], entities.ball.position)
+                    entities.aimline.end = aim_vector.final;
+                } else {
+                    // Invalid aimline, revert
+                    aim_vector.final = aim_vector.start;
+                    entities.aimline.end = [aim_line[0], aim_line[1]];
                 }
             }
         });
@@ -243,24 +261,24 @@ const AimBallsStart = (entities, { touches }) => {
 const AimBallsRelease = (entities, { time, touches }) => {
     if(entities.scorebar.state == "stopped") {
         touches.filter(t => t.type === "end").forEach(t => {
-            aim_vector.current = [t.event.pageX, t.event.pageY];
             delete entities.aimline;
-            let d = distance(aim_vector.start, aim_vector.current);
-            if(t.event.pageY > entities.floor.height && d > 10 && entities.ball.state == "stopped") {
-                let x1 = (aim_vector.current[0] - aim_vector.start[0]);
-                let y1 = (aim_vector.current[1] - aim_vector.start[1]);            
-                entities.ball.direction[0] = (x1 * -1)/5;
-                entities.ball.direction[1] = (y1 * -1)/5;
+            let d = utils.getDistance(aim_vector.start, aim_vector.final);
+            if(t.event.pageY > entities.floor.height && d > minLength && entities.ball.state == "stopped") {
+                let [dx, dy] = utils.getPointsDeltas(entities.ball.position, aim_vector.final);
+
+                // Normalize on the y-axis and only care about the relative direction on the x-axis
+                entities.ball.direction[1] = -1;
+                entities.ball.direction[0] = -(dx / dy);
                 entities.ball.start_direction = [entities.ball.direction[0], entities.ball.direction[1]];
-                entities.ball.speed[0] = 1;
-                entities.ball.speed[1] = 1;
+                // This should account for the difference in ball direction in the axes
+                entities.ball.speed[0] = 5;
+                entities.ball.speed[1] = 5;
                 entities.start = [entities.ball.position[0], entities.ball.position[1]];
                 entities.ball.state = "moving";
                 entities.scorebar.state = "started";
                 entities.scorebar.balls_returned = 0;
                 entities.scorebar.balls_in_play = 1;
                 last_ball_start_time = time.current;
-                
             }
         });
     }
