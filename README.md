@@ -52,13 +52,13 @@ What's here is the shitty first 20%. There's a lot left.
 - [x] Show ball count beside first ball (on top for now)
 - [x] Calculate level and display at top
 - [x] Box bounce count calculation and display
-- [ ] First ball landing spot calculation and animation
+- [ ] First ball landing spot calculation and animation of powerups to the landing
 - [x] Add box layers and advancing
-- [ ] Determine end of game when boxes advance to bottom row and add screen and show end screen
+- [x] Determine end of game when boxes advance to bottom row and add screen and show end screen
 - [ ] Add speed-up button
-- [ ] Splash screen and icon
-- [ ] Start scren
-- [ ] End of game screen
+- [x] Splash screen and icon
+- [x] Start scren
+- [x] End of game screen
 - [x] Add cheat mode to add / remove balls for testing
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad
 - [ ] Get with the times, go Typescript!
@@ -66,9 +66,8 @@ What's here is the shitty first 20%. There's a lot left.
 - [ ] Get working on Android
 - [ ] Flexible layout 
 - [ ] Smooth out aiming movement
-- [ ] Save high score locally
+- [ ] Save high score locally and show in the end screen
 - [ ] Nice box tile explosion animation
-- [ ] Add tests and CI
+- [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
 - [ ] Ball power up hit explosion animation that drops down to floor
-- [ ] Get working on Android
