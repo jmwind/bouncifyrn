@@ -1,6 +1,7 @@
 import React, { PureComponent, Component } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
-import { Line, Svg, Circle } from "react-native-svg";
+import { Svg, Circle } from "react-native-svg";
+import utils from "./utils";
 
 export const RADIUS = 7;
 export const SCOREBOARD_HEIGHT = 90;
@@ -99,24 +100,33 @@ class ScoreBar extends PureComponent {
 
 class AimLine extends PureComponent {
     render() {
+        const drawLength = 1.0; // Ratio of aim vector to display
+        const numCircles = 12;
+        let [dx, dy] = utils.getPointsDeltas(this.props.start, this.props.end);
+        let length = utils.getDistance(this.props.start, this.props.end);
+        if (length == 0) {
+            return null
+        }
+
+        let width = Dimensions.get('window').width;
+        let height = Dimensions.get('window').height;
+        let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
+
+        let circles = Array(numCircles).fill().map((_, i) => {
+            let [sx, sy] = this.props.start;
+            let x = sx + (((dx) / numCircles) * i * drawLength);
+            let y = sy + (((dy) / numCircles) * i * drawLength);
+            return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
+        });
+
         return (
-            <View>                
-                <Svg height={Dimensions.get("window").height} width={Dimensions.get("window").width}>
-                    <Line
-                    x1={this.props.start[0]}
-                    y1={this.props.start[1]}
-                    x2={this.props.end[0]}
-                    y2={this.props.end[1]}
-                    stroke="white"
-                    strokeLinecap="round"
-                    strokeDasharray={[5, 15]}
-                    strokeDashoffset="6"
-                    strokeWidth={this.props.strokewidth}
-                    />
+            <View>
+                <Svg width={width} height={height}>
+                    {circles}
                 </Svg>
             </View>
         );
-    }    
+    }
 }
 
 class BoxTile extends PureComponent {
@@ -218,7 +228,7 @@ class BallPowerUp extends PureComponent {
             <Animated.View style={[styles.boxcontainer, {
                 top: this.state.animateTop,
                 left: colToLeftPosition(this.props.col)
-                }]}> 
+                }]}>
                 <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE} >
                     {!this.props.falling && 
                     <Circle
