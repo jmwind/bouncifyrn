@@ -101,7 +101,7 @@ class ScoreBar extends PureComponent {
 class AimLine extends PureComponent {
     render() {
         const drawLength = 1.0; // Ratio of aim vector to display
-        const numCircles = 8;
+        const numCircles = 12;
         let [dx, dy] = utils.getPointsDeltas(this.props.start, this.props.end);
         let length = utils.getDistance(this.props.start, this.props.end);
         if (length == 0) {

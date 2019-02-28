@@ -207,10 +207,10 @@ const MoveBall = (entities, { screen, dispatch }) => {
 
 const accelerationX = 1;
 const accelerationY = 10;
-const maxLength = 420; // This should probably be a function of screen height
+const maxLength = 620; // This should probably be a function of screen height
 const minLength = 20;
-const minDeg = -75;
-const maxDeg = 75;
+const minDeg = -88;
+const maxDeg = 88;
 
 const AimBallsStart = (entities, { touches }) => {
     if(entities.scorebar.state == "stopped") {
@@ -265,20 +265,19 @@ const AimBallsRelease = (entities, { time, touches }) => {
             let d = utils.getDistance(aim_vector.start, aim_vector.final);
             if(t.event.pageY > entities.floor.height && d > minLength && entities.ball.state == "stopped") {
                 let [dx, dy] = utils.getPointsDeltas(entities.ball.position, aim_vector.final);
-
-                // Normalize on the y-axis and only care about the relative direction on the x-axis
-                entities.ball.direction[1] = -1;
-                entities.ball.direction[0] = -(dx / dy);
+                // Normalize vector
+                entities.ball.direction[1] = (dy/d);
+                entities.ball.direction[0] = (dx/d);
                 entities.ball.start_direction = [entities.ball.direction[0], entities.ball.direction[1]];
                 // This should account for the difference in ball direction in the axes
-                entities.ball.speed[0] = 5;
-                entities.ball.speed[1] = 5;
+                entities.ball.speed[0] = 10;
+                entities.ball.speed[1] = 10;
                 entities.start = [entities.ball.position[0], entities.ball.position[1]];
                 entities.ball.state = "moving";
                 entities.scorebar.state = "started";
                 entities.scorebar.balls_returned = 0;
                 entities.scorebar.balls_in_play = 1;
-                last_ball_start_time = time.current;
+                last_ball_start_time = time.current;                
             }
         });
     }
