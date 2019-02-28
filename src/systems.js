@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile, BallPowerUp } from "./renderers";
+import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile, BallPowerUp, FLOOR_HEIGHT, SCOREBOARD_HEIGHT } from "./renderers";
 import utils from "./utils";
 
 // Collision detection
@@ -207,12 +207,12 @@ const MoveBall = (entities, { screen, dispatch }) => {
 
 const accelerationX = 1;
 const accelerationY = 10;
-const maxLength = 620; // This should probably be a function of screen height
 const minLength = 20;
+const maxLength = FLOOR_HEIGHT - SCOREBOARD_HEIGHT;
 const minDeg = -88;
 const maxDeg = 88;
 
-const AimBallsStart = (entities, { touches }) => {
+const AimBallsStart = (entities, { touches, screen }) => {
     if(entities.scorebar.state == "stopped") {
         touches.filter(x => x.type === "start").forEach(t => {
             aim_vector.start = [t.event.pageX, t.event.pageY];
@@ -237,7 +237,7 @@ const AimBallsStart = (entities, { touches }) => {
 
                  // Give the aimline a circular curvature, let the change in
                  // y-axis delta control length and x-axis delta the degree of
-                 // the aim line.
+                 // the aim line.                
                 let length = Math.min(maxLength, aim_vector.delta[1]);
                 let deg = (aim_vector.delta[0] % 360);
                 let x2 = length * Math.sin(deg * Math.PI / 180);
