@@ -2,6 +2,7 @@ import React, { PureComponent, Component } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
 import { Svg, Circle } from "react-native-svg";
 import utils from "./utils";
+import Explosion from "./components/explosion";
 
 export const RADIUS = 7;
 export const SCOREBOARD_HEIGHT = 90;
@@ -133,7 +134,8 @@ class BoxTile extends PureComponent {
 
     state = {
         animateTop: new Animated.Value(rowToTopPosition(0)),
-        animated: false
+        animated: false,
+        explode: false
     }
 
     componentWillReceiveProps(nextProps) {
@@ -146,21 +148,29 @@ class BoxTile extends PureComponent {
                 speed: 8
               }).start();
             this.setState({animated: true});
+        } else if(this.props.explode != nextProps.explode) {
+            this.setState({explode: true});
         }
     }
 
     render() {
-        return (
-            <Animated.View style={[styles.boxcontainer, {
-                backgroundColor: hitsToColor(this.props.hits),
-                top: this.state.animateTop,
-                left: colToLeftPosition(this.props.col)
-                }]}> 
-                <Text style={{color: "#262626", fontSize: 16}}>
-                    {this.props.hits}
-                </Text>
-            </Animated.View>
-        );
+        if(this.state.explode) {       
+            return (     
+                <Explosion count={15} origin={{x: colToLeftPosition(this.props.col), y: rowToTopPosition(this.props.row)}} />            
+            );
+        } else {
+            return (               
+                <Animated.View style={[styles.boxcontainer, {
+                    backgroundColor: hitsToColor(this.props.hits),
+                    top: this.state.animateTop,
+                    left: colToLeftPosition(this.props.col)
+                    }]}> 
+                    <Text style={{color: "#262626", fontSize: 16}}>
+                        {this.props.hits}
+                    </Text>
+                </Animated.View>
+            );
+        }
     }
 }
 

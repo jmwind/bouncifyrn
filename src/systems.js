@@ -23,6 +23,7 @@ function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     for(var boxId in boxes) {
          let box = entities[boxes[boxId]];
+         if(box.explode) continue;
          let box_y = rowToTopPosition(box.row);
          let box_x = colToLeftPosition(box.col);
          let next_position = [
@@ -53,7 +54,8 @@ function collidesWithBox(entities, ball) {
             } else {
                 box.hits--;
                 if(box.hits <= 0) {
-                    delete entities[boxes[boxId]];
+                    box.explode = true;
+                    //delete entities[boxes[boxId]];
                 }
                 return collision;
             }
@@ -107,6 +109,7 @@ export function moveToNextLevel(entities, dispatch) {
             entities["box" + key] = {
                 row: 1, 
                 col: col, 
+                explode: false,
                 hits: new_hits, 
                 renderer: BoxTile, 
             };
