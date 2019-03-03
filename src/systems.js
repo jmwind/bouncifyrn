@@ -75,8 +75,12 @@ export function moveToNextLevel(entities, dispatch) {
     entities.scorebar.level++;
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
-        if(++box.row > max_row) {
-            max_row = box.row;
+        if(box.explode) {
+            delete entities[boxes[boxId]];
+        } else {
+            if(++box.row > max_row) {
+                max_row = box.row;
+            }
         }
     }
     if(max_row >= LAST_ROW) {

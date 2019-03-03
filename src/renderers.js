@@ -156,7 +156,10 @@ class BoxTile extends PureComponent {
     render() {
         if(this.state.explode) {       
             return (     
-                <Explosion count={15} origin={{x: colToLeftPosition(this.props.col), y: rowToTopPosition(this.props.row)}} />            
+                <Explosion 
+                    backgroundColor={hitsToColor(this.props.hits)} 
+                    count={30} 
+                    origin={{x: colToLeftPosition(this.props.col), y: rowToTopPosition(this.props.row)}} />            
             );
         } else {
             return (               
