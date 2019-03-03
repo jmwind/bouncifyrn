@@ -65,9 +65,9 @@ What's here is the shitty first 20%. There's a lot left.
 - [ ] Ball power up hit explosion animation that drops down to floor
 - [ ] Get working on Android
 - [ ] Flexible layout 
-- [ ] Smooth out aiming movement
+- [x] Smooth out aiming movement
 - [ ] Save high score locally and show in the end screen
-- [ ] Nice box tile explosion animation
+- [x] Nice box tile explosion animation
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
-- [ ] Ball power up hit explosion animation that drops down to floor
+- [ ] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)

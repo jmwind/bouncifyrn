@@ -1,12 +1,8 @@
-// @flow strict
-
 import * as React from 'react';
 import { Animated, Dimensions, Easing } from 'react-native';
 import BoxPiece from './boxpiece';
 import utils from '../utils';
 import { FLOOR_HEIGHT, BOX_TILE_SIZE } from '../renderers';
-
-const TOP_MIN = 0.7;
 
 class Explosion extends React.PureComponent {  
   animation = new Animated.Value(0);
@@ -28,7 +24,8 @@ class Explosion extends React.PureComponent {
   calculateItems = () => {
     const { count, origin, backgroundColor } = this.props;
     const items = [];
-
+    // Pixelize the box tile into small blocks that will be part of
+    // explosion
     Array.from(Array(count).keys()).forEach(() => {
       const item = {
         backgroundColor: backgroundColor,
