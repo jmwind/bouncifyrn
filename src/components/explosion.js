@@ -41,12 +41,16 @@ class Explosion extends React.PureComponent {
   };
 
   animate = () => {
-    const { fallSpeed = 700 } = this.props;   
+    const { fallSpeed = 750 } = this.props;   
     Animated.timing(this.animation, {
       toValue: 1,
       duration: fallSpeed,
       easing: Easing.linear
-    }).start();
+    }).start((() => {
+      // Clear items after explosion so that associated views are gc'd
+      items = [];
+      this.setState({items})
+    }));
   };
 
   render() {

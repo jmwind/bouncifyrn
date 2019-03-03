@@ -11,11 +11,10 @@ class BoxPiece extends React.PureComponent {
     render() {
       let width = 6;
       let height = 6;
-      let isRounded = Math.round(utils.randomValue(0, 1)) === 1;
       const { backgroundColor, left, top ,bottom, transform, opacity } = this.props;      
       const style = { left, top, bottom, width, height, opacity, backgroundColor, transform };  
       return (
-        <Animated.View style={[styles.piece, isRounded && styles.rounded, style]} />
+        <Animated.View style={[styles.piece, style]} />
       );
     }
   }
@@ -23,9 +22,6 @@ class BoxPiece extends React.PureComponent {
   const styles = StyleSheet.create({
     piece: {
       position: 'absolute'
-    },
-    rounded: {
-      borderRadius: 100
     }
   });
   

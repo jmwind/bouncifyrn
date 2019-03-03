@@ -40,7 +40,7 @@ export default class BouncifyGame extends PureComponent {
         gameOver: true
       });
       if (this.props.onClose) this.props.onClose(0, 0);
-    }, 1500);
+    }, 750);
   };
 
   handleEvent = ev => {

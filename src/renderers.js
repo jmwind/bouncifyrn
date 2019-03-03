@@ -139,6 +139,7 @@ class BoxTile extends PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
+        // Advance to next row and if game starting advance from top
         if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
@@ -291,8 +292,6 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'stretch',
       justifyContent: 'space-between',
-      //justifyContent: 'flex-start', // main axis
-      //alignItems: 'center', // cross axis
       width: Dimensions.get("window").width,
       backgroundColor: "#262626"
   },

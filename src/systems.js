@@ -23,7 +23,9 @@ function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     for(var boxId in boxes) {
          let box = entities[boxes[boxId]];
-         if(box.explode) continue;
+         if(box.explode) {            
+             continue;
+         }
          let box_y = rowToTopPosition(box.row);
          let box_x = colToLeftPosition(box.col);
          let next_position = [
@@ -55,7 +57,6 @@ function collidesWithBox(entities, ball) {
                 box.hits--;
                 if(box.hits <= 0) {
                     box.explode = true;
-                    //delete entities[boxes[boxId]];
                 }
                 return collision;
             }
@@ -73,6 +74,8 @@ export function moveToNextLevel(entities, dispatch) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
     entities.scorebar.level++;
+
+    // advance boxes still in the game
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
         if(box.explode) {
@@ -86,6 +89,7 @@ export function moveToNextLevel(entities, dispatch) {
     if(max_row >= LAST_ROW) {
         dispatch({ type: "game-over" });        
     }
+    
     // random number of blocks for colums 0-7
     let num_new_blocks = Math.floor(Math.random() * 8);
     let new_cols = new Array(8);
@@ -114,6 +118,7 @@ export function moveToNextLevel(entities, dispatch) {
                 row: 1, 
                 col: col, 
                 explode: false,
+                explosionComplete: false,
                 hits: new_hits, 
                 renderer: BoxTile, 
             };
