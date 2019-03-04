@@ -91,37 +91,30 @@ export function moveToNextLevel(entities, dispatch) {
     }
     
     // random number of blocks for colums 0-7
-    let num_new_blocks = Math.floor(Math.random() * 8);
-    let new_cols = new Array(8);
-    let powerups = 1;
-    for (i = 0; i < num_new_blocks; i++) {
-        let new_hits = Math.floor(Math.random() * entities.scorebar.balls) + (entities.scorebar.balls * 2);
+    let powerup = false;
+    for (i = 0; i < 8; i++) {        
         let key = randomKey();
-        let col = -1;
-        while(col == -1) {
-            let next_col = Math.floor(Math.random() * 8);
-            if(new_cols[next_col] != 1) {
-                col = next_col;
+        let col = i;
+        let new_hits = utils.randomValueRounded(entities.scorebar.balls, entities.scorebar.balls * 2);
+        if(utils.randomRoll(70)) {
+            if(!powerup && utils.randomRoll(20)) {
+                entities["box" + key] = {
+                    row: 1, 
+                    col: col, 
+                    type: "powerup", 
+                    renderer: BallPowerUp, 
+                };
+                powerup = true;
+            } else {
+                entities["box" + key] = {
+                    row: 1, 
+                    col: col, 
+                    explode: false,
+                    explosionComplete: false,
+                    hits: new_hits, 
+                    renderer: BoxTile, 
+                };
             }
-        }
-        // pick one slot to be a power up
-        Math.floor(Math.random() * num_new_blocks);
-        if(powerups-- > 0) {
-            entities["box" + key] = {
-                row: 1, 
-                col: col, 
-                type: "powerup", 
-                renderer: BallPowerUp, 
-            };
-        } else {
-            entities["box" + key] = {
-                row: 1, 
-                col: col, 
-                explode: false,
-                explosionComplete: false,
-                hits: new_hits, 
-                renderer: BoxTile, 
-            };
         }
     }
 }
@@ -306,6 +299,8 @@ const AimBallsRelease = (entities, { time, touches }) => {
 const CreateBallTail = (entities, { time }) => {
     let scorebar = entities.scorebar;
     if(scorebar.state == "started" && scorebar.balls_in_play < scorebar.balls) {
+        // Controls the speed at which new balls are spawned when they start to shoot 
+        // from the floor
         if((time.current - last_ball_start_time) > 150 /* ms */) {
             let position = [entities.ball.start[0], entities.ball.start[1]];
             let direction = [entities.ball.start_direction[0], entities.ball.start_direction[1]];

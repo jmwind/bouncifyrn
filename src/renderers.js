@@ -38,8 +38,8 @@ function hitsToColor(hits) {
 }
 
 /**
- * Box tiles deal in colum and row number only. 
- *
+ * Box tiles deal in colum and row number only. These help map row/col to top/left positions
+ * for the boxes.
  */
 export function colToLeftPosition(col) {
     return BOX_TILE_SPACE + ((col * BOX_TILE_SPACE) + (col * BOX_TILE_SIZE));
