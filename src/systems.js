@@ -179,12 +179,19 @@ const MoveBall = (entities, { screen, dispatch }) => {
             // all other balls will dissapear when they hit the floor.
             if(ballId == "ball") {
                 entities.ball.state = "stopped";
-                // ensure rested nicely on top of floor
+                // ensure rested nicely on top of floor or not outside of sidewalls
+                if(next_position[0] > screen.width - RADIUS*2) {
+                    next_position[0] = screen.width - RADIUS*2;
+                }
+                if(next_position[0] < 0) {
+                    next_position[0] = RADIUS*2;
+                }
                 entities.ball.position = [
                     next_position[0],
                     entities.ball.start[1],
                 ];                
             } else {
+                // remove all balls that aren't the lead ball when they hit they floor
                 delete entities[ballId]; 
             }
 

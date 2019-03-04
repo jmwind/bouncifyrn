@@ -37,12 +37,14 @@ react-native run-ios
 
 ## TODOs
 
-bugs
+🦟
+
 - [ ] title placement has overlaps, ensure at least one and powerups
 - [x] clean up exploded boxes more aggresively
-- [ ] ball can stop outside the side bounds of screen
+- [x] ball can stop outside the side bounds of screen
+- [ ] replace all the crappy array indeces with x,y 
 
-What's here is the shitty first 20%. There's a lot left.
+🍄
 
 - [x] Get balls moving around the screen with grade 2 level math
 - [x] Define and draw playing surface and limit movement within
