@@ -43,6 +43,7 @@ react-native run-ios
 - [x] clean up exploded boxes more aggresively
 - [x] ball can stop outside the side bounds of screen
 - [ ] replace all the crappy array indeces with x,y 
+- [ ] bug where ball can fit between spaces between boxes. Collision detection needs more resolution.
 
 🍄
 

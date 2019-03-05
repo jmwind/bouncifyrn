@@ -84,16 +84,23 @@ export function moveToNextLevel(entities, dispatch) {
     deleteFallenBallPowerups(entities);
 
     // advance boxes still in the game
+    let dead_boxes = [];
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
-        if(box.explode) {
-            delete entities[boxes[boxId]];
-        } else {
+        if(box) {
+            if(box.explode) {
+                dead_boxes.push(boxes[boxId])
+            }
             if(++box.row > max_row) {
                 max_row = box.row;
             }
         }
     }
+    dead_boxes.forEach((boxId) => {
+        delete entities[boxId];
+    });
+
+    // are we done?
     if(max_row >= LAST_ROW) {
         dispatch({ type: "game-over", score: entities.scorebar.level });
         return;        
