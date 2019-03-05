@@ -39,7 +39,7 @@ react-native run-ios
 
 🦟
 
-- [ ] title placement has overlaps, ensure at least one and powerups
+- [x] title placement has overlaps, ensure at least one and powerups
 - [x] clean up exploded boxes more aggresively
 - [x] ball can stop outside the side bounds of screen
 - [ ] replace all the crappy array indeces with x,y 
@@ -59,22 +59,21 @@ react-native run-ios
 - [x] Show ball count beside first ball (on top for now)
 - [x] Calculate level and display at top
 - [x] Box bounce count calculation and display
-- [ ] First ball landing spot calculation and animation of powerups to the landing
 - [x] Add box layers and advancing
 - [x] Determine end of game when boxes advance to bottom row and add screen and show end screen
-- [ ] Add speed-up button
 - [x] Splash screen and icon
 - [x] Start scren
 - [x] End of game screen
 - [x] Add cheat mode to add / remove balls for testing
-- [ ] Fix all the crappy hard coded sizes and make it work on iPad
-- [ ] Get with the times, go Typescript!
-- [ ] Ball power up hit explosion animation that drops down to floor
-- [ ] Get working on Android
-- [ ] Flexible layout 
+- [x] Ball power up hit explosion animation that drops down to floor
 - [x] Smooth out aiming movement
-- [ ] Save high score locally and show in the end screen
+- [x] Save high score locally and show in the end screen
 - [x] Nice box tile explosion animation
+- [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
+- [ ] Get with the times, go Typescript!
+- [ ] Add speed-up button
+- [ ] First ball landing spot calculation and animation of powerups to the landing
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
 - [ ] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
+- [ ] Get working on Android
