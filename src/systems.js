@@ -71,6 +71,18 @@ export function moveToNextLevel(entities, dispatch) {
     let max_row = 0;
     entities.scorebar.level++;
 
+    // clean-up and reset
+    entities.scorebar.state = "stopped";
+    entities.scorebar.balls_in_play = 0;
+    entities.scorebar.balls += entities.scorebar.new_balls;
+    entities.scorebar.new_balls = 0;
+    // save next start position to ball trail
+    entities.ball.start = [
+        entities.ball.position[0],
+        entities.ball.position[1],
+    ];
+    deleteFallenBallPowerups(entities);
+
     // advance boxes still in the game
     for(var boxId in boxes) {
         let box = entities[boxes[boxId]];
@@ -87,7 +99,7 @@ export function moveToNextLevel(entities, dispatch) {
         return;        
     }
     
-    // random number of blocks for colums 0-7
+    // create new row of boxes and power-ups
     let powerup = false;
     for (i = 0; i < 8; i++) {        
         let key = randomKey();
@@ -186,17 +198,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
             }
 
             // decide when all balls have returned and stop the current level
-            if(entities.scorebar.balls_returned >= entities.scorebar.balls) {
-                entities.scorebar.state = "stopped";
-                entities.scorebar.balls_in_play = 0;
-                entities.scorebar.balls += entities.scorebar.new_balls;
-                entities.scorebar.new_balls = 0;
-                // save next start position to ball trail
-                entities.ball.start = [
-                    entities.ball.position[0],
-                    entities.ball.position[1],
-                ];
-                deleteFallenBallPowerups(entities);
+            if(entities.scorebar.balls_returned >= entities.scorebar.balls) {                
                 moveToNextLevel(entities, dispatch);
             }
         } else {
@@ -321,14 +323,17 @@ const CreateBallTail = (entities, { time }) => {
 /**
  * Easter egg which allows adding or removing balls by clicking hotspots at the 
  * top of the screen in the scoreboard section. If the game is still in progress
- * the new balls will start moving as they are added.
+ * the new balls will start moving as they are added. Also, to advance to another
+ * level press in the middle of the scorebar.
  */
-const SpawnBall = (entities,  { touches, screen }) => {
+const SpawnBall = (entities,  { touches, screen, dispatch }) => {
     touches.filter(t => t.type === "press").forEach(t => {
-        if(t.event.pageY < entities.scorebar.height && t.event.pageX > screen.width / 2) {
+        if(t.event.pageY < entities.scorebar.height && t.event.pageX > (screen.width / 2 + 100)) {
             entities.scorebar.balls+=5;
-        } else if(t.event.pageY < entities.scorebar.height && t.event.pageX < screen.width / 2 && entities.scorebar.balls > 1) {
+        } else if(t.event.pageY < entities.scorebar.height && t.event.pageX < (screen.width / 2 - 100) && entities.scorebar.balls > 1) {
             entities.scorebar.balls-=5;
+        } else if(t.event.pageY < entities.scorebar.height) {
+            moveToNextLevel(entities, dispatch);
         }
     });
     return entities;
