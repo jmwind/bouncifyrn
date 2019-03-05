@@ -29,23 +29,23 @@ export default class MainMenu extends PureComponent {
         }
         {
           this.props.gamesPlayed > 0 &&
-          <View>
-          <Animatable.Text 
-            style={styles.score} animation="bounceInLeft" 
-            iterationCount="infinite" direction="alternate">Best
-          </Animatable.Text>
-          <Animatable.Text 
-            style={styles.score} animation="bounceInRight" 
-            iterationCount="infinite" direction="alternate">254
-          </Animatable.Text>
-          <Animatable.Text 
-            style={styles.score} animation="bounceInLeft" 
-            iterationCount="infinite" direction="alternate">Last
-          </Animatable.Text>
-          <Animatable.Text 
-            style={styles.score} animation="bounceInRight" 
-            iterationCount="infinite" direction="alternate">33
-          </Animatable.Text>
+          <View style={styles.textContainer}>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">Best
+            </Animatable.Text>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">{this.props.topScore}
+            </Animatable.Text>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">Last
+            </Animatable.Text>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">{this.props.lastScore}
+            </Animatable.Text>
           </View>
         }
         <Button onPress={this.props.onPlayGame}>{this.props.gamesPlayed ? 'Restart' : 'Play'}</Button>
@@ -90,5 +90,8 @@ const styles = StyleSheet.create({
     marginRight: 30,
     fontSize: 32,
     color: "#FFF"
+  },
+  textContainer: {      
+      alignItems: 'center'
   }
 });

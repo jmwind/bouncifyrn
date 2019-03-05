@@ -18,7 +18,8 @@ export default class BouncifyGame extends PureComponent {
     super();
     this.state = {
       running: false,
-      gameOver: false
+      gameOver: false,
+      lastScore: 0
     };
   }
 
@@ -30,22 +31,25 @@ export default class BouncifyGame extends PureComponent {
     }
   }
 
-  gameOver = () => {
+  gameOver = (score) => {
     this.setState({
-      running: false
+      running: false,
+      lastScore: score
     });
 
     setTimeout(() => {
       this.setState({
         gameOver: true
       });
-      if (this.props.onClose) this.props.onClose(0, 0);
-    }, 750);
+      if (this.props.onClose) {
+        this.props.onClose(this.state.lastScore);
+      }
+    }, 250);
   };
 
   handleEvent = ev => {
     if(ev.type == "game-over") {
-        this.gameOver();        
+        this.gameOver(ev.score);        
     }
   };
 
@@ -84,9 +88,9 @@ export default class BouncifyGame extends PureComponent {
               color: "white", 
               state: "stopped", 
               start: [300, FLOOR_HEIGHT - RADIUS*2], 
-              position: [300,  FLOOR_HEIGHT - RADIUS*2], 
+              position: [300, FLOOR_HEIGHT - RADIUS*2], 
               speed: [1.0, 1.0], 
-              direction: [1,1], 
+              direction: [0, 0], 
               renderer: <Ball />}          
             }}>
         </GameEngine>
