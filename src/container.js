@@ -52,6 +52,7 @@ export default class Container extends PureComponent {
           topScore={this.state.topScore} />
         <BouncifyGame
           visible={this.state.gameStarted}
+          topScore={this.state.topScore}
           onClose={(lastScore) => this.toggleGame(false, lastScore)}
         />
       </View>

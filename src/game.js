@@ -11,7 +11,7 @@ import React, { PureComponent } from "react";
 import { StyleSheet, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS } from "./renderers";
-import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, moveToNextLevel } from "./systems"
+import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail } from "./systems"
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
@@ -76,7 +76,7 @@ export default class BouncifyGame extends PureComponent {
               renderer: <Floor /> },          
             scorebar: { 
               height: 90, 
-              best: 276, 
+              best: this.props.topScore, 
               state: "stopped", 
               level: 0, 
               balls: 1, 
