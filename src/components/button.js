@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     marginRight: 30,
     marginTop: 20,
     marginBottom: 20,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 0 },
     shadowColor: "#59B9F9",
     shadowOpacity: 1,
     shadowRadius: 0,

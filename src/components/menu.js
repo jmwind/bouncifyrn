@@ -31,20 +31,20 @@ export default class MainMenu extends PureComponent {
           this.props.gamesPlayed > 0 &&
           <View style={styles.textContainer}>
             <Animatable.Text 
+              style={styles.lastScore} animation="pulse" 
+              iterationCount="infinite" direction="alternate">Your Score
+            </Animatable.Text>
+            <Animatable.Text 
+              style={styles.lastScore} animation="pulse" 
+              iterationCount="infinite" direction="alternate">{this.props.lastScore}
+            </Animatable.Text>
+            <Animatable.Text 
               style={styles.score} animation="pulse" 
               iterationCount="infinite" direction="alternate">Best
             </Animatable.Text>
             <Animatable.Text 
               style={styles.score} animation="pulse" 
               iterationCount="infinite" direction="alternate">{this.props.topScore}
-            </Animatable.Text>
-            <Animatable.Text 
-              style={styles.score} animation="pulse" 
-              iterationCount="infinite" direction="alternate">Last
-            </Animatable.Text>
-            <Animatable.Text 
-              style={styles.score} animation="pulse" 
-              iterationCount="infinite" direction="alternate">{this.props.lastScore}
             </Animatable.Text>
           </View>
         }
@@ -88,7 +88,15 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     marginLeft: 30,
     marginRight: 30,
-    fontSize: 32,
+    fontSize: 24,
+    color: "#FFF"
+  },
+  lastScore: {
+    marginTop: 3,
+    marginBottom: 3,
+    marginLeft: 30,
+    marginRight: 30,
+    fontSize: 52,
     color: "#FFF"
   },
   textContainer: {      
