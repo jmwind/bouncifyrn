@@ -66,6 +66,17 @@ function collidesWithBox(entities, ball) {
     return NO_COLISION;
 }
 
+function moveToNextLevelWithDelay(entities, dispatch) {
+    let delay = 100;
+    if(entities.scorebar.new_balls > 0) {
+        delay = 750;
+        animateFallenPowerups(entities);
+    }    
+    setTimeout(() => {
+        moveToNextLevel(entities, dispatch);
+    }, delay);
+}
+
 export function moveToNextLevel(entities, dispatch) {
     const { scorebar, ball } = entities;
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
@@ -112,10 +123,11 @@ export function moveToNextLevel(entities, dispatch) {
         let col = i;
         let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 2);
         if(utils.randomRoll(70)) {
-            if(!powerup && utils.randomRoll(20)) {
+            if(!powerup && utils.randomRoll(50)) {            
                 entities["box" + key] = {
                     row: 1, 
                     col: col, 
+                    collecting: false,                    
                     type: "powerup", 
                     renderer: BallPowerUp, 
                 };
@@ -140,6 +152,18 @@ function deleteFallenBallPowerups(entities) {
         let box = entities[boxes[boxId]];
         if(box.type && box.type == "powerup" && box.falling) {
             delete entities[boxes[boxId]];
+        }
+    }
+}
+
+function animateFallenPowerups(entities) {
+    const { ball } = entities;
+    let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
+    for(var boxId in boxes) {
+        let box = entities[boxes[boxId]];
+        if(box.type && box.type == "powerup" && box.falling) {
+            entities[boxes[boxId]].collecting = true;
+            entities[boxes[boxId]].slidePosition = ball.position.x;
         }
     }
 }
@@ -201,7 +225,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
 
             // decide when all balls have returned and stop the current level
             if(scorebar.balls_returned >= scorebar.balls) {                
-                moveToNextLevel(entities, dispatch);
+                moveToNextLevelWithDelay(entities, dispatch);
             }
         } else {
             next_position = utils.newPosition(

@@ -43,16 +43,17 @@ export default class Container extends PureComponent {
   };
 
   render() {
+    const { gamesPlayed, lastScore, topScore, gameStarted } = this.state;
     return (
       <View style={styles.container}>        
         <MainMenu 
           onPlayGame={_ => this.toggleGame(true)} 
-          gamesPlayed={this.state.gamesPlayed} 
-          lastScore={this.state.lastScore} 
-          topScore={this.state.topScore} />
+          gamesPlayed={gamesPlayed} 
+          lastScore={lastScore} 
+          topScore={topScore} />
         <BouncifyGame
-          visible={this.state.gameStarted}
-          topScore={this.state.topScore}
+          visible={gameStarted}
+          topScore={topScore}
           onClose={(lastScore) => this.toggleGame(false, lastScore)}
         />
       </View>

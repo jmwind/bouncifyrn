@@ -64,7 +64,7 @@ class Explosion extends React.PureComponent {
         {this.state && this.state.items && this.state.items.map((item, index) => {
           const bottom = this.animation.interpolate({
             inputRange: [0, 1],
-            outputRange: [item.top, FLOOR_HEIGHT]
+            outputRange: [item.top, FLOOR_HEIGHT + 5]
           });
           const opacity = this.animation.interpolate({
             inputRange: [0, 1],

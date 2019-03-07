@@ -1,6 +1,6 @@
 import React, { PureComponent, Component } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
-import { Svg, Circle } from "react-native-svg";
+import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import utils from "./utils";
 import Explosion from "./components/explosion";
 
@@ -225,8 +225,9 @@ class BallPowerUp extends PureComponent {
 
     componentWillReceiveProps(nextProps) {
         // Animate down to the floor
-        if(this.props.falling != nextProps.falling && nextProps.falling) {
+        if(nextProps.falling && this.props.falling != nextProps.falling) {
             this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
+            this.animTopListener = this.state.animateTop.addListener(({value}) => {this.topPosition = value});  
             this.dropAnimation = Animated.timing(this.state.animateTop, {
                 toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 10,
                 easing: Easing.back(),
@@ -244,15 +245,37 @@ class BallPowerUp extends PureComponent {
               });
             this.rowAnimation.start();
             this.setState({animated: true});
-        }   
+        } else if(nextProps.collecting && this.props.collecting != nextProps.collecting) {
+            this.state.animateCollection = new Animated.Value(0);
+            this.collectAnimation = Animated.timing(this.state.animateCollection, {
+                toValue: 1,
+                easing: Easing.linear,
+                duration: utils.randomValueRounded(400, 800)
+            });
+            this.collectAnimation.start();
+        }
     }
 
     render() { 
-        let color = !this.props.falling ? "white" : "#8CB453";       
+        let color = !this.props.falling ? "white" : "#8CB453";   
+        let topPosition = this.state.animateTop;
+        let leftPosition = colToLeftPosition(this.props.col);
+        let opacity = 1;
+        if(this.props.collecting) {
+            topPosition = this.state.animateCollection.interpolate({
+                inputRange: [0, 1],
+                outputRange: [this.topPosition, this.topPosition - 500]
+            });   
+            opacity = this.state.animateCollection.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0]
+              });  
+        } 
         return (
             <Animated.View style={[styles.boxcontainer, {
-                top: this.state.animateTop,
-                left: colToLeftPosition(this.props.col)
+                top: topPosition,
+                left: leftPosition,
+                opacity: opacity
                 }]}>
                 <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE} >
                     {!this.props.falling && 
@@ -265,6 +288,7 @@ class BallPowerUp extends PureComponent {
                             fill="#202020"
                         />
                     }
+                    {!this.props.collecting &&
                     <Circle
                         cx={BOX_TILE_SIZE / 2}
                         cy={BOX_TILE_SIZE / 2}
@@ -272,6 +296,17 @@ class BallPowerUp extends PureComponent {
                         stroke={color}
                         fill={color}
                     />
+                    }
+                    {this.props.collecting &&
+                    <SVGText
+                        dx={BOX_TILE_SIZE / 2}
+                        dy={BOX_TILE_SIZE / 2}
+                        stroke={color}
+                        fill={color}
+                        opacity={opacity}
+                    >+1
+                    </SVGText>
+                    }
                 </Svg>
             </Animated.View>
         );
