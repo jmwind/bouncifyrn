@@ -1,11 +1,19 @@
 // Vector distance for initial ball launch aiming
 export default utils = {
-    getDistance: function ([x1, y1], [x2, y2]) {
-        return Math.sqrt(Math.abs(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
+    getDistance: function (p1, p2) {
+        return Math.sqrt(Math.abs(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)));
     },
 
-    getPointsDeltas: function ([x1, y1], [x2, y2]) {
-        return [x2 - x1, y2 - y1];
+    getPointsDeltas: function (p1, p2) {
+        return {x: p2.x - p1.x, y: p2.y - p1.y};
+    },
+
+    clonePosition: function (position) {
+        return {x: position.x, y: position.y};
+    },
+
+    newPosition: function (x_val, y_val) {
+        return {x: x_val, y: y_val};
     },
 
     randomValue: function(min, max) {

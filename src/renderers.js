@@ -51,8 +51,8 @@ export function rowToTopPosition(row) {
 
 class Ball extends PureComponent {
   render() {
-    const x = this.props.position[0] - RADIUS / 2;
-    const y = this.props.position[1] - RADIUS / 2;
+    const x = this.props.position.x - RADIUS / 2;
+    const y = this.props.position.y - RADIUS / 2;
     return (
       <View style={[styles.ball, { left: x, top: y, backgroundColor: this.props.color }]} />
     );
@@ -103,7 +103,7 @@ class AimLine extends PureComponent {
     render() {
         const drawLength = 1.0; // Ratio of aim vector to display
         const numCircles = 12;
-        let [dx, dy] = utils.getPointsDeltas(this.props.start, this.props.end);
+        let delta = utils.getPointsDeltas(this.props.start, this.props.end);
         let length = utils.getDistance(this.props.start, this.props.end);
         if (length == 0) {
             return null
@@ -114,9 +114,9 @@ class AimLine extends PureComponent {
         let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
 
         let circles = Array(numCircles).fill().map((_, i) => {
-            let [sx, sy] = this.props.start;
-            let x = sx + (((dx) / numCircles) * i * drawLength);
-            let y = sy + (((dy) / numCircles) * i * drawLength);
+            let start = this.props.start;
+            let x = start.x + (((delta.x) / numCircles) * i * drawLength);
+            let y = start.y + (((delta.y) / numCircles) * i * drawLength);
             return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
         });
 
@@ -138,16 +138,21 @@ class BoxTile extends PureComponent {
         explode: false
     }
 
+    componentWillUnmount() {
+        if(this.rowAnimation) this.rowAnimation.stop();
+    }
+
     componentWillReceiveProps(nextProps) {
         // Advance to next row and if game starting advance from top
         if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
-            Animated.spring(this.state.animateTop, {
+            this.rowAnimation = Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
                 bounciness: 8,
                 speed: 8
-              }).start();
+              });
+              this.rowAnimation.start();
             this.setState({animated: true});
         } else if(this.props.explode != nextProps.explode) {
             this.setState({explode: true});
@@ -191,8 +196,8 @@ class BallPowerUp extends PureComponent {
 
     componentDidMount() {
         // Breathing animation of outer circle       
-        this.state.anim_radius.addListener(({value}) => this.setState({radius: value}));        
-        Animated.loop(
+        this.animListener = this.state.anim_radius.addListener(({value}) => this.setState({radius: value}));        
+        this.breathAnimation = Animated.loop(
             Animated.sequence([
               Animated.timing(this.state.anim_radius, {
                 toValue: 14,
@@ -207,31 +212,37 @@ class BallPowerUp extends PureComponent {
                 useNativeDriver: true
               })
             ])
-          ).start();
+          );
+          this.breathAnimation.start();
     }
 
     componentWillUnmount() {
-        this.state.anim_radius.removeAllListeners();
+        if(this.rowAnimation) this.rowAnimation.stop();
+        if(this.dropAnimation) this.dropAnimation.stop();
+        if(this.breathAnimation) this.breathAnimation.stop();
+        this.state.animateTop.removeAllListeners();
     }
 
     componentWillReceiveProps(nextProps) {
         // Animate down to the floor
         if(this.props.falling != nextProps.falling && nextProps.falling) {
             this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
-            Animated.timing(this.state.animateTop, {
+            this.dropAnimation = Animated.timing(this.state.animateTop, {
                 toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 10,
                 easing: Easing.back(),
                 duration: 700,
-              }).start(); 
+              });
+              this.dropAnimation.start(); 
         // Animate into the next row            
         } else if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
-            Animated.spring(this.state.animateTop, {
+            this.rowAnimation = Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
                 bounciness: 8,
                 speed: 2
-              }).start();
+              });
+            this.rowAnimation.start();
             this.setState({animated: true});
         }   
     }

@@ -12,6 +12,7 @@ import { StyleSheet, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS } from "./renderers";
 import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail } from "./systems"
+import utils from "./utils";
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
@@ -87,10 +88,10 @@ export default class BouncifyGame extends PureComponent {
             ball: { 
               color: "white", 
               state: "stopped", 
-              start: [300, FLOOR_HEIGHT - RADIUS*2], 
-              position: [300, FLOOR_HEIGHT - RADIUS*2], 
-              speed: [1.0, 1.0], 
-              direction: [0, 0], 
+              start: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
+              position: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
+              speed: utils.newPosition(1.0, 1.0), 
+              direction: utils.newPosition(0, 0), 
               renderer: <Ball />}          
             }}>
         </GameEngine>
