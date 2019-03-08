@@ -187,8 +187,6 @@ class BallPowerUp extends PureComponent {
 
     state = {
         animateTop: new Animated.Value(rowToTopPosition(0)),
-        animateLeft: new Animated.Value(0),
-        animateOpacity: new Animated.Value(0),
         anim_radius: new Animated.Value(12),
         animated: false,
         radius: 12
@@ -220,11 +218,12 @@ class BallPowerUp extends PureComponent {
         if(this.rowAnimation) this.rowAnimation.stop();
         if(this.dropAnimation) this.dropAnimation.stop();
         if(this.breathAnimation) this.breathAnimation.stop();
+        if(this.collectAnimation) this.collectAnimation.stop();
         this.state.animateTop.removeAllListeners();
     }
 
     componentWillReceiveProps(nextProps) {
-        // Animate down to the floor
+        // Animate down to the floor when hit by the ball
         if(nextProps.falling && this.props.falling != nextProps.falling) {
             this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
             this.animTopListener = this.state.animateTop.addListener(({value}) => {this.topPosition = value});  
@@ -234,7 +233,7 @@ class BallPowerUp extends PureComponent {
                 duration: 700,
               });
               this.dropAnimation.start(); 
-        // Animate into the next row            
+        // Animate into the next row when moving to next level       
         } else if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
@@ -245,6 +244,7 @@ class BallPowerUp extends PureComponent {
               });
             this.rowAnimation.start();
             this.setState({animated: true});
+        // Animate +1 when current level finished and powerup is on the floor
         } else if(nextProps.collecting && this.props.collecting != nextProps.collecting) {
             this.state.animateCollection = new Animated.Value(0);
             this.collectAnimation = Animated.timing(this.state.animateCollection, {

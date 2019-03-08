@@ -69,6 +69,8 @@ function collidesWithBox(entities, ball) {
 function moveToNextLevelWithDelay(entities, dispatch) {
     let delay = 100;
     if(entities.scorebar.new_balls > 0) {
+        // if powerups are on the floor, wait a bit longer for animation 
+        // before going to next level
         delay = 750;
         animateFallenPowerups(entities);
     }    
@@ -118,12 +120,13 @@ export function moveToNextLevel(entities, dispatch) {
     
     // create new row of boxes and power-ups
     let powerup = false;
-    for (i = 0; i < 8; i++) {        
+    let cols = 8;
+    for (i = 0; i < cols; i++) {        
         let key = randomKey();
         let col = i;
-        let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 2);
+        let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
         if(utils.randomRoll(70)) {
-            if(!powerup && utils.randomRoll(50)) {            
+            if(!powerup && (utils.randomRoll(50) || i == cols - 1)) {            
                 entities["box" + key] = {
                     row: 1, 
                     col: col, 

@@ -1,11 +1,8 @@
 import React, { PureComponent } from "react";
 import {
   ScrollView,
-  Text,
-  TouchableOpacity,
   View,
   Linking,
-  Platform,
   StyleSheet
 } from "react-native";
 import Button from "./button";
@@ -32,7 +29,7 @@ export default class MainMenu extends PureComponent {
           <View style={styles.textContainer}>
             <Animatable.Text 
               style={styles.lastScore} animation="pulse" 
-              iterationCount="infinite" direction="alternate">Your Score
+              iterationCount="infinite" direction="alternate">Last Score
             </Animatable.Text>
             <Animatable.Text 
               style={styles.lastScore} animation="pulse" 
