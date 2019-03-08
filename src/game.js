@@ -24,7 +24,7 @@ export default class BouncifyGame extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps = nextProps => {
     if (nextProps.visible) {
       this.setState({
         running: true
@@ -32,7 +32,7 @@ export default class BouncifyGame extends PureComponent {
     }
   }
 
-  gameOver = (score) => {
+  gameOver = score => {
     this.setState({
       running: false,
       lastScore: score

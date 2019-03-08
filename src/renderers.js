@@ -80,19 +80,20 @@ class Floor extends PureComponent {
 
 class ScoreBar extends PureComponent {
     render() {
+        const {height, best, level, balls_in_play, balls} = this.props;
         return (
-            <View style={[styles.scorebar, {height: this.props.height}]}>
+            <View style={[styles.scorebar, {height: height}]}>
                 <View style={styles.bestcontainer}>                    
                     <Text style={styles.besttitle}>Best</Text>
-                    <Text style={styles.bestscore}>{this.props.best}</Text>
+                    <Text style={styles.bestscore}>{best}</Text>
                 </View>  
                 <View style={styles.levelcontainer}>              
                 <Text style={styles.besttitle}>Level</Text>
-                    <Text style={styles.currentscore}>{this.props.level}</Text>
+                    <Text style={styles.currentscore}>{level}</Text>
                 </View>
                 <View style={styles.ballscontainer}>
                     <Text style={styles.besttitle}>Balls</Text>              
-                    <Text style={styles.currentscore}>{this.props.balls - this.props.balls_in_play}</Text>               
+                    <Text style={styles.currentscore}>{balls - balls_in_play}</Text>               
                 </View>
             </View>
         );
@@ -101,10 +102,11 @@ class ScoreBar extends PureComponent {
 
 class AimLine extends PureComponent {
     render() {
+        const {start, end} = this.props;
         const drawLength = 1.0; // Ratio of aim vector to display
         const numCircles = 12;
-        let delta = utils.getPointsDeltas(this.props.start, this.props.end);
-        let length = utils.getDistance(this.props.start, this.props.end);
+        let delta = utils.getPointsDeltas(start, end);
+        let length = utils.getDistance(start, end);
         if (length == 0) {
             return null
         }
@@ -160,22 +162,24 @@ class BoxTile extends PureComponent {
     }
 
     render() {
-        if(this.state.explode) {       
+        const {hits, col, row} = this.props;
+        const {explode, animateTop} = this.state;
+        if(explode) {       
             return (     
                 <Explosion 
-                    backgroundColor={hitsToColor(this.props.hits)} 
+                    backgroundColor={hitsToColor(hits)} 
                     count={30} 
-                    origin={{x: colToLeftPosition(this.props.col), y: rowToTopPosition(this.props.row)}} />            
+                    origin={{x: colToLeftPosition(col), y: rowToTopPosition(row)}} />            
             );
         } else {
             return (               
                 <Animated.View style={[styles.boxcontainer, {
-                    backgroundColor: hitsToColor(this.props.hits),
-                    top: this.state.animateTop,
-                    left: colToLeftPosition(this.props.col)
+                    backgroundColor: hitsToColor(hits),
+                    top: animateTop,
+                    left: colToLeftPosition(col)
                     }]}> 
                     <Text style={{color: "#262626", fontSize: 16}}>
-                        {this.props.hits}
+                        {hits}
                     </Text>
                 </Animated.View>
             );
