@@ -1,4 +1,3 @@
-// Vector distance for initial ball launch aiming
 export default utils = {
     getDistance: function (p1, p2) {
         return Math.sqrt(Math.abs(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2)));
@@ -26,5 +25,9 @@ export default utils = {
 
     randomRoll: function(percent) {
         return utils.randomValueRounded(1, 100) <= percent; 
+    },
+
+    randomKey: function() {
+        return (Math.random() + 1).toString(36).substring(7);
     }
 }

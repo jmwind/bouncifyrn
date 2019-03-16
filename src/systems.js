@@ -8,10 +8,8 @@ const SIDE = 1;
 const TOP_BOTTOM = 2;
 const LAST_ROW = 11;
 
-const randomKey = () =>
-    (Math.random() + 1).toString(36).substring(7);
-
-// Tracking of vector sizing between drag. Maybe this should be in some state instead?
+// TODO: move into an entity and not global
+// TODO: add reflected aim lines
 let aim_vector = {
     start: utils.newPosition(0, 0),
     delta: utils.newPosition(0, 0),
@@ -122,7 +120,7 @@ export function moveToNextLevel(entities, dispatch) {
     let powerup = false;
     let cols = 8;
     for (i = 0; i < cols; i++) {        
-        let key = randomKey();
+        let key = utils.randomKey();
         let col = i;
         let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
         if(utils.randomRoll(70)) {
@@ -335,7 +333,7 @@ const CreateBallTail = (entities, { time }) => {
             let position = utils.clonePosition(ball.start);
             let direction = utils.clonePosition(ball.start_direction);
             let speed = utils.clonePosition(ball.speed);
-            entities["ball" + randomKey()] = {
+            entities["ball" + utils.randomKey()] = {
                 type: "ball",
                 state: "moving",
                 color: "white",

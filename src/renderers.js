@@ -104,7 +104,7 @@ class AimLine extends PureComponent {
     render() {
         const {start, end} = this.props;
         const drawLength = 1.0; // Ratio of aim vector to display
-        const numCircles = 12;
+        const numCircles = 30;
         let delta = utils.getPointsDeltas(start, end);
         let length = utils.getDistance(start, end);
         if (length == 0) {
@@ -117,7 +117,14 @@ class AimLine extends PureComponent {
 
         let circles = Array(numCircles).fill().map((_, i) => {
             let start = this.props.start;
-            let x = start.x + (((delta.x) / numCircles) * i * drawLength);
+            let spacing = delta.x / numCircles;
+            let x = start.x + (spacing * i * drawLength);
+            if(x > width) {
+                x -= (x - width) * 2;              
+            }
+            if(x < 0) {
+                x += (-x) * 2;              
+            }
             let y = start.y + (((delta.y) / numCircles) * i * drawLength);
             return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
         });
@@ -254,7 +261,7 @@ class BallPowerUp extends PureComponent {
             this.collectAnimation = Animated.timing(this.state.animateCollection, {
                 toValue: 1,
                 easing: Easing.linear,
-                duration: utils.randomValueRounded(400, 800)
+                duration: utils.randomValueRounded(600, 900)
             });
             this.collectAnimation.start();
         }
