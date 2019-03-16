@@ -1,6 +1,6 @@
 # BouncifyRN
 
-[Ballz](https://itunes.apple.com/us/app/ballz/id1139609950) has enjoyed a lot of family competition in
+[Ballz](https://itunes.apple.com/us/app/ballz/id1139609950) has enjoyed a lot of use and family competition in
 our home. This project is meant to help learn React Native by writting a Ballz-inspired game
 with some tweaks and see what happens. This app should never be published to the app store as it's
 just for learning purposes. React Native isn't the best gaming plaform, it's probably going
@@ -8,11 +8,15 @@ to be terrible. This will be a fun test of the performance improvements coming i
 hooks coming in React Native 0.59!
 
 Beware, I'm not responsible for the hours you'll waste playing the game or evolving the game. It's
-a quite addictive. 
+a tad addictive. 
 
 *Update: Feb 8, 2019*
 
 I was able to make a lot more progress than originally anticipated. It's still a very shitty first version, but quite the surprise honestly how far it got quickly. There are so many rough edges left to fill! Used [React Native Game Engine](https://github.com/bberak/react-native-game-engine) as a super light-weight starting point of a game loop. The code is crappy, but it works.
+
+*Update: March 15, 2019*
+
+Holy batman, the memory leaks are insane and it's time for performance work. With a bit of help from Siavash, animations and rebound aiming have been added and the game is almost there and ready for more hours of wasted time. 
 
 Original game is on the left and React Native version (source in this repo) on the right.
 
@@ -42,8 +46,9 @@ react-native run-ios
 - [x] title placement has overlaps, ensure at least one and powerups
 - [x] clean up exploded boxes more aggresively
 - [x] ball can stop outside the side bounds of screen
-- [ ] replace all the crappy array indeces with x,y 
+- [x] replace all the crappy array indeces with x,y 
 - [ ] bug where ball can fit between spaces between boxes. Collision detection needs more resolution.
+- [ ] listener and animated logic is gross. as state, global, vs pattern for animated lifecycles
 
 🍄
 
@@ -70,11 +75,13 @@ react-native run-ios
 - [x] Smooth out aiming movement
 - [x] Save high score locally and show in the end screen
 - [x] Nice box tile explosion animation
+- [ ] Organize constants as per best practices for React
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
 - [ ] Add speed-up button
-- [ ] First ball landing spot calculation and animation of powerups to the landing
+- [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
+- [x] Animation of powerups to the landing transition
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
-- [ ] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
+- [x] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
 - [ ] Get working on Android
