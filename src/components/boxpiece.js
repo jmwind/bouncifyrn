@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Animated } from 'react-native';
 import utils from '../utils';
 
+// Box piece when exploding
 class BoxPiece extends React.PureComponent {    
   
     constructor(props) {
@@ -11,7 +12,7 @@ class BoxPiece extends React.PureComponent {
     render() {
       let width = 6;
       let height = 6;
-      const { backgroundColor, left, top ,bottom, transform, opacity } = this.props;      
+      const { backgroundColor, left, top, bottom, transform, opacity } = this.props;      
       const style = { left, top, bottom, width, height, opacity, backgroundColor, transform };  
       return (
         <Animated.View style={[styles.piece, style]} />
