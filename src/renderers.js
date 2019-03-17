@@ -81,6 +81,7 @@ class Floor extends PureComponent {
 class ScoreBar extends PureComponent {
     render() {
         const {height, best, level, balls_in_play, balls} = this.props;
+        let ball_count = balls == balls_in_play ? balls : balls - balls_in_play;
         return (
             <View style={[styles.scorebar, {height: height}]}>
                 <View style={styles.bestcontainer}>                    
@@ -93,7 +94,7 @@ class ScoreBar extends PureComponent {
                 </View>
                 <View style={styles.ballscontainer}>
                     <Text style={styles.besttitle}>Balls</Text>              
-                    <Text style={styles.currentscore}>{balls - balls_in_play}</Text>               
+                    <Text style={styles.currentscore}>{ball_count}</Text>               
                 </View>
             </View>
         );
