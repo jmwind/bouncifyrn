@@ -246,7 +246,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
 const accelerationX = 1;
 const accelerationY = 10;
 const minLength = 20;
-const maxLength = FLOOR_HEIGHT - SCOREBOARD_HEIGHT;
+const maxLength = 800;
 const minDeg = -88;
 const maxDeg = 88;
 

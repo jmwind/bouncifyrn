@@ -104,7 +104,7 @@ class AimLine extends PureComponent {
     render() {
         const {start, end} = this.props;
         const drawLength = 1.0; // Ratio of aim vector to display
-        const numCircles = 30;
+        const numCircles = 20;
         let delta = utils.getPointsDeltas(start, end);
         let length = utils.getDistance(start, end);
         if (length == 0) {
@@ -119,6 +119,7 @@ class AimLine extends PureComponent {
             let start = this.props.start;
             let spacing = delta.x / numCircles;
             let x = start.x + (spacing * i * drawLength);
+            // check screen upper and sound bounds and bounce the aim line off the surface
             if(x > width) {
                 x -= (x - width) * 2;              
             }
@@ -126,6 +127,9 @@ class AimLine extends PureComponent {
                 x += (-x) * 2;              
             }
             let y = start.y + (((delta.y) / numCircles) * i * drawLength);
+            if(y < SCOREBOARD_HEIGHT) {
+                y -= (y - SCOREBOARD_HEIGHT) * 2;
+            }
             return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
         });
 
