@@ -112,6 +112,7 @@ export function moveToNextLevel(entities, dispatch) {
 
     // are we done?
     if(max_row >= LAST_ROW) {
+        cleanUpAfterGame(entities);
         dispatch({ type: "game-over", score: scorebar.level });
         return;        
     }
@@ -155,6 +156,14 @@ function deleteFallenBallPowerups(entities) {
             delete entities[boxes[boxId]];
         }
     }
+}
+
+function cleanUpAfterGame(entities) {
+    Object.keys(entities).forEach(id => {
+        if(id.startsWith("box")) {
+            delete entities[id];
+        }
+    });   
 }
 
 function animateFallenPowerups(entities) {

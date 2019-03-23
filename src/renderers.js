@@ -236,6 +236,7 @@ class BallPowerUp extends PureComponent {
         if(this.breathAnimation) this.breathAnimation.stop();
         if(this.collectAnimation) this.collectAnimation.stop();
         this.state.animateTop.removeAllListeners();
+        this.state.anim_radius.removeAllListeners();
     }
 
     componentWillReceiveProps(nextProps) {
