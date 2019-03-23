@@ -21,8 +21,8 @@ Holy batman, the memory leaks are insane and it's time for performance work. Wit
 Original game is on the left and React Native version (source in this repo) on the right.
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/199530/52727452-44065e00-2f83-11e9-808c-d4709217862b.gif" alt="Single Touch Preview" height="450" />
-    <img src="https://user-images.githubusercontent.com/199530/52727460-4799e500-2f83-11e9-83fc-53e4ca5c4907.gif" alt="Multi Touch Preview" height="450" />
+    <img src="https://user-images.githubusercontent.com/199530/52727452-44065e00-2f83-11e9-808c-d4709217862b.gif" alt="Original Game" height="450" />
+    <img src="https://user-images.githubusercontent.com/199530/54870593-0913f900-4d7f-11e9-96dc-a73e916ca7b7.gif" alt="React Native Version" height="450" />
 </p>
 
 ## Quick Start iOS
