@@ -29,8 +29,10 @@ class Explosion extends React.PureComponent {
     Array.from(Array(count).keys()).forEach(() => {
       const item = {
         backgroundColor: backgroundColor,
-        left: utils.randomValue(origin.x, origin.x + BOX_TILE_SIZE),
-        top: utils.randomValue(origin.y, origin.y + BOX_TILE_SIZE),
+        left: utils.randomValue(origin.x - 5, origin.x + BOX_TILE_SIZE + 5),
+        top: utils.randomValue(origin.y - 5, origin.y + BOX_TILE_SIZE + 5),
+        width: utils.randomValue(5, 10),
+        height: utils.randomValue(5, 10)
       };
       items.push(item);
     });
@@ -45,7 +47,7 @@ class Explosion extends React.PureComponent {
   }
 
   animate = () => {
-    const { fallSpeed = 750 } = this.props;   
+    const { fallSpeed = 300 } = this.props;   
     this.exploAnimation = Animated.timing(this.animation, {
       toValue: 1,
       duration: fallSpeed,
@@ -64,14 +66,21 @@ class Explosion extends React.PureComponent {
         {this.state && this.state.items && this.state.items.map((item, index) => {
           const bottom = this.animation.interpolate({
             inputRange: [0, 1],
-            outputRange: [item.top, FLOOR_HEIGHT + 5]
+            outputRange: [item.top, item.top + 100]
           });
           const opacity = this.animation.interpolate({
             inputRange: [0, 1],
             outputRange: [1, 0]
           });       
           return (
-            <BoxPiece backgroundColor={item.backgroundColor} left={item.left} top={bottom} opacity={opacity} key={index} />
+            <BoxPiece 
+              backgroundColor={item.backgroundColor} 
+              left={item.left} 
+              height={item.height} 
+              width={item.width} 
+              top={bottom} 
+              opacity={opacity} 
+              key={index} />
           );
         })}
       </React.Fragment>

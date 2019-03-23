@@ -10,10 +10,8 @@ class BoxPiece extends React.PureComponent {
     }
 
     render() {
-      let width = 6;
-      let height = 6;
-      const { backgroundColor, left, top, bottom, transform, opacity } = this.props;      
-      const style = { left, top, bottom, width, height, opacity, backgroundColor, transform };  
+      const { backgroundColor, left, top, bottom, transform, opacity, width, height } = this.props;      
+      const style = { left, top, bottom, width, height, opacity, backgroundColor, transform, width, height };  
       return (
         <Animated.View style={[styles.piece, style]} />
       );
