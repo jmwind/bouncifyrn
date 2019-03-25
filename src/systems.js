@@ -162,6 +162,8 @@ function cleanUpAfterGame(entities) {
     Object.keys(entities).forEach(id => {
         if(id.startsWith("box")) {
             delete entities[id];
+        } else if(id.startsWith("ball") && !id == "ball") {
+            delete entities[id];
         }
     });   
 }
@@ -367,10 +369,11 @@ const CreateBallTail = (entities, { time }) => {
 const SpawnBall = (entities,  { touches, screen, dispatch }) => {
     const { scorebar } = entities;
     touches.filter(t => t.type === "press").forEach(t => {
+        let increment = scorebar.balls < 100 ? 5 : 50;
         if(t.event.pageY < scorebar.height && t.event.pageX > (screen.width / 2 + 100)) {
-            scorebar.balls+=5;
+            scorebar.balls+=increment;
         } else if(t.event.pageY < scorebar.height && t.event.pageX < (screen.width / 2 - 100) && scorebar.balls > 1) {
-            scorebar.balls-=5;
+            scorebar.balls-=increment;
         } else if(t.event.pageY < scorebar.height) {
             moveToNextLevel(entities, dispatch);
         }
