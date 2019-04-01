@@ -118,9 +118,10 @@ class AimLine extends PureComponent {
 
         let circles = Array(numCircles).fill().map((_, i) => {
             let start = this.props.start;
-            let spacing = delta.x / numCircles;
-            let x = start.x + (spacing * i * drawLength);
+            let spacing = delta.x / numCircles;            
+            
             // check screen upper and sound bounds and bounce the aim line off the surface
+            let x = start.x + (spacing * i * drawLength);
             if(x > width) {
                 x -= (x - width) * 2;              
             }
@@ -128,7 +129,7 @@ class AimLine extends PureComponent {
                 x += (-x) * 2;              
             }
             let y = start.y + (((delta.y) / numCircles) * i * drawLength);
-            if(y < SCOREBOARD_HEIGHT) {
+            if(y < (SCOREBOARD_HEIGHT)) {
                 y -= (y - SCOREBOARD_HEIGHT) * 2;
             }
             return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
@@ -140,6 +141,24 @@ class AimLine extends PureComponent {
                     {circles}
                 </Svg>
             </View>
+        );
+    }
+}
+
+class SpeedUpButton extends PureComponent {    
+    render() {
+        const {speed, row, column, available} = this.props;        
+        return(
+            available &&
+            <View style={[styles.boxcontainer, {
+                    top: rowToTopPosition(row),
+                    left: colToLeftPosition(column),
+                    backgroundColor: "pink"
+                    }]}>
+                <Text style={{color: "#262626", fontSize: 16}}>
+                    {speed}
+                </Text>
+            </View>            
         );
     }
 }
@@ -163,7 +182,7 @@ class BoxTile extends PureComponent {
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
             this.rowAnimation = Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
-                bounciness: 8,
+                bounciness: 10,
                 speed: 8
               });
               this.rowAnimation.start();
@@ -256,7 +275,7 @@ class BallPowerUp extends PureComponent {
             this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
             this.rowAnimation = Animated.spring(this.state.animateTop, {
                 toValue: rowToTopPosition(nextProps.row),                
-                bounciness: 8,
+                bounciness: 10,
                 speed: 2
               });
             this.rowAnimation.start();
@@ -401,4 +420,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { Ball, Floor, ScoreBar, AimLine, BoxTile, BallPowerUp };
+export { Ball, Floor, ScoreBar, AimLine, BoxTile, BallPowerUp, SpeedUpButton };

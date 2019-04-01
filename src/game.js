@@ -10,8 +10,8 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS } from "./renderers";
-import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail } from "./systems"
+import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS, SpeedUpButton } from "./renderers";
+import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp } from "./systems"
 import utils from "./utils";
 
 export default class BouncifyGame extends PureComponent {
@@ -66,7 +66,7 @@ export default class BouncifyGame extends PureComponent {
           running={this.state.running}
           onEvent={this.handleEvent}
           // Systems are called during the animation loop and responsible for updating the game state (eg, entities)      
-          systems={[StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail]}
+          systems={[StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp]}
           // Entities are the objects in the game. The game emgine will iterate over the objects and call their renderer 
           // during each animation frame. Attributes are passed to each entity as props. This initial list of entities
           // is below but the bulk of the game happens witin the systems as they add/remove entities based on the 
@@ -92,7 +92,13 @@ export default class BouncifyGame extends PureComponent {
               position: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
               speed: utils.newPosition(1.0, 1.0), 
               direction: utils.newPosition(0, 0), 
-              renderer: <Ball />}          
+              renderer: <Ball />},
+            speedbutton: {
+                available: false,
+                speed: 1,
+                row: 0,
+                column: 7,
+                renderer: <SpeedUpButton />}              
             }}>
         </GameEngine>
       </Modal>

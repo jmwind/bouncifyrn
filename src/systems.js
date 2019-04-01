@@ -17,6 +17,16 @@ let aim_vector = {
 };
 let last_ball_start_time = 0; 
 
+function speedUpBalls(entities, speed_multiplier) {
+    Object.keys(entities).forEach(ballId => {
+        let ball = entities[ballId];
+        if(! ballId.startsWith("ball")) return;        
+        if(ball.state != "moving") return;
+        ball.speed.x *= speed_multiplier;
+        ball.speed.y *= speed_multiplier;
+    });
+}
+
 function collidesWithBox(entities, ball) {
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     for(var boxId in boxes) {
@@ -78,13 +88,15 @@ function moveToNextLevelWithDelay(entities, dispatch) {
 }
 
 export function moveToNextLevel(entities, dispatch) {
-    const { scorebar, ball } = entities;
+    const { scorebar, ball, speedbutton } = entities;
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
     scorebar.level++;
 
     // clean-up and reset
     scorebar.state = "stopped";
+    speedbutton.available = false;
+    speedbutton.speed = 1;
     scorebar.balls_in_play = 0;
     scorebar.balls += entities.scorebar.new_balls;
     scorebar.new_balls = 0;
@@ -256,7 +268,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
 
 const accelerationX = 1;
 const accelerationY = 10;
-const minLength = 20;
+const minLength = 30;
 const maxLength = 800;
 const minDeg = -88;
 const maxDeg = 88;
@@ -310,11 +322,11 @@ const AimBallsStart = (entities, { touches, screen }) => {
 
 const AimBallsRelease = (entities, { time, touches }) => {
     const { scorebar, ball, floor } = entities;
-    if(entities.scorebar.state == "stopped") {
+    if(scorebar.state == "stopped") {
         touches.filter(t => t.type === "end").forEach(t => {
             delete entities.aimline;
             let d = utils.getDistance(aim_vector.start, aim_vector.final);
-            if(t.event.pageY > floor.height && d > minLength && ball.state == "stopped") {
+            if(d > minLength && ball.state == "stopped") {
                 let delta = utils.getPointsDeltas(ball.position, aim_vector.final);
                 // Normalize vector
                 ball.direction.y = (delta.y/d);
@@ -380,5 +392,33 @@ const SpawnBall = (entities,  { touches, screen, dispatch }) => {
     });
     return entities;
 };
-  
-export { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail };
+
+const SpeedUp = (entities,  { touches, time }) => {
+    const { scorebar, speedbutton } = entities;
+    if(scorebar.state == "started" && time.current - last_ball_start_time > 3000) {
+        speedbutton.available = true;
+    }
+    touches.filter(t => t.type === "press").forEach(t => {                
+        if(speedbutton.available) {
+            top = rowToTopPosition(speedbutton.row);
+            left = colToLeftPosition(speedbutton.column);
+            eventX = t.event.pageX;
+            eventY = t.event.pageY;
+            if(eventX > left && eventX < left + BOX_TILE_SIZE && eventY > top && eventY < top + BOX_TILE_SIZE) {            
+                if(speedbutton.speed == 1) {
+                    speedbutton.speed = 1.5;
+                    speedUpBalls(entities, speedbutton.speed);
+                } else if(speedbutton.speed == 1.5) {
+                    speedbutton.speed = 2;
+                    speedUpBalls(entities, speedbutton.speed);
+                } else if(speedbutton.speed == 2) {
+                    speedbutton.speed = 1;
+                    speedUpBalls(entities, 0.25);
+                }
+            }
+        }
+    });
+    return entities;
+};
+
+export { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp };
