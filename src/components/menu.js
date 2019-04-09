@@ -45,7 +45,8 @@ export default class MainMenu extends PureComponent {
             </Animatable.Text>
           </View>
         }
-        <Button onPress={this.props.onPlayGame}>{this.props.gamesPlayed ? 'Restart' : 'Play'}</Button>
+        <Button onPress={_ => this.props.onPlayGame("regular")}>{this.props.gamesPlayed ? 'Restart Lines' : 'Play Lines'}</Button>
+        <Button onPress={_ => this.props.onPlayGame("bricks")}>{this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}</Button>
         <Item
           onPress={_ =>
             Linking.openURL(

@@ -21,14 +21,55 @@ export default class BouncifyGame extends PureComponent {
       running: false,
       gameOver: false,
       lastScore: 0
-    };
+    };    
+  }
+
+  componentWillMount = () => {
+    this.entities = {
+      floor: { 
+        height: FLOOR_HEIGHT, 
+        renderer: <Floor /> },          
+      scorebar: { 
+        height: 90, 
+        best: this.props.topScore, 
+        mode: this.props.mode,
+        state: "stopped",               
+        level: 0, 
+        balls: 1, 
+        new_balls: 0, 
+        balls_in_play: 0, 
+        score: 0, 
+        renderer: <ScoreBar />},               
+      ball: { 
+        color: "white", 
+        state: "stopped", 
+        start: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
+        position: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
+        speed: utils.newPosition(1.0, 1.0), 
+        direction: utils.newPosition(0, 0), 
+        renderer: <Ball />},
+      speedbutton: {
+          available: false,
+          speed: 1,
+          row: 0,
+          column: 7,
+          renderer: <SpeedUpButton />}              
+      };
   }
 
   componentWillReceiveProps = nextProps => {
-    if (nextProps.visible) {
+    if(nextProps.visible) {
       this.setState({
         running: true
       });
+    }
+    if(nextProps.mode) {
+      this.entities.scorebar.mode = nextProps.mode;
+      if(nextProps.mode != "regular") {
+        this.entities.scorebar.balls = 100;
+      } else {
+        this.entities.scorebar.balls = 1;
+      }   
     }
   }
 
@@ -37,6 +78,8 @@ export default class BouncifyGame extends PureComponent {
       running: false,
       lastScore: score
     });
+    this.entities.scorebar.level = 0;
+    this.entities.scorebar.balls = 1;
 
     setTimeout(() => {
       this.setState({
@@ -71,35 +114,7 @@ export default class BouncifyGame extends PureComponent {
           // during each animation frame. Attributes are passed to each entity as props. This initial list of entities
           // is below but the bulk of the game happens witin the systems as they add/remove entities based on the 
           // state of the game.
-          entities={{
-            floor: { 
-              height: FLOOR_HEIGHT, 
-              renderer: <Floor /> },          
-            scorebar: { 
-              height: 90, 
-              best: this.props.topScore, 
-              state: "stopped", 
-              level: 0, 
-              balls: 1, 
-              new_balls: 0, 
-              balls_in_play: 0, 
-              score: 0, 
-              renderer: <ScoreBar />},               
-            ball: { 
-              color: "white", 
-              state: "stopped", 
-              start: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
-              position: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
-              speed: utils.newPosition(1.0, 1.0), 
-              direction: utils.newPosition(0, 0), 
-              renderer: <Ball />},
-            speedbutton: {
-                available: false,
-                speed: 1,
-                row: 0,
-                column: 7,
-                renderer: <SpeedUpButton />}              
-            }}>
+          entities={this.entities}>
         </GameEngine>
       </Modal>
     );

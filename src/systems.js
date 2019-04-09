@@ -17,6 +17,45 @@ let aim_vector = {
 };
 let last_ball_start_time = 0; 
 
+let level1 = [
+    [1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1],
+    [1,0,1,1,1,1,0,1]
+];
+
+let level2 = [
+    [1,1,1,1,1,1,1,1],
+    [0,0,0,0,0,0,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1],
+    [1,1,1,1,1,1,0,1]
+];
+
+let level3 = [
+    [1,1,1,1,1,1,1,1],
+    [1,0,0,0,0,0,0,1],
+    [1,0,0,0,0,0,0,1],
+    [1,1,1,0,1,1,1,1],
+    [1,1,1,0,1,1,1,1],
+    [1,1,1,0,1,1,1,1],
+    [1,1,1,0,1,1,1,1],
+    [1,1,1,0,1,1,1,1],
+    [1,1,1,0,1,1,1,1]
+];
+
+let levels = [level1, level2, level3];
+
+
 function speedUpBalls(entities, speed_multiplier) {
     Object.keys(entities).forEach(ballId => {
         let ball = entities[ballId];
@@ -112,7 +151,7 @@ export function moveToNextLevel(entities, dispatch) {
             if(box.explode) {
                 dead_boxes.push(boxes[boxId])
             } else {
-                if(++box.row > max_row) {
+                if(scorebar.mode == "regular" && ++box.row > max_row) {
                     max_row = box.row;
                 }
             }
@@ -123,38 +162,67 @@ export function moveToNextLevel(entities, dispatch) {
     });
 
     // are we done?
-    if(max_row >= LAST_ROW) {
+    let gameover = false;
+    if(scorebar.mode == "regular" && max_row >= LAST_ROW) {  
+        gameover = true;              
+    } else if(scorebar.mode != "regular" && boxes.length > 10) {
+        gameover = true;
+    }
+    if(gameover) {
         cleanUpAfterGame(entities);
         dispatch({ type: "game-over", score: scorebar.level });
-        return;        
+        return;
     }
-    
-    // create new row of boxes and power-ups
-    let powerup = false;
-    let cols = 8;
-    for (i = 0; i < cols; i++) {        
-        let key = utils.randomKey();
-        let col = i;
-        let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
-        if(utils.randomRoll(70)) {
-            if(!powerup && (utils.randomRoll(50) || i == cols - 1)) {            
+   
+    if(scorebar.mode != "regular") {
+        // end of game is different by game mode
+        for(var boxId in boxes) {
+            delete entities[boxes[boxId]];
+        }
+        let level = levels[utils.randomValueRounded(0, 2)];
+        for(j = 0; j < 9; j++) {
+            for (i = 0; i < 8; i++) {
+                if(level[j][i] == 0) continue;
+                let key = utils.randomKey();
+                let new_hits = utils.randomValueRounded(1, 20);
                 entities["box" + key] = {
-                    row: 1, 
-                    col: col, 
-                    collecting: false,                    
-                    type: "powerup", 
-                    renderer: BallPowerUp, 
-                };
-                powerup = true;
-            } else {
-                entities["box" + key] = {
-                    row: 1, 
-                    col: col, 
+                    row: j + 1, 
+                    col: i, 
                     explode: false,
                     explosionComplete: false,
                     hits: new_hits, 
                     renderer: BoxTile, 
                 };
+            }
+        }
+    } else {
+        // create new row of boxes and power-ups
+        let powerup = false;
+        let cols = 8;
+        for (i = 0; i < cols; i++) {        
+            let key = utils.randomKey();
+            let col = i;
+            let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
+            if(utils.randomRoll(70)) {
+                if(!powerup && (utils.randomRoll(50) || i == cols - 1)) {            
+                    entities["box" + key] = {
+                        row: 1, 
+                        col: col, 
+                        collecting: false,                    
+                        type: "powerup", 
+                        renderer: BallPowerUp, 
+                    };
+                    powerup = true;
+                } else {
+                    entities["box" + key] = {
+                        row: 1, 
+                        col: col, 
+                        explode: false,
+                        explosionComplete: false,
+                        hits: new_hits, 
+                        renderer: BoxTile, 
+                    };
+                }
             }
         }
     }

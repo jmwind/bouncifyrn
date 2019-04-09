@@ -12,7 +12,8 @@ export default class Container extends PureComponent {
       gameStarted: false,
       lastScore: 0,
       topScore: 0,
-      gamesPlayed: 0
+      gamesPlayed: 0,
+      mode: "regular"
     };
   }
 
@@ -24,9 +25,10 @@ export default class Container extends PureComponent {
     })
 }
 
-  toggleGame = (gameStarted, lastScore) => {    
+  toggleGame = (gameStarted, lastScore, mode) => {    
     this.setState({
-      gameStarted
+      gameStarted,
+      mode
     });
     if(! gameStarted) {
       this.setState({
@@ -43,18 +45,19 @@ export default class Container extends PureComponent {
   };
 
   render() {
-    const { gamesPlayed, lastScore, topScore, gameStarted } = this.state;
+    const { gamesPlayed, lastScore, topScore, gameStarted, mode } = this.state;
     return (
       <View style={styles.container}>        
         <MainMenu 
-          onPlayGame={_ => this.toggleGame(true)} 
+          onPlayGame={(new_mode) => this.toggleGame(true, lastScore, new_mode)} 
           gamesPlayed={gamesPlayed} 
           lastScore={lastScore} 
           topScore={topScore} />
         <BouncifyGame
           visible={gameStarted}
           topScore={topScore}
-          onClose={(lastScore) => this.toggleGame(false, lastScore)}
+          mode={mode}
+          onClose={(lastScore) => this.toggleGame(false, lastScore, mode)}
         />
       </View>
     );

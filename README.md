@@ -75,10 +75,12 @@ react-native run-ios
 - [x] Smooth out aiming movement
 - [x] Save high score locally and show in the end screen
 - [x] Nice box tile explosion animation
+- [~] Add a "bricks" mode where levels are full shapes with pre-set number of balls (good demo mode)
+- [ ] Refactor entities into types
 - [ ] Organize constants as per best practices for React
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
-- [ ] Add speed-up button
+- [~] Add speed-up button
 - [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
 - [x] Animation of powerups to the landing transition
 - [ ] Add tests and CI (buildkite and mac stadium?)
