@@ -212,7 +212,7 @@ export function moveToNextLevel(entities, dispatch) {
             for (i = 0; i < 8; i++) {
                 if(level[j][i] == 0) continue;
                 let key = utils.randomKey();
-                let new_hits = utils.randomValueRounded(3, scorebar.balls/4);
+                let new_hits = utils.randomValueRounded(3, scorebar.balls/2);
                 entities["box" + key] = {
                     row: j + 1, 
                     col: i, 
