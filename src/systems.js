@@ -53,7 +53,31 @@ let level3 = [
     [1,1,1,0,1,1,1,1]
 ];
 
-let levels = [level1, level2, level3];
+let level4 = [
+    [0,0,0,0,1,1,1,1],
+    [0,1,1,0,1,1,1,1],
+    [0,1,1,0,1,1,1,1],
+    [0,1,1,0,0,0,0,1],
+    [0,1,1,0,0,0,0,1],
+    [0,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1],
+    [0,1,1,1,1,1,1,1]
+];
+
+let level5 = [
+    [0,0,0,0,0,0,0,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,0],
+    [0,1,1,1,1,1,1,1]
+];
+
+let levels = [level1, level2, level3, level4, level5];
 
 
 function speedUpBalls(entities, speed_multiplier) {
@@ -160,8 +184,11 @@ export function moveToNextLevel(entities, dispatch) {
     dead_boxes.forEach((boxId) => {
         delete entities[boxId];
     });
+    // recalculate the boxes that are left
+    boxes = Object.keys(entities).filter(key => key.startsWith("box"));
 
-    // are we done?
+    // recalcare we done?
+    
     let gameover = false;
     if(scorebar.mode == "regular" && max_row >= LAST_ROW) {  
         gameover = true;              
@@ -179,12 +206,13 @@ export function moveToNextLevel(entities, dispatch) {
         for(var boxId in boxes) {
             delete entities[boxes[boxId]];
         }
-        let level = levels[utils.randomValueRounded(0, 2)];
+        scorebar.balls += 25;
+        let level = levels[utils.randomValueRounded(0, levels.length - 1)];
         for(j = 0; j < 9; j++) {
             for (i = 0; i < 8; i++) {
                 if(level[j][i] == 0) continue;
                 let key = utils.randomKey();
-                let new_hits = utils.randomValueRounded(1, 20);
+                let new_hits = utils.randomValueRounded(3, scorebar.balls/4);
                 entities["box" + key] = {
                     row: j + 1, 
                     col: i, 

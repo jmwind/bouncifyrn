@@ -66,7 +66,7 @@ export default class BouncifyGame extends PureComponent {
     if(nextProps.mode) {
       this.entities.scorebar.mode = nextProps.mode;
       if(nextProps.mode != "regular") {
-        this.entities.scorebar.balls = 100;
+        this.entities.scorebar.balls = 75;
       } else {
         this.entities.scorebar.balls = 1;
       }   

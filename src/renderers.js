@@ -2,6 +2,7 @@ import React, { PureComponent, Component } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import utils from "./utils";
+import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 
 export const RADIUS = 7;
@@ -152,12 +153,13 @@ class SpeedUpButton extends PureComponent {
             available &&
             <View style={[styles.boxcontainer, {
                     top: rowToTopPosition(row),
-                    left: colToLeftPosition(column),
-                    backgroundColor: "pink"
+                    left: colToLeftPosition(column)
                     }]}>
-                <Text style={{color: "#262626", fontSize: 16}}>
-                    {speed}
-                </Text>
+                <Animatable.Text 
+                style={{color: "white", fontSize: 18}} animation="flash" 
+                iterationCount="infinite" direction="alternate">
+                    {speed}x
+                </Animatable.Text>                   
             </View>            
         );
     }
