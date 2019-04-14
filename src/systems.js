@@ -3,15 +3,6 @@ import Utils from "./utils";
 import Levels from "./brick_levels";
 import { Constants } from "./constants";
 
-// TODO: move into an entity and not global
-// TODO: add reflected aim lines
-let aim_vector = {
-    start: Utils.newPosition(0, 0),
-    delta: Utils.newPosition(0, 0),
-    final: Utils.newPosition(0, 0)
-};
-let last_ball_start_time = 0; 
-
 function speedUpBalls(entities, speed_multiplier) {
     Object.keys(entities).forEach(ballId => {
         let ball = entities[ballId];
@@ -305,9 +296,12 @@ const AimBallsStart = (entities, { touches, screen }) => {
     const { scorebar, ball } = entities; 
     if(scorebar.state == "stopped") {
         touches.filter(x => x.type === "start").forEach(t => {
-            aim_vector.start = { x: t.event.pageX, y: t.event.pageY };
-            aim_vector.delta = { x: 0, y: 0 };
-            aim_vector.final = { x: 0, y: 0 };
+            // aim vector is the drag gestuve movement while the aim line is the opposite vector
+            // from the ball towards the direction that the ball will be moving
+            let drag_vector = {};
+            drag_vector.start = { x: t.event.pageX, y: t.event.pageY };
+            drag_vector.delta = { x: 0, y: 0 };
+            drag_vector.final = { x: 0, y: 0 };
             aim_line = Utils.newPosition(
                 ball.position.x + Constants.RADIUS / 2,
                 ball.position.y + Constants.RADIUS / 2
@@ -315,30 +309,32 @@ const AimBallsStart = (entities, { touches, screen }) => {
             entities["aimline"] = {
                 start: aim_line,
                 end: aim_line,
+                drag_vector: drag_vector,
                 renderer: AimLine
             };
 	    });
     
         touches.filter(t => t.type === "move").forEach(t => {
             if(entities.aimline && t.delta) {
+                const { aimline } = entities;
                 // Track delta movements and allow variable acceleration per axis
-                aim_vector.delta.x += t.delta.pageX * accelerationX;
-                aim_vector.delta.y += t.delta.pageY * accelerationY;
+                aimline.drag_vector.delta.x += t.delta.pageX * accelerationX;
+                aimline.drag_vector.delta.y += t.delta.pageY * accelerationY;
 
                  // Give the aimline a circular curvature, let the change in
                  // y-axis delta control length and x-axis delta the degree of
                  // the aim line.                
-                let length = Math.min(maxLength, aim_vector.delta.y);
-                let deg = (aim_vector.delta.x % 360);
+                let length = Math.min(maxLength, aimline.drag_vector.delta.y);
+                let deg = (aimline.drag_vector.delta.x % 360);
                 let x2 = length * Math.sin(deg * Math.PI / 180);
                 let y2 = length * Math.cos(deg * Math.PI / 180);
 
                 if(length > minLength && deg > minDeg && deg < maxDeg) {
-                    aim_vector.final = Utils.getPointsDeltas({x: x2 + Constants.RADIUS, y: y2 + Constants.RADIUS}, ball.position);
-                    entities.aimline.end = aim_vector.final;
+                    aimline.drag_vector.final = Utils.getPointsDeltas({x: x2 + Constants.RADIUS, y: y2 + Constants.RADIUS}, ball.position);
+                    entities.aimline.end = aimline.drag_vector.final;
                 } else {
                     // Invalid aimline, revert
-                    aim_vector.final = aim_vector.start;
+                    aimline.drag_vector.final = aimline.drag_vector.start;
                     entities.aimline.end = Utils.clonePosition(aim_line);
                 }
             }
@@ -352,10 +348,10 @@ const AimBallsRelease = (entities, { time, touches }) => {
     const { scorebar, ball, floor } = entities;
     if(scorebar.state == "stopped") {
         touches.filter(t => t.type === "end").forEach(t => {
-            delete entities.aimline;
-            let d = Utils.getDistance(aim_vector.start, aim_vector.final);
+            const { aimline } = entities;
+            let d = Utils.getDistance(aimline.drag_vector.start, aimline.drag_vector.final);
             if(d > minLength && ball.state == "stopped") {
-                let delta = Utils.getPointsDeltas(ball.position, aim_vector.final);
+                let delta = Utils.getPointsDeltas(ball.position, aimline.drag_vector.final);
                 // Normalize vector
                 ball.direction.y = (delta.y/d);
                 ball.direction.x = (delta.x/d);
@@ -365,13 +361,12 @@ const AimBallsRelease = (entities, { time, touches }) => {
                 ball.speed.y = 10;
                 ball.start = Utils.clonePosition(ball.position);
                 ball.state = "moving";
+                ball.last_ball_start_time = time.current; 
                 scorebar.state = "started";
                 scorebar.balls_returned = 0;
                 scorebar.balls_in_play = 1;
-
-                // Start ball countdown so that we can space the balls
-                last_ball_start_time = time.current;                
             }
+            delete entities.aimline;
         });
     }
 	return entities;
@@ -382,7 +377,7 @@ const CreateBallTail = (entities, { time }) => {
     if(scorebar.state == "started" && scorebar.balls_in_play < scorebar.balls) {
         // Controls the speed at which new balls are spawned when they start to shoot 
         // from the floor
-        if((time.current - last_ball_start_time) > 150 /* ms */) {
+        if((time.current - ball.last_ball_start_time) > 150 /* ms */) {
             let position = Utils.clonePosition(ball.start);
             let direction = Utils.clonePosition(ball.start_direction);
             let speed = Utils.clonePosition(ball.speed);
@@ -396,15 +391,15 @@ const CreateBallTail = (entities, { time }) => {
                 direction: direction
             };
             scorebar.balls_in_play++;
-            last_ball_start_time = time.current;
+            ball.last_ball_start_time = time.current;
         }
     }
     return entities;
 }
 
 const SpeedUp = (entities,  { touches, time }) => {
-    const { scorebar, speedbutton } = entities;
-    if(scorebar.state == "started" && time.current - last_ball_start_time > 3000) {
+    const { scorebar, speedbutton, ball } = entities;
+    if(scorebar.state == "started" && time.current - ball.last_ball_start_time > 3000) {
         speedbutton.available = true;
     }
     touches.filter(t => t.type === "press").forEach(t => {                
