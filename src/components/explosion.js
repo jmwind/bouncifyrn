@@ -28,10 +28,10 @@ class Explosion extends React.PureComponent {
     Array.from(Array(count).keys()).forEach(() => {
       const item = {
         backgroundColor: backgroundColor,
-        left: utils.randomValue(origin.x - 5, origin.x + Constants.BOX_TILE_SIZE + 5),
-        top: utils.randomValue(origin.y - 5, origin.y + Constants.BOX_TILE_SIZE + 5),
-        width: utils.randomValue(5, 10),
-        height: utils.randomValue(5, 10)
+        left: utils.randomValue(origin.x - 15, origin.x + Constants.BOX_TILE_SIZE + 15),
+        top: utils.randomValue(origin.y - 15, origin.y + Constants.BOX_TILE_SIZE + 15),
+        width: utils.randomValue(2, 10),
+        height: utils.randomValue(2, 10)
       };
       items.push(item);
     });

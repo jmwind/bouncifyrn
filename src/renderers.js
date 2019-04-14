@@ -157,7 +157,7 @@ class BoxTile extends PureComponent {
             return (     
                 <Explosion 
                     backgroundColor={Utils.hitsToColor(hits)} 
-                    count={30} 
+                    count={50} 
                     origin={{x: Utils.colToLeftPosition(col), y: Utils.rowToTopPosition(row)}} />            
             );
         } else {
