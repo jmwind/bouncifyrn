@@ -77,7 +77,6 @@ export function moveToNextLevel(entities, dispatch) {
     const { scorebar, ball, speedbutton } = entities;
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
-    scorebar.level++;
 
     // clean-up and reset
     scorebar.state = Constants.STOPPED;
@@ -110,8 +109,6 @@ export function moveToNextLevel(entities, dispatch) {
     // recalculate the boxes that are left
     boxes = Object.keys(entities).filter(key => key.startsWith("box"));
 
-    // recalcare we done?
-    
     let gameover = false;
     if(scorebar.mode == Constants.MODE_LINES && max_row >= Constants.LAST_ROW) {  
         gameover = true;              
@@ -124,8 +121,10 @@ export function moveToNextLevel(entities, dispatch) {
         return;
     }
    
+    // Keep going to next level
+    scorebar.level++;
     if(scorebar.mode == Constants.MODE_BRICKS) {
-        // end of game is different by game mode
+        // clear all boxes and add entire new level        
         for(var boxId in boxes) {
             delete entities[boxes[boxId]];
         }

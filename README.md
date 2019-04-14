@@ -77,8 +77,9 @@ react-native run-ios
 - [x] Nice box tile explosion animation
 - [x] Add a "bricks" mode where levels are full shapes with pre-set number of balls (good demo mode)
 - [x] Add speed-up button that appears after all balls are in play
+- [x] Save the two game type scores separately
 - [ ] Refactor entities into types
-- [ ] Organize constants as per best practices for React
+- [x] Organize constants as per best practices for React
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
 - [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
