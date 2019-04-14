@@ -112,7 +112,7 @@ class SpeedUpButton extends PureComponent {
                     left: Utils.colToLeftPosition(column)
                     }]}>
                 <Animatable.Text 
-                style={{color: "white", fontSize: 18}} animation="flash" 
+                style={{color: "white", fontSize: 20}} animation="pulse" 
                 iterationCount="infinite" direction="alternate">
                     {speed}x
                 </Animatable.Text>                   

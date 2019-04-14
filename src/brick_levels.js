@@ -70,6 +70,18 @@ const level6 = [
     [0,1,1,1,1,1,1,1]
 ];
 
-const Levels = [level1, level2, level3, level4, level5, level6];
+const level7 = [
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1],
+    [0,1,0,1,0,1,0,1]
+];
+
+const Levels = [level1, level2, level3, level4, level5, level6, level7];
 
 export default Levels;

@@ -5,6 +5,7 @@ import BouncifyGame from "./game";
 import { Constants } from "./constants";
 
 const TOP_SCORE_KEY = "topScore";
+const TOP_SCORE_BRICKS_KEY = "topScoreBricks";
 
 export default class Container extends PureComponent {
   constructor(props) {
@@ -13,6 +14,7 @@ export default class Container extends PureComponent {
       gameStarted: false,
       lastScore: 0,
       topScore: 0,
+      topScoreBricks: 0,
       gamesPlayed: 0,
       mode: Constants.MODE_LINES
     };
@@ -23,7 +25,12 @@ export default class Container extends PureComponent {
         if(val != null) {
           this.setState({ topScore: parseInt(val) });
         }
-    })    
+    });
+    AsyncStorage.getItem(TOP_SCORE_BRICKS_KEY).then((val) => {
+      if(val != null) {
+        this.setState({ topScoreBricks: parseInt(val) });
+      }
+  })     
   }
 
   toggleGame = (gameStarted, lastScore, mode) => {    
@@ -36,27 +43,33 @@ export default class Container extends PureComponent {
         gamesPlayed: this.state.gamesPlayed + 1,
         lastScore: lastScore
       });
-      if(lastScore > this.state.topScore) {
+      if(mode == Constants.MODE_LINES && lastScore > this.state.topScore) {
         this.setState({
           topScore: lastScore
         });
         AsyncStorage.setItem(TOP_SCORE_KEY, lastScore.toString());
+      } else if(mode == Constants.MODE_BRICKS && lastScore > this.state.topScoreBricks) {
+        this.setState({
+          topScoreBricks: lastScore
+        });
+        AsyncStorage.setItem(TOP_SCORE_BRICKS_KEY, lastScore.toString());
       }
     }
   };
 
   render() {
-    const { gamesPlayed, lastScore, topScore, gameStarted, mode } = this.state;
+    const { gamesPlayed, lastScore, topScore, topScoreBricks, gameStarted, mode } = this.state;
     return (
       <View style={styles.container}>        
         <MainMenu 
           onPlayGame={(new_mode) => this.toggleGame(true, lastScore, new_mode)} 
           gamesPlayed={gamesPlayed} 
           lastScore={lastScore} 
-          topScore={topScore} />
+          topScore={topScore}
+          topScoreBricks={topScoreBricks} />
         <BouncifyGame
           visible={gameStarted}
-          topScore={topScore}
+          topScore={mode == Constants.MODE_LINES ? topScore : topScoreBricks}
           mode={mode}
           onClose={(lastScore) => this.toggleGame(false, lastScore, mode)}
         />

@@ -21,7 +21,7 @@ export default class MainMenu extends PureComponent {
         {
           this.props.gamesPlayed == 0 &&
           <Animatable.Text 
-            style={styles.title} animation="slideInDown" 
+            style={styles.title} animation="pulse" 
             iterationCount="infinite" direction="alternate">Bouncify
           </Animatable.Text>
         }
@@ -38,16 +38,24 @@ export default class MainMenu extends PureComponent {
             </Animatable.Text>
             <Animatable.Text 
               style={styles.score} animation="pulse" 
-              iterationCount="infinite" direction="alternate">Best
+              iterationCount="infinite" direction="alternate">Best Lines
             </Animatable.Text>
             <Animatable.Text 
               style={styles.score} animation="pulse" 
               iterationCount="infinite" direction="alternate">{this.props.topScore}
             </Animatable.Text>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">Best Bricks
+            </Animatable.Text>
+            <Animatable.Text 
+              style={styles.score} animation="pulse" 
+              iterationCount="infinite" direction="alternate">{this.props.topScoreBricks}
+            </Animatable.Text>
           </View>
         }
         <Button onPress={_ => this.props.onPlayGame(Constants.MODE_LINES)}>
-          {this.props.gamesPlayed ? 'Restart Rows' : 'Play Rows'}
+          {this.props.gamesPlayed ? 'Restart Lines' : 'Play Lines'}
         </Button>
         <Button onPress={_ => this.props.onPlayGame(Constants.MODE_BRICKS)}>
           {this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}

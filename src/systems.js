@@ -350,7 +350,7 @@ const AimBallsRelease = (entities, { time, touches }) => {
         touches.filter(t => t.type === "end").forEach(t => {
             const { aimline } = entities;
             let d = Utils.getDistance(aimline.drag_vector.start, aimline.drag_vector.final);
-            if(d > minLength && ball.state == Constants.STOPPED) {
+            if(d > minLength && aimline.drag_vector.start.y > scorebar.height && ball.state == Constants.STOPPED) {
                 let delta = Utils.getPointsDeltas(ball.position, aimline.drag_vector.final);
                 // Normalize vector
                 ball.direction.y = (delta.y/d);
