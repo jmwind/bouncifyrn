@@ -34,7 +34,7 @@ export default class BouncifyGame extends PureComponent {
         height: 90, 
         best: this.props.topScore, 
         mode: this.props.mode,
-        state: "stopped",               
+        state: Constants.STOPPED,               
         level: 0, 
         balls: 1, 
         new_balls: 0, 
@@ -43,7 +43,7 @@ export default class BouncifyGame extends PureComponent {
         renderer: <ScoreBar />},               
       ball: { 
         color: "white", 
-        state: "stopped", 
+        state: Constants.STOPPED, 
         start: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
         position: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
         speed: Utils.newPosition(1.0, 1.0), 

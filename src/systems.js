@@ -7,7 +7,7 @@ function speedUpBalls(entities, speed_multiplier) {
     Object.keys(entities).forEach(ballId => {
         let ball = entities[ballId];
         if(! ballId.startsWith("ball")) return;        
-        if(ball.state != "moving") return;
+        if(ball.state == Constants.STOPPED) return;
         ball.speed.x *= speed_multiplier;
         ball.speed.y *= speed_multiplier;
     });
@@ -80,7 +80,7 @@ export function moveToNextLevel(entities, dispatch) {
     scorebar.level++;
 
     // clean-up and reset
-    scorebar.state = "stopped";
+    scorebar.state = Constants.STOPPED;
     speedbutton.available = false;
     speedbutton.speed = 1;
     scorebar.balls_in_play = 0;
@@ -213,7 +213,7 @@ function animateFallenPowerups(entities) {
 
 const StartGame = (entities, dispatch) => {    
     const {scorebar} = entities;
-    if(scorebar.state == "stopped" && scorebar.level == 0) {
+    if(scorebar.state == Constants.STOPPED && scorebar.level == 0) {
         moveToNextLevel(entities, dispatch);
     }
     return entities;
@@ -224,7 +224,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
     Object.keys(entities).forEach(ballId => {
         let ball = entities[ballId];
         if(! ballId.startsWith("ball")) return;        
-        if(ball.state != "moving") return;
+        if(ball.state == Constants.STOPPED) return;
         
         let next_position = Utils.newPosition(
             ball.position.x + ( ball.speed.x * ball.direction.x ),
@@ -252,7 +252,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
             // there's only one ball that is the tracer ball and will remain on the floor while
             // all other balls will dissapear when they hit the floor.
             if(ballId == "ball") {
-                ball.state = "stopped";
+                ball.state = Constants.STOPPED;
                 // ensure rested nicely on top of floor or not outside of sidewalls
                 if(next_position.x > screen.width - Constants.RADIUS*2) {
                     next_position.x = screen.width - Constants.RADIUS*2;
@@ -294,7 +294,7 @@ const maxDeg = 88;
 
 const AimBallsStart = (entities, { touches, screen }) => {
     const { scorebar, ball } = entities; 
-    if(scorebar.state == "stopped") {
+    if(scorebar.state == Constants.STOPPED) {
         touches.filter(x => x.type === "start").forEach(t => {
             // aim vector is the drag gestuve movement while the aim line is the opposite vector
             // from the ball towards the direction that the ball will be moving
@@ -346,11 +346,11 @@ const AimBallsStart = (entities, { touches, screen }) => {
 
 const AimBallsRelease = (entities, { time, touches }) => {
     const { scorebar, ball, floor } = entities;
-    if(scorebar.state == "stopped") {
+    if(scorebar.state == Constants.STOPPED) {
         touches.filter(t => t.type === "end").forEach(t => {
             const { aimline } = entities;
             let d = Utils.getDistance(aimline.drag_vector.start, aimline.drag_vector.final);
-            if(d > minLength && ball.state == "stopped") {
+            if(d > minLength && ball.state == Constants.STOPPED) {
                 let delta = Utils.getPointsDeltas(ball.position, aimline.drag_vector.final);
                 // Normalize vector
                 ball.direction.y = (delta.y/d);
@@ -360,9 +360,9 @@ const AimBallsRelease = (entities, { time, touches }) => {
                 ball.speed.x = 10;
                 ball.speed.y = 10;
                 ball.start = Utils.clonePosition(ball.position);
-                ball.state = "moving";
+                ball.state = Constants.MOVING;
                 ball.last_ball_start_time = time.current; 
-                scorebar.state = "started";
+                scorebar.state = Constants.STARTED;
                 scorebar.balls_returned = 0;
                 scorebar.balls_in_play = 1;
             }
@@ -374,7 +374,7 @@ const AimBallsRelease = (entities, { time, touches }) => {
 
 const CreateBallTail = (entities, { time }) => {
     const { scorebar, ball } = entities;
-    if(scorebar.state == "started" && scorebar.balls_in_play < scorebar.balls) {
+    if(scorebar.state == Constants.STARTED && scorebar.balls_in_play < scorebar.balls) {
         // Controls the speed at which new balls are spawned when they start to shoot 
         // from the floor
         if((time.current - ball.last_ball_start_time) > 150 /* ms */) {
@@ -383,7 +383,7 @@ const CreateBallTail = (entities, { time }) => {
             let speed = Utils.clonePosition(ball.speed);
             entities["ball" + Utils.randomKey()] = {
                 type: "ball",
-                state: "moving",
+                state: Constants.MOVING,
                 color: "white",
                 position: position,
                 renderer: Ball,
@@ -399,7 +399,7 @@ const CreateBallTail = (entities, { time }) => {
 
 const SpeedUp = (entities,  { touches, time }) => {
     const { scorebar, speedbutton, ball } = entities;
-    if(scorebar.state == "started" && time.current - ball.last_ball_start_time > 3000) {
+    if(scorebar.state == Constants.STARTED && time.current - ball.last_ball_start_time > 3000) {
         speedbutton.available = true;
     }
     touches.filter(t => t.type === "press").forEach(t => {                

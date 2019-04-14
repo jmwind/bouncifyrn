@@ -14,7 +14,12 @@ export const Constants = {
 
     // Game modes
     MODE_LINES: 100,
-    MODE_BRICKS: 200
+    MODE_BRICKS: 200,
+
+    // Ball and game states
+    MOVING: 100,
+    STOPPED: 200, 
+    STARTED: 300
 };
 
 export const COLORS = [
