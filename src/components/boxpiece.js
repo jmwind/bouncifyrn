@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { StyleSheet, Animated } from 'react-native';
-import utils from '../utils';
 
 // Box piece when exploding
 class BoxPiece extends React.PureComponent {    

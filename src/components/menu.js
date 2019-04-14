@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import Button from "./button";
 import Item from "./item";
+import { Constants } from "../constants";
 import * as Animatable from "react-native-animatable";
 
 
@@ -45,14 +46,17 @@ export default class MainMenu extends PureComponent {
             </Animatable.Text>
           </View>
         }
-        <Button onPress={_ => this.props.onPlayGame("regular")}>{this.props.gamesPlayed ? 'Restart Rows' : 'Play Rows'}</Button>
-        <Button onPress={_ => this.props.onPlayGame("bricks")}>{this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}</Button>
+        <Button onPress={_ => this.props.onPlayGame(Constants.MODE_LINES)}>
+          {this.props.gamesPlayed ? 'Restart Rows' : 'Play Rows'}
+        </Button>
+        <Button onPress={_ => this.props.onPlayGame(Constants.MODE_BRICKS)}>
+          {this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}
+        </Button>
         <Item
           onPress={_ =>
             Linking.openURL(
               "https://github.com/jmwind/bouncifyrn"
-            )}
-        >
+            )}>
           ❤️ @jmwind 🙃
         </Item>               
       </ScrollView>

@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Animated, Dimensions, Easing } from 'react-native';
 import BoxPiece from './boxpiece';
-import utils from '../utils';
-import { FLOOR_HEIGHT, BOX_TILE_SIZE } from '../renderers';
+import { Constants } from '../constants';
 
 class Explosion extends React.PureComponent {  
   animation = new Animated.Value(0);
@@ -29,8 +28,8 @@ class Explosion extends React.PureComponent {
     Array.from(Array(count).keys()).forEach(() => {
       const item = {
         backgroundColor: backgroundColor,
-        left: utils.randomValue(origin.x - 5, origin.x + BOX_TILE_SIZE + 5),
-        top: utils.randomValue(origin.y - 5, origin.y + BOX_TILE_SIZE + 5),
+        left: utils.randomValue(origin.x - 5, origin.x + Constants.BOX_TILE_SIZE + 5),
+        top: utils.randomValue(origin.y - 5, origin.y + Constants.BOX_TILE_SIZE + 5),
         width: utils.randomValue(5, 10),
         height: utils.randomValue(5, 10)
       };

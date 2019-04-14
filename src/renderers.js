@@ -1,59 +1,15 @@
 import React, { PureComponent, Component } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
-import utils from "./utils";
+import Utils from "./utils";
+import { Constants } from "./constants";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 
-export const RADIUS = 7;
-export const SCOREBOARD_HEIGHT = 90;
-export const BOX_TILE_SIZE = 40;
-export const BOX_TILE_SPACE = 6;
-export const FLOOR_HEIGHT = 640;
-
-export const COLORS = [
-    "#DFB44F", // yellow 1-10
-    "#8CB453", // green 11-20
-    "#EA225E", // red 21-30,
-    "#59B9F9", // light blue 31-50,
-    "#265BF6", // darker blue 51-99,
-    "#7112F5", // purple 100-150 
-    "#449b8e", // dull green 151+
-];
-
-function hitsToColor(hits) {
-    if(hits <= 10) {
-        return COLORS[0];
-    } else if(hits <=20) {
-        return COLORS[1];
-    } else if(hits <= 30) {
-        return COLORS[2];
-    } else if(hits <= 50) {
-        return COLORS[3]
-    } else if(hits <= 99) {
-        return COLORS[4];
-    } else if(hits <= 150) {
-        return COLORS[5];
-    }
-    return COLORS[6];    
-}
-
-/**
- * Box tiles deal in colum and row number only. These help map row/col to top/left positions
- * for the boxes.
- */
-export function colToLeftPosition(col) {
-    return BOX_TILE_SPACE + ((col * BOX_TILE_SPACE) + (col * BOX_TILE_SIZE));
-}
-
-export function rowToTopPosition(row) {
-    return SCOREBOARD_HEIGHT + BOX_TILE_SPACE + ((row * BOX_TILE_SPACE) + (row * BOX_TILE_SIZE));
-}
-
 class Ball extends PureComponent {
   render() {
-    const x = this.props.position.x - RADIUS / 2;
-    const y = this.props.position.y - RADIUS / 2;
+    const x = this.props.position.x - (Constants.RADIUS / 2);
+    const y = this.props.position.y - (Constants.RADIUS / 2);
     return (
       <View style={[styles.ball, { left: x, top: y, backgroundColor: this.props.color }]} />
     );
@@ -107,12 +63,12 @@ class AimLine extends PureComponent {
         const {start, end} = this.props;
         const drawLength = 1.0; // Ratio of aim vector to display
         const numCircles = 20;
-        let delta = utils.getPointsDeltas(start, end);
-        let length = utils.getDistance(start, end);
+        let delta = Utils.getPointsDeltas(start, end);
+        let length = Utils.getDistance(start, end);
         if (length == 0) {
             return null
         }
-
+        let RADIUS = Constants.RADIUS;
         let width = Dimensions.get('window').width;
         let height = Dimensions.get('window').height;
         let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
@@ -130,8 +86,8 @@ class AimLine extends PureComponent {
                 x += (-x) * 2;              
             }
             let y = start.y + (((delta.y) / numCircles) * i * drawLength);
-            if(y < (SCOREBOARD_HEIGHT)) {
-                y -= (y - SCOREBOARD_HEIGHT) * 2;
+            if(y < (Constants.SCOREBOARD_HEIGHT)) {
+                y -= (y - Constants.SCOREBOARD_HEIGHT) * 2;
             }
             return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
         });
@@ -152,8 +108,8 @@ class SpeedUpButton extends PureComponent {
         return(
             available &&
             <View style={[styles.boxcontainer, {
-                    top: rowToTopPosition(row),
-                    left: colToLeftPosition(column)
+                    top: Utils.rowToTopPosition(row),
+                    left: Utils.colToLeftPosition(column)
                     }]}>
                 <Animatable.Text 
                 style={{color: "white", fontSize: 18}} animation="flash" 
@@ -168,7 +124,7 @@ class SpeedUpButton extends PureComponent {
 class BoxTile extends PureComponent {
 
     state = {
-        animateTop: new Animated.Value(rowToTopPosition(0)),
+        animateTop: new Animated.Value(Utils.rowToTopPosition(0)),
         animated: false,
         explode: false
     }
@@ -181,9 +137,9 @@ class BoxTile extends PureComponent {
         // Advance to next row and if game starting advance from top
         if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
-            this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
+            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(starting_row));            
             this.rowAnimation = Animated.spring(this.state.animateTop, {
-                toValue: rowToTopPosition(nextProps.row),                
+                toValue: Utils.rowToTopPosition(nextProps.row),                
                 bounciness: 10,
                 speed: 8
               });
@@ -200,16 +156,16 @@ class BoxTile extends PureComponent {
         if(explode) {       
             return (     
                 <Explosion 
-                    backgroundColor={hitsToColor(hits)} 
+                    backgroundColor={Utils.hitsToColor(hits)} 
                     count={30} 
-                    origin={{x: colToLeftPosition(col), y: rowToTopPosition(row)}} />            
+                    origin={{x: Utils.colToLeftPosition(col), y: Utils.rowToTopPosition(row)}} />            
             );
         } else {
             return (               
                 <Animated.View style={[styles.boxcontainer, {
-                    backgroundColor: hitsToColor(hits),
+                    backgroundColor: Utils.hitsToColor(hits),
                     top: animateTop,
-                    left: colToLeftPosition(col)
+                    left: Utils.colToLeftPosition(col)
                     }]}> 
                     <Text style={{color: "#262626", fontSize: 16}}>
                         {hits}
@@ -223,7 +179,7 @@ class BoxTile extends PureComponent {
 class BallPowerUp extends PureComponent {
 
     state = {
-        animateTop: new Animated.Value(rowToTopPosition(0)),
+        animateTop: new Animated.Value(Utils.rowToTopPosition(0)),
         anim_radius: new Animated.Value(12),
         animated: false,
         radius: 12
@@ -263,10 +219,10 @@ class BallPowerUp extends PureComponent {
     componentWillReceiveProps(nextProps) {
         // Animate down to the floor when hit by the ball
         if(nextProps.falling && this.props.falling != nextProps.falling) {
-            this.state.animateTop = new Animated.Value(rowToTopPosition(this.props.row));
+            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(this.props.row));
             this.animTopListener = this.state.animateTop.addListener(({value}) => {this.topPosition = value});  
             this.dropAnimation = Animated.timing(this.state.animateTop, {
-                toValue: FLOOR_HEIGHT - BOX_TILE_SIZE + 10,
+                toValue: Constants.FLOOR_HEIGHT - Constants.BOX_TILE_SIZE + 10,
                 easing: Easing.back(),
                 duration: 700,
               });
@@ -274,9 +230,9 @@ class BallPowerUp extends PureComponent {
         // Animate into the next row when moving to next level       
         } else if(!this.state.animated || this.props.row != nextProps.row) {
             let starting_row = this.state.animated ? this.props.row : 0;
-            this.state.animateTop = new Animated.Value(rowToTopPosition(starting_row));            
+            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(starting_row));            
             this.rowAnimation = Animated.spring(this.state.animateTop, {
-                toValue: rowToTopPosition(nextProps.row),                
+                toValue: Utils.rowToTopPosition(nextProps.row),                
                 bounciness: 10,
                 speed: 2
               });
@@ -288,7 +244,7 @@ class BallPowerUp extends PureComponent {
             this.collectAnimation = Animated.timing(this.state.animateCollection, {
                 toValue: 1,
                 easing: Easing.linear,
-                duration: utils.randomValueRounded(600, 900)
+                duration: Utils.randomValueRounded(600, 900)
             });
             this.collectAnimation.start();
         }
@@ -297,8 +253,9 @@ class BallPowerUp extends PureComponent {
     render() { 
         let color = !this.props.falling ? "white" : "#8CB453";   
         let topPosition = this.state.animateTop;
-        let leftPosition = colToLeftPosition(this.props.col);
+        let leftPosition = Utils.colToLeftPosition(this.props.col);
         let opacity = 1;
+        let BOX_TILE_SIZE = Constants.BOX_TILE_SIZE;
         if(this.props.collecting) {
             topPosition = this.state.animateCollection.interpolate({
                 inputRange: [0, 1],
@@ -355,15 +312,15 @@ const styles = StyleSheet.create({
   ball: {
     borderColor: "#CCC",
     borderWidth: 1,
-    borderRadius: RADIUS * 2,
-    width: RADIUS * 2,
-    height: RADIUS * 2,
+    borderRadius: Constants.RADIUS * 2,
+    width: Constants.RADIUS * 2,
+    height: Constants.RADIUS * 2,
     position: "absolute"
   },
   boxcontainer: {
     position: "absolute",
-    width: BOX_TILE_SIZE,
-    height: BOX_TILE_SIZE,
+    width: Constants.BOX_TILE_SIZE,
+    height: Constants.BOX_TILE_SIZE,
     justifyContent: 'center',
     alignItems: 'center',
     flex:1,    

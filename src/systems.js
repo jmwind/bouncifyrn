@@ -1,84 +1,16 @@
-import _ from "lodash";
-import { Ball, RADIUS, AimLine, rowToTopPosition, colToLeftPosition, BOX_TILE_SIZE, BoxTile, BallPowerUp, FLOOR_HEIGHT, SCOREBOARD_HEIGHT } from "./renderers";
-import utils from "./utils";
-
-// Collision detection
-const NO_COLISION = 0;
-const SIDE = 1;
-const TOP_BOTTOM = 2;
-const LAST_ROW = 11;
+import { Ball, AimLine, BoxTile, BallPowerUp } from "./renderers";
+import Utils from "./utils";
+import Levels from "./brick_levels";
+import { Constants } from "./constants";
 
 // TODO: move into an entity and not global
 // TODO: add reflected aim lines
 let aim_vector = {
-    start: utils.newPosition(0, 0),
-    delta: utils.newPosition(0, 0),
-    final: utils.newPosition(0, 0)
+    start: Utils.newPosition(0, 0),
+    delta: Utils.newPosition(0, 0),
+    final: Utils.newPosition(0, 0)
 };
 let last_ball_start_time = 0; 
-
-let level1 = [
-    [1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1],
-    [1,0,1,1,1,1,0,1]
-];
-
-let level2 = [
-    [1,1,1,1,1,1,1,1],
-    [0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1],
-    [1,1,1,1,1,1,0,1]
-];
-
-let level3 = [
-    [1,1,1,1,1,1,1,1],
-    [1,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,1],
-    [1,1,1,0,1,1,1,1],
-    [1,1,1,0,1,1,1,1],
-    [1,1,1,0,1,1,1,1],
-    [1,1,1,0,1,1,1,1],
-    [1,1,1,0,1,1,1,1],
-    [1,1,1,0,1,1,1,1]
-];
-
-let level4 = [
-    [0,0,0,0,1,1,1,1],
-    [0,1,1,0,1,1,1,1],
-    [0,1,1,0,1,1,1,1],
-    [0,1,1,0,0,0,0,1],
-    [0,1,1,0,0,0,0,1],
-    [0,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1]
-];
-
-let level5 = [
-    [0,0,0,0,0,0,0,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,1]
-];
-
-let levels = [level1, level2, level3, level4, level5];
-
 
 function speedUpBalls(entities, speed_multiplier) {
     Object.keys(entities).forEach(ballId => {
@@ -97,29 +29,29 @@ function collidesWithBox(entities, ball) {
          if(box.explode) {            
              continue;
          }
-         let box_y = rowToTopPosition(box.row);
-         let box_x = colToLeftPosition(box.col);
-         let next_position = utils.newPosition(
+         let box_y = Utils.rowToTopPosition(box.row);
+         let box_x = Utils.colToLeftPosition(box.col);
+         let next_position = Utils.newPosition(
             ( ball.speed.x * ball.direction.x ),
             ( ball.speed.y * ball.direction.y )
          );  
-        let collision = NO_COLISION;
+        let collision = Constants.NO_COLISION;
         
-        if (ball.position.x + RADIUS + next_position.x > box_x && 
-            ball.position.x + next_position.x < box_x + BOX_TILE_SIZE && 
-            ball.position.y + RADIUS > box_y && 
-            ball.position.y < box_y + BOX_TILE_SIZE) {                
-                collision = SIDE;
-        } else if (ball.position.x + RADIUS > box_x && 
-                ball.position.x < box_x + BOX_TILE_SIZE && 
-                ball.position.y + RADIUS + next_position.y > box_y && 
-                ball.position.y + next_position.y < box_y + BOX_TILE_SIZE) {
-                collision = TOP_BOTTOM;
+        if (ball.position.x + Constants.RADIUS + next_position.x > box_x && 
+            ball.position.x + next_position.x < box_x + Constants.BOX_TILE_SIZE && 
+            ball.position.y + Constants.RADIUS > box_y && 
+            ball.position.y < box_y + Constants.BOX_TILE_SIZE) {                
+                collision = Constants.SIDE;
+        } else if (ball.position.x + Constants.RADIUS > box_x && 
+                ball.position.x < box_x + Constants.BOX_TILE_SIZE && 
+                ball.position.y + Constants.RADIUS + next_position.y > box_y && 
+                ball.position.y + next_position.y < box_y + Constants.BOX_TILE_SIZE) {
+                collision = Constants.TOP_BOTTOM;
         }
 
-        if(collision != NO_COLISION) {
+        if(collision != Constants.NO_COLISION) {
             if(box.type && box.type == "powerup") {
-                collision = NO_COLISION;                
+                collision = Constants.NO_COLISION;                
                 if(!box.falling) {
                     entities.scorebar.new_balls++;  
                     box.falling = true;
@@ -134,7 +66,7 @@ function collidesWithBox(entities, ball) {
         }
     }
 
-    return NO_COLISION;
+    return Constants.NO_COLISION;
 }
 
 function moveToNextLevelWithDelay(entities, dispatch) {
@@ -164,7 +96,7 @@ export function moveToNextLevel(entities, dispatch) {
     scorebar.balls += entities.scorebar.new_balls;
     scorebar.new_balls = 0;
     // save next start position to ball trail
-    ball.start = utils.clonePosition(ball.position);
+    ball.start = Utils.clonePosition(ball.position);
     deleteFallenBallPowerups(entities);
 
     // advance boxes still in the game
@@ -175,7 +107,7 @@ export function moveToNextLevel(entities, dispatch) {
             if(box.explode) {
                 dead_boxes.push(boxes[boxId])
             } else {
-                if(scorebar.mode == "regular" && ++box.row > max_row) {
+                if(scorebar.mode == Constants.MODE_LINES && ++box.row > max_row) {
                     max_row = box.row;
                 }
             }
@@ -190,9 +122,9 @@ export function moveToNextLevel(entities, dispatch) {
     // recalcare we done?
     
     let gameover = false;
-    if(scorebar.mode == "regular" && max_row >= LAST_ROW) {  
+    if(scorebar.mode == Constants.MODE_LINES && max_row >= Constants.LAST_ROW) {  
         gameover = true;              
-    } else if(scorebar.mode != "regular" && boxes.length > 10) {
+    } else if(scorebar.mode == Constants.MODE_BRICKS && boxes.length > 10) {
         gameover = true;
     }
     if(gameover) {
@@ -201,18 +133,18 @@ export function moveToNextLevel(entities, dispatch) {
         return;
     }
    
-    if(scorebar.mode != "regular") {
+    if(scorebar.mode == Constants.MODE_BRICKS) {
         // end of game is different by game mode
         for(var boxId in boxes) {
             delete entities[boxes[boxId]];
         }
         scorebar.balls += 25;
-        let level = levels[utils.randomValueRounded(0, levels.length - 1)];
+        let level = Levels[Utils.randomValueRounded(0, Levels.length - 1)];
         for(j = 0; j < 9; j++) {
             for (i = 0; i < 8; i++) {
                 if(level[j][i] == 0) continue;
-                let key = utils.randomKey();
-                let new_hits = utils.randomValueRounded(3, scorebar.balls/2);
+                let key = Utils.randomKey();
+                let new_hits = Utils.randomValueRounded(3, scorebar.balls/2);
                 entities["box" + key] = {
                     row: j + 1, 
                     col: i, 
@@ -228,11 +160,11 @@ export function moveToNextLevel(entities, dispatch) {
         let powerup = false;
         let cols = 8;
         for (i = 0; i < cols; i++) {        
-            let key = utils.randomKey();
+            let key = Utils.randomKey();
             let col = i;
-            let new_hits = utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
-            if(utils.randomRoll(70)) {
-                if(!powerup && (utils.randomRoll(50) || i == cols - 1)) {            
+            let new_hits = Utils.randomValueRounded(scorebar.balls, scorebar.balls * 3);
+            if(Utils.randomRoll(70)) {
+                if(!powerup && (Utils.randomRoll(50) || i == cols - 1)) {            
                     entities["box" + key] = {
                         row: 1, 
                         col: col, 
@@ -303,41 +235,41 @@ const MoveBall = (entities, { screen, dispatch }) => {
         if(! ballId.startsWith("ball")) return;        
         if(ball.state != "moving") return;
         
-        let next_position = utils.newPosition(
+        let next_position = Utils.newPosition(
             ball.position.x + ( ball.speed.x * ball.direction.x ),
             ball.position.y + ( ball.speed.y * ball.direction.y )
         );
-        let next_direction = utils.clonePosition(ball.direction);
+        let next_direction = Utils.clonePosition(ball.direction);
         
         let isCollision = collidesWithBox(entities, ball);
 
         // Test box collision before walls
-        if(isCollision == SIDE) {
+        if(isCollision == Constants.SIDE) {
             next_direction.x *= -1; 
-        } else if(next_position.x > ( screen.width - RADIUS) || next_position.x < 0) {
+        } else if(next_position.x > ( screen.width - Constants.RADIUS) || next_position.x < 0) {
             next_direction.x *= -1; 
         }
                 
-        if(isCollision == TOP_BOTTOM) {
+        if(isCollision == Constants.TOP_BOTTOM) {
             next_direction.y *= -1; 
-        } else if(next_position.y < RADIUS + scorebar.height) {
+        } else if(next_position.y < Constants.RADIUS + scorebar.height) {
             next_direction.y *= -1; 
         }
 
-        if(next_position.y > (floor.height - RADIUS*2)) {        
+        if(next_position.y > (floor.height - Constants.RADIUS*2)) {        
             scorebar.balls_returned++;
             // there's only one ball that is the tracer ball and will remain on the floor while
             // all other balls will dissapear when they hit the floor.
             if(ballId == "ball") {
                 ball.state = "stopped";
                 // ensure rested nicely on top of floor or not outside of sidewalls
-                if(next_position.x > screen.width - RADIUS*2) {
-                    next_position.x = screen.width - RADIUS*2;
+                if(next_position.x > screen.width - Constants.RADIUS*2) {
+                    next_position.x = screen.width - Constants.RADIUS*2;
                 }
                 if(next_position.x < 0) {
-                    next_position.x = RADIUS*2;
+                    next_position.x = Constants.RADIUS*2;
                 }
-                ball.position = utils.newPosition(next_position.x, ball.start.y);                
+                ball.position = Utils.newPosition(next_position.x, ball.start.y);                
             } else {
                 // remove all balls that aren't the lead ball when they hit they floor
                 delete entities[ballId]; 
@@ -348,7 +280,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
                 moveToNextLevelWithDelay(entities, dispatch);
             }
         } else {
-            next_position = utils.newPosition(
+            next_position = Utils.newPosition(
                 ball.position.x + ( ball.speed.x * next_direction.x ),
                 ball.position.y + ( ball.speed.y * next_direction.y )
             );
@@ -370,15 +302,15 @@ const minDeg = -88;
 const maxDeg = 88;
 
 const AimBallsStart = (entities, { touches, screen }) => {
-    const { scorebar, ball } = entities;
+    const { scorebar, ball } = entities; 
     if(scorebar.state == "stopped") {
         touches.filter(x => x.type === "start").forEach(t => {
             aim_vector.start = { x: t.event.pageX, y: t.event.pageY };
             aim_vector.delta = { x: 0, y: 0 };
             aim_vector.final = { x: 0, y: 0 };
-            aim_line = utils.newPosition(
-                ball.position.x + RADIUS / 2,
-                ball.position.y + RADIUS / 2
+            aim_line = Utils.newPosition(
+                ball.position.x + Constants.RADIUS / 2,
+                ball.position.y + Constants.RADIUS / 2
             );
             entities["aimline"] = {
                 start: aim_line,
@@ -402,12 +334,12 @@ const AimBallsStart = (entities, { touches, screen }) => {
                 let y2 = length * Math.cos(deg * Math.PI / 180);
 
                 if(length > minLength && deg > minDeg && deg < maxDeg) {
-                    aim_vector.final = utils.getPointsDeltas({x: x2 + RADIUS, y: y2 + RADIUS}, ball.position);
+                    aim_vector.final = Utils.getPointsDeltas({x: x2 + Constants.RADIUS, y: y2 + Constants.RADIUS}, ball.position);
                     entities.aimline.end = aim_vector.final;
                 } else {
                     // Invalid aimline, revert
                     aim_vector.final = aim_vector.start;
-                    entities.aimline.end = utils.clonePosition(aim_line);
+                    entities.aimline.end = Utils.clonePosition(aim_line);
                 }
             }
         });
@@ -421,21 +353,23 @@ const AimBallsRelease = (entities, { time, touches }) => {
     if(scorebar.state == "stopped") {
         touches.filter(t => t.type === "end").forEach(t => {
             delete entities.aimline;
-            let d = utils.getDistance(aim_vector.start, aim_vector.final);
+            let d = Utils.getDistance(aim_vector.start, aim_vector.final);
             if(d > minLength && ball.state == "stopped") {
-                let delta = utils.getPointsDeltas(ball.position, aim_vector.final);
+                let delta = Utils.getPointsDeltas(ball.position, aim_vector.final);
                 // Normalize vector
                 ball.direction.y = (delta.y/d);
                 ball.direction.x = (delta.x/d);
-                ball.start_direction = utils.clonePosition(ball.direction);
+                ball.start_direction = Utils.clonePosition(ball.direction);
                 // This should account for the difference in ball direction in the axes
                 ball.speed.x = 10;
                 ball.speed.y = 10;
-                ball.start = utils.clonePosition(ball.position);
+                ball.start = Utils.clonePosition(ball.position);
                 ball.state = "moving";
                 scorebar.state = "started";
                 scorebar.balls_returned = 0;
                 scorebar.balls_in_play = 1;
+
+                // Start ball countdown so that we can space the balls
                 last_ball_start_time = time.current;                
             }
         });
@@ -449,10 +383,10 @@ const CreateBallTail = (entities, { time }) => {
         // Controls the speed at which new balls are spawned when they start to shoot 
         // from the floor
         if((time.current - last_ball_start_time) > 150 /* ms */) {
-            let position = utils.clonePosition(ball.start);
-            let direction = utils.clonePosition(ball.start_direction);
-            let speed = utils.clonePosition(ball.speed);
-            entities["ball" + utils.randomKey()] = {
+            let position = Utils.clonePosition(ball.start);
+            let direction = Utils.clonePosition(ball.start_direction);
+            let speed = Utils.clonePosition(ball.speed);
+            entities["ball" + Utils.randomKey()] = {
                 type: "ball",
                 state: "moving",
                 color: "white",
@@ -467,6 +401,31 @@ const CreateBallTail = (entities, { time }) => {
     }
     return entities;
 }
+
+const SpeedUp = (entities,  { touches, time }) => {
+    const { scorebar, speedbutton } = entities;
+    if(scorebar.state == "started" && time.current - last_ball_start_time > 3000) {
+        speedbutton.available = true;
+    }
+    touches.filter(t => t.type === "press").forEach(t => {                
+        if(speedbutton.available) {
+            top = Utils.rowToTopPosition(speedbutton.row);
+            left = Utils.colToLeftPosition(speedbutton.column);
+            eventX = t.event.pageX;
+            eventY = t.event.pageY;
+            if(eventX > left && eventX < left + Constants.BOX_TILE_SIZE && eventY > top && eventY < top + Constants.BOX_TILE_SIZE) {            
+                if(speedbutton.speed == 1) {
+                    speedbutton.speed = 1.5;
+                    speedUpBalls(entities, speedbutton.speed);
+                } else if(speedbutton.speed == 1.5) {
+                    speedbutton.speed = 2;
+                    speedUpBalls(entities, speedbutton.speed);
+                }
+            }
+        }
+    });
+    return entities;
+};
 
 /**
  * Easter egg which allows adding or removing balls by clicking hotspots at the 
@@ -484,34 +443,6 @@ const SpawnBall = (entities,  { touches, screen, dispatch }) => {
             scorebar.balls-=increment;
         } else if(t.event.pageY < scorebar.height) {
             moveToNextLevel(entities, dispatch);
-        }
-    });
-    return entities;
-};
-
-const SpeedUp = (entities,  { touches, time }) => {
-    const { scorebar, speedbutton } = entities;
-    if(scorebar.state == "started" && time.current - last_ball_start_time > 3000) {
-        speedbutton.available = true;
-    }
-    touches.filter(t => t.type === "press").forEach(t => {                
-        if(speedbutton.available) {
-            top = rowToTopPosition(speedbutton.row);
-            left = colToLeftPosition(speedbutton.column);
-            eventX = t.event.pageX;
-            eventY = t.event.pageY;
-            if(eventX > left && eventX < left + BOX_TILE_SIZE && eventY > top && eventY < top + BOX_TILE_SIZE) {            
-                if(speedbutton.speed == 1) {
-                    speedbutton.speed = 1.5;
-                    speedUpBalls(entities, speedbutton.speed);
-                } else if(speedbutton.speed == 1.5) {
-                    speedbutton.speed = 2;
-                    speedUpBalls(entities, speedbutton.speed);
-                } else if(speedbutton.speed == 2) {
-                    speedbutton.speed = 1;
-                    speedUpBalls(entities, 0.25);
-                }
-            }
         }
     });
     return entities;

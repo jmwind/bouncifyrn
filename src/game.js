@@ -10,9 +10,10 @@
 import React, { PureComponent } from "react";
 import { StyleSheet, Modal } from "react-native";
 import { GameEngine } from "react-native-game-engine";
-import { Ball, Floor, ScoreBar, FLOOR_HEIGHT, RADIUS, SpeedUpButton } from "./renderers";
+import { Ball, Floor, ScoreBar, SpeedUpButton } from "./renderers";
 import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp } from "./systems"
-import utils from "./utils";
+import Utils from "./utils";
+import { Constants } from "./constants"
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
@@ -27,7 +28,7 @@ export default class BouncifyGame extends PureComponent {
   componentWillMount = () => {
     this.entities = {
       floor: { 
-        height: FLOOR_HEIGHT, 
+        height: Constants.FLOOR_HEIGHT, 
         renderer: <Floor /> },          
       scorebar: { 
         height: 90, 
@@ -43,10 +44,10 @@ export default class BouncifyGame extends PureComponent {
       ball: { 
         color: "white", 
         state: "stopped", 
-        start: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
-        position: utils.newPosition(300, FLOOR_HEIGHT - RADIUS*2), 
-        speed: utils.newPosition(1.0, 1.0), 
-        direction: utils.newPosition(0, 0), 
+        start: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
+        position: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
+        speed: Utils.newPosition(1.0, 1.0), 
+        direction: Utils.newPosition(0, 0), 
         renderer: <Ball />},
       speedbutton: {
           available: false,
@@ -65,11 +66,14 @@ export default class BouncifyGame extends PureComponent {
     }
     if(nextProps.mode) {
       this.entities.scorebar.mode = nextProps.mode;
-      if(nextProps.mode != "regular") {
+      if(nextProps.mode == Constants.MODE_BRICKS) {
         this.entities.scorebar.balls = 75;
       } else {
         this.entities.scorebar.balls = 1;
       }   
+    }
+    if(nextProps.topScore) {
+      this.entities.scorebar.best = nextProps.topScore;
     }
   }
 

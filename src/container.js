@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { View, StyleSheet, AsyncStorage } from "react-native";
 import MainMenu from "./components/menu";
 import BouncifyGame from "./game";
+import { Constants } from "./constants";
 
 const TOP_SCORE_KEY = "topScore";
 
@@ -13,7 +14,7 @@ export default class Container extends PureComponent {
       lastScore: 0,
       topScore: 0,
       gamesPlayed: 0,
-      mode: "regular"
+      mode: Constants.MODE_LINES
     };
   }
 
@@ -22,8 +23,8 @@ export default class Container extends PureComponent {
         if(val != null) {
           this.setState({ topScore: parseInt(val) });
         }
-    })
-}
+    })    
+  }
 
   toggleGame = (gameStarted, lastScore, mode) => {    
     this.setState({
