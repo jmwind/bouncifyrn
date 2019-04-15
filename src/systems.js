@@ -344,8 +344,8 @@ const AimBallsStart = (entities, { touches, screen }) => {
 };
 
 const AimBallsRelease = (entities, { time, touches }) => {
-    const { scorebar, ball, floor } = entities;
-    if(scorebar.state == Constants.STOPPED) {
+    const { scorebar, ball, aimline } = entities;
+    if(scorebar.state == Constants.STOPPED && aimline) {
         touches.filter(t => t.type === "end").forEach(t => {
             const { aimline } = entities;
             let d = Utils.getDistance(aimline.drag_vector.start, aimline.drag_vector.final);
@@ -433,9 +433,9 @@ const SpawnBall = (entities,  { touches, screen, dispatch }) => {
         let increment = scorebar.balls < 100 ? 5 : 50;
         if(t.event.pageY < scorebar.height && t.event.pageX > (screen.width / 2 + 100)) {
             scorebar.balls+=increment;
-        } else if(t.event.pageY < scorebar.height && t.event.pageX < (screen.width / 2 - 100) && scorebar.balls > 1) {
+        } else if(t.event.pageY < scorebar.height && t.event.pageX < (screen.width / 2 - 100) && scorebar.balls > increment) {
             scorebar.balls-=increment;
-        } else if(t.event.pageY < scorebar.height) {
+        } else if(t.event.pageY < scorebar.height && scorebar.balls_in_play == 0) {
             moveToNextLevel(entities, dispatch);
         }
     });
