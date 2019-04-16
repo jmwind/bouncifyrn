@@ -125,12 +125,14 @@ class BoxTile extends PureComponent {
 
     state = {
         animateTop: new Animated.Value(Utils.rowToTopPosition(0)),
+        animateOpacity: new Animated.Value(0),
         animated: false,
         explode: false
     }
 
     componentWillUnmount() {
         if(this.rowAnimation) this.rowAnimation.stop();
+        if(this.hitAnimation) this.hitAnimation.stop();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -147,12 +149,30 @@ class BoxTile extends PureComponent {
             this.setState({animated: true});
         } else if(this.props.explode != nextProps.explode) {
             this.setState({explode: true});
+        } else if(this.props.hits != nextProps.hits) {            
+            this.hitAnimation = Animated.timing(this.state.animateOpacity, {
+                toValue: 0.6,
+                easing: Easing.linear,
+                duration: 50
+            });
+            this.hitAnimation.start(() => {
+                this.hitAnimation = Animated.timing(this.state.animateOpacity, {
+                    toValue: 0,
+                    easing: Easing.linear,
+                    duration: 50
+                    }).start();    
+            }); 
         }
     }
 
     render() {
         const {hits, col, row} = this.props;
-        const {explode, animateTop} = this.state;
+        const {explode, animateTop, animateOpacity} = this.state;
+        let opacity = 1;
+        opacity = animateOpacity.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0]
+        });  
         if(explode) {       
             return (     
                 <Explosion 
@@ -165,7 +185,8 @@ class BoxTile extends PureComponent {
                 <Animated.View style={[styles.boxcontainer, {
                     backgroundColor: Utils.hitsToColor(hits),
                     top: animateTop,
-                    left: Utils.colToLeftPosition(col)
+                    left: Utils.colToLeftPosition(col),
+                    opacity: opacity
                     }]}> 
                     <Text style={{color: "#262626", fontSize: 16}}>
                         {hits}
