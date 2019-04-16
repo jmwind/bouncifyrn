@@ -356,8 +356,8 @@ const AimBallsRelease = (entities, { time, touches }) => {
                 ball.direction.x = (delta.x/d);
                 ball.start_direction = Utils.clonePosition(ball.direction);
                 // This should account for the difference in ball direction in the axes
-                ball.speed.x = 10;
-                ball.speed.y = 10;
+                ball.speed.x = 15;
+                ball.speed.y = 15;
                 ball.start = Utils.clonePosition(ball.position);
                 ball.state = Constants.MOVING;
                 ball.last_ball_start_time = time.current; 
@@ -376,7 +376,7 @@ const CreateBallTail = (entities, { time }) => {
     if(scorebar.state == Constants.STARTED && scorebar.balls_in_play < scorebar.balls) {
         // Controls the speed at which new balls are spawned when they start to shoot 
         // from the floor
-        if((time.current - ball.last_ball_start_time) > 150 /* ms */) {
+        if((time.current - ball.last_ball_start_time) > 75 /* ms */) {
             let position = Utils.clonePosition(ball.start);
             let direction = Utils.clonePosition(ball.start_direction);
             let speed = Utils.clonePosition(ball.speed);
