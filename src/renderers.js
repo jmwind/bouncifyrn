@@ -6,56 +6,50 @@ import { Constants } from "./constants";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 
-class Ball extends PureComponent {
-  render() {
-    const x = this.props.position.x - (Constants.RADIUS / 2);
-    const y = this.props.position.y - (Constants.RADIUS / 2);
+function Ball(props) {
+    const x = props.position.x - (Constants.RADIUS / 2);
+    const y = props.position.y - (Constants.RADIUS / 2);
     return (
-      <View style={[styles.ball, { left: x, top: y, backgroundColor: this.props.color }]} />
+      <View style={[styles.ball, { left: x, top: y, backgroundColor: props.color }]} />
     );
-  }
 }
 
-class Floor extends PureComponent {
-    render() {
-        return (
-            <View
-                style={
-                {
-                    position: "absolute",
-                    left: 0,
-                    top: this.props.height,
-                    width: Dimensions.get("window").width,
-                    height: Dimensions.get("window").height,
-                    backgroundColor: "#262626"
-                }
-                }
-            />            
-        );
-    }
+function Floor(props) {    
+    return (
+        <View
+            style={
+            {
+                position: "absolute",
+                left: 0,
+                top: props.height,
+                width: Dimensions.get("window").width,
+                height: Dimensions.get("window").height,
+                backgroundColor: "#262626"
+            }
+            }
+        />            
+    );    
 }
 
-class ScoreBar extends PureComponent {
-    render() {
-        const {height, best, level, balls_in_play, balls} = this.props;
-        let ball_count = balls == balls_in_play ? balls : balls - balls_in_play;
-        return (
-            <View style={[styles.scorebar, {height: height}]}>
-                <View style={styles.bestcontainer}>                    
-                    <Text style={styles.besttitle}>Best</Text>
-                    <Text style={styles.bestscore}>{best}</Text>
-                </View>  
-                <View style={styles.levelcontainer}>              
-                <Text style={styles.besttitle}>Level</Text>
-                    <Text style={styles.currentscore}>{level}</Text>
-                </View>
-                <View style={styles.ballscontainer}>
-                    <Text style={styles.besttitle}>Balls</Text>              
-                    <Text style={styles.currentscore}>{ball_count}</Text>               
-                </View>
+function ScoreBar(props) {
+    const {height, best, level, balls_in_play, balls} = props;
+    let ball_count = balls == balls_in_play ? balls : balls - balls_in_play;
+    return (
+        <View style={[styles.scorebar, {height: height}]}>
+            <View style={styles.bestcontainer}>                    
+                <Text style={styles.besttitle}>Best</Text>
+                <Text style={styles.bestscore}>{best}</Text>
+            </View>  
+            <View style={styles.levelcontainer}>              
+            <Text style={styles.besttitle}>Level</Text>
+                <Text style={styles.currentscore}>{level}</Text>
             </View>
-        );
-    }
+            <View style={styles.ballscontainer}>
+                <Text style={styles.besttitle}>Balls</Text>              
+                <Text style={styles.currentscore}>{ball_count}</Text>               
+            </View>
+        </View>
+    );    
 }
 
 class AimLine extends PureComponent {
