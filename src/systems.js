@@ -20,8 +20,10 @@ function collidesWithBox(entities, ball) {
          if(box.explode) {            
              continue;
          }
-         let box_y = Utils.rowToTopPosition(box.row);
-         let box_x = Utils.colToLeftPosition(box.col);
+         
+         let box_y = Utils.rowToTopPosition(box.row) - Constants.BOX_TILE_SPACE;
+         let box_x = Utils.colToLeftPosition(box.col) - Constants.BOX_TILE_SPACE;
+         let box_size = Constants.BOX_TILE_SIZE + Constants.BOX_TILE_SPACE;
          let next_position = Utils.newPosition(
             ( ball.speed.x * ball.direction.x ),
             ( ball.speed.y * ball.direction.y )
@@ -29,14 +31,14 @@ function collidesWithBox(entities, ball) {
         let collision = Constants.NO_COLISION;
         
         if (ball.position.x + Constants.RADIUS + next_position.x > box_x && 
-            ball.position.x + next_position.x < box_x + Constants.BOX_TILE_SIZE && 
+            ball.position.x + next_position.x < box_x + box_size && 
             ball.position.y + Constants.RADIUS > box_y && 
-            ball.position.y < box_y + Constants.BOX_TILE_SIZE) {                
+            ball.position.y < box_y + box_size) {                
                 collision = Constants.SIDE;
         } else if (ball.position.x + Constants.RADIUS > box_x && 
-                ball.position.x < box_x + Constants.BOX_TILE_SIZE && 
+                ball.position.x < box_x + box_size && 
                 ball.position.y + Constants.RADIUS + next_position.y > box_y && 
-                ball.position.y + next_position.y < box_y + Constants.BOX_TILE_SIZE) {
+                ball.position.y + next_position.y < box_y + box_size) {
                 collision = Constants.TOP_BOTTOM;
         }
 
