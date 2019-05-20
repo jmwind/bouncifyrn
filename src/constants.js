@@ -11,7 +11,7 @@ export const Constants = {
     BOX_TILE_SIZE: 40,
     BOX_TILE_SPACE: 6,
     FLOOR_HEIGHT: 640,
-
+    
     // Game modes
     MODE_LINES: 100,
     MODE_BRICKS: 200,
@@ -31,3 +31,5 @@ export const COLORS = [
     "#7112F5", // purple 100-150 
     "#449b8e", // dull green 151+
 ];
+
+export const FLOOR_BOX_POSITION = Constants.FLOOR_HEIGHT - Constants.BOX_TILE_SIZE + 10;

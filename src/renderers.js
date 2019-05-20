@@ -1,8 +1,8 @@
-import React, { PureComponent, Component } from "react";
+import React, { PureComponent, useState, useEffect, useRef, useCallback } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import Utils from "./utils";
-import { Constants } from "./constants";
+import { Constants, FLOOR_BOX_POSITION } from "./constants";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 
@@ -52,275 +52,316 @@ function ScoreBar(props) {
     );    
 }
 
-class AimLine extends PureComponent {
-    render() {
-        const {start, end} = this.props;
-        const drawLength = 1.0; // Ratio of aim vector to display
-        const numCircles = 20;
-        let delta = Utils.getPointsDeltas(start, end);
-        let length = Utils.getDistance(start, end);
-        if (length == 0) {
-            return null
+function AimLine(props) {    
+    const {start, end} = props;
+    const drawLength = 1.0; // Ratio of aim vector to display
+    const numCircles = 20;
+    let delta = Utils.getPointsDeltas(start, end);
+    let length = Utils.getDistance(start, end);
+    if (length == 0) {
+        return null
+    }
+    let RADIUS = Constants.RADIUS;
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+    let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
+
+    let circles = Array(numCircles).fill().map((_, i) => {
+        let start = props.start;
+        let spacing = delta.x / numCircles;            
+        
+        // check screen upper and sound bounds and bounce the aim line off the surface
+        let x = start.x + (spacing * i * drawLength);
+        if(x > width) {
+            x -= (x - width) * 2;              
         }
-        let RADIUS = Constants.RADIUS;
-        let width = Dimensions.get('window').width;
-        let height = Dimensions.get('window').height;
-        let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
+        if(x < 0) {
+            x += (-x) * 2;              
+        }
+        let y = start.y + (((delta.y) / numCircles) * i * drawLength);
+        if(y < (Constants.SCOREBOARD_HEIGHT)) {
+            y -= (y - Constants.SCOREBOARD_HEIGHT) * 2;
+        }
+        return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
+    });
 
-        let circles = Array(numCircles).fill().map((_, i) => {
-            let start = this.props.start;
-            let spacing = delta.x / numCircles;            
-            
-            // check screen upper and sound bounds and bounce the aim line off the surface
-            let x = start.x + (spacing * i * drawLength);
-            if(x > width) {
-                x -= (x - width) * 2;              
-            }
-            if(x < 0) {
-                x += (-x) * 2;              
-            }
-            let y = start.y + (((delta.y) / numCircles) * i * drawLength);
-            if(y < (Constants.SCOREBOARD_HEIGHT)) {
-                y -= (y - Constants.SCOREBOARD_HEIGHT) * 2;
-            }
-            return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
-        });
+    return (
+        <View>
+            <Svg width={width} height={height}>
+                {circles}
+            </Svg>
+        </View>
+    );
+}
 
-        return (
-            <View>
-                <Svg width={width} height={height}>
-                    {circles}
-                </Svg>
-            </View>
+
+function SpeedUpButton(props) {        
+    const {speed, row, column, available} = props;        
+    return (
+        available &&
+        <View style={[styles.boxcontainer, {
+                top: Utils.rowToTopPosition(row),
+                left: Utils.colToLeftPosition(column)
+                }]}>
+            <Animatable.Text 
+            style={{color: "white", fontSize: 20}} animation="pulse" 
+            iterationCount="infinite" direction="alternate">
+                {speed}x
+            </Animatable.Text>                   
+        </View>            
+    );
+}
+
+const useAnimatedValue = (initialValue) => {
+    const ref = useRef(new Animated.Value(initialValue))
+    return ref.current
+}
+
+const useOpacityPulse = (speed = 50) => {
+    const opacity = useAnimatedValue(0);
+
+    const pulse = () => {
+        Animated.sequence([
+            Animated.timing(opacity, {toValue: 0.6, easing: Easing.linear, duration: speed}),
+            Animated.timing(opacity, {toValue: 0, easing: Easing.linear, duration: speed})
+        ]).start();
+    }
+
+    return [opacity, pulse];
+}
+
+const useTopPosition = (row = 0) => {
+    const [rowPosition, setRowPosition] = useState(row);    
+    const animatedTop = useAnimatedValue(Utils.rowToTopPosition(row - 1));
+
+    useEffect(() => {
+        Animated.spring(animatedTop, {
+            toValue: Utils.rowToTopPosition(rowPosition),                
+            bounciness: 15,
+            speed: 8
+          }).start();       
+    });
+    
+    return [animatedTop, setRowPosition];
+}
+
+function BoxTile(props) {
+    const [exploding, setExploding] = useState(false);
+    const [animateTop, setRow] = useTopPosition(props.row);
+    const [animateOpacity, startOpacityPulse] = useOpacityPulse(50);
+
+    useEffect(() => {
+        setRow(props.row);           
+    }, [props.row]);
+    
+    useEffect(() => {
+        setExploding(props.explode);
+    }, [props.explode]);
+    
+    useEffect(() => {
+        startOpacityPulse();
+    }, [props.hits]);   
+
+    const {hits, col, row} = props;        
+    if(exploding) {       
+        return (     
+            <Explosion 
+                backgroundColor={Utils.hitsToColor(hits)} 
+                count={35} 
+                origin={{x: Utils.colToLeftPosition(col), y: Utils.rowToTopPosition(row)}} />            
+        );
+    } else {
+        return (               
+            <Animated.View style={[styles.boxcontainer, {
+                backgroundColor: Utils.hitsToColor(hits),
+                top: animateTop,
+                left: Utils.colToLeftPosition(col),
+                opacity: animateOpacity.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [1, 0]})
+                }]}> 
+                <Text style={{color: "#262626", fontSize: 16}}>
+                    {hits}
+                </Text>
+            </Animated.View>
         );
     }
 }
 
-class SpeedUpButton extends PureComponent {    
-    render() {
-        const {speed, row, column, available} = this.props;        
-        return(
-            available &&
-            <View style={[styles.boxcontainer, {
-                    top: Utils.rowToTopPosition(row),
-                    left: Utils.colToLeftPosition(column)
-                    }]}>
-                <Animatable.Text 
-                style={{color: "white", fontSize: 20}} animation="pulse" 
-                iterationCount="infinite" direction="alternate">
-                    {speed}x
-                </Animatable.Text>                   
-            </View>            
-        );
-    }
-}
+function useAnimatedValueListener(handler, element = global){
+    // Create a ref that stores handler
+    const savedHandler = useRef();
+    
+    // Update ref.current value if handler changes.
+    useEffect(() => {
+      savedHandler.current = handler;
+    }, [handler]);
+  
+    useEffect(
+      () => {
+        // Make sure element supports addEventListener
+        const isSupported = element && element.addListener;
+        if (!isSupported) return;
+        
+        const eventListener = event => savedHandler.current(event);    
+        element.addListener(eventListener);
+        
+        return () => {
+          element.removeListener(eventListener);
+        };
+      },
+      [element]
+    );
+  };
 
-class BoxTile extends PureComponent {
+const useRadiusPulse = (radius1 = 14, radius2 = 12, delay = 100) => {
+    const animatedRadius = useAnimatedValue(radius1);
+    const radius = useRef(radius1);
 
-    state = {
-        animateTop: new Animated.Value(Utils.rowToTopPosition(0)),
-        animateOpacity: new Animated.Value(0),
-        animated: false,
-        explode: false
-    }
-
-    componentWillUnmount() {
-        if(this.rowAnimation) this.rowAnimation.stop();
-        if(this.hitAnimation) this.hitAnimation.stop();
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // Advance to next row and if game starting advance from top
-        if(!this.state.animated || this.props.row != nextProps.row) {
-            let starting_row = this.state.animated ? this.props.row : 0;
-            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(starting_row));            
-            this.rowAnimation = Animated.spring(this.state.animateTop, {
-                toValue: Utils.rowToTopPosition(nextProps.row),                
-                bounciness: 10,
-                speed: 8
-              });
-              this.rowAnimation.start();
-            this.setState({animated: true});
-        } else if(this.props.explode != nextProps.explode) {
-            this.setState({explode: true});
-        } else if(this.props.hits != nextProps.hits) {            
-            this.hitAnimation = Animated.timing(this.state.animateOpacity, {
-                toValue: 0.6,
-                easing: Easing.linear,
-                duration: 50
-            });
-            this.hitAnimation.start(() => {
-                this.hitAnimation = Animated.timing(this.state.animateOpacity, {
-                    toValue: 0,
-                    easing: Easing.linear,
-                    duration: 50
-                    }).start();    
-            }); 
+    const handler = useCallback(
+        ({ value }) => {
+          radius.current = value;
         }
-    }
+    );
+    
+    useAnimatedValueListener(handler, animatedRadius);    
 
-    render() {
-        const {hits, col, row} = this.props;
-        const {explode, animateTop, animateOpacity} = this.state;
-        let opacity = 1;
-        opacity = animateOpacity.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-        });  
-        if(explode) {       
-            return (     
-                <Explosion 
-                    backgroundColor={Utils.hitsToColor(hits)} 
-                    count={50} 
-                    origin={{x: Utils.colToLeftPosition(col), y: Utils.rowToTopPosition(row)}} />            
-            );
-        } else {
-            return (               
-                <Animated.View style={[styles.boxcontainer, {
-                    backgroundColor: Utils.hitsToColor(hits),
-                    top: animateTop,
-                    left: Utils.colToLeftPosition(col),
-                    opacity: opacity
-                    }]}> 
-                    <Text style={{color: "#262626", fontSize: 16}}>
-                        {hits}
-                    </Text>
-                </Animated.View>
-            );
-        }
-    }
-}
-
-class BallPowerUp extends PureComponent {
-
-    state = {
-        animateTop: new Animated.Value(Utils.rowToTopPosition(0)),
-        anim_radius: new Animated.Value(12),
-        animated: false,
-        radius: 12
-    }
-
-    componentDidMount() {
-        // Breathing animation of outer circle       
-        this.animListener = this.state.anim_radius.addListener(({value}) => this.setState({radius: value}));        
-        this.breathAnimation = Animated.loop(
+    pulse = () => {
+        Animated.loop(
             Animated.sequence([
-              Animated.timing(this.state.anim_radius, {
-                toValue: 14,
-                duration: 100,
+              Animated.timing(animatedRadius, {
+                toValue: radius1,
+                duration: delay,
                 ease: Easing.linear,
                 useNativeDriver: true
               }),
-              Animated.timing(this.state.anim_radius, {
-                toValue: 12,
-                duration: 100,
+              Animated.timing(animatedRadius, {
+                toValue: radius2,
+                duration: delay,
                 ease: Easing.linear,
                 useNativeDriver: true
               })
             ])
-          );
-          this.breathAnimation.start();
+          ).start(); 
     }
 
-    componentWillUnmount() {
-        if(this.rowAnimation) this.rowAnimation.stop();
-        if(this.dropAnimation) this.dropAnimation.stop();
-        if(this.breathAnimation) this.breathAnimation.stop();
-        if(this.collectAnimation) this.collectAnimation.stop();
-        this.state.animateTop.removeAllListeners();
-        this.state.anim_radius.removeAllListeners();
+    useEffect(() => {
+        pulse();            
+    });
+
+    return radius.current;
+}
+
+const useAnimateDrop = (row, position, duration) => {
+    const top = useAnimatedValue(Utils.rowToTopPosition(row));
+
+    const drop = () => {
+        Animated.timing(top, {
+            toValue: position,
+            easing: Easing.back(),
+            duration: duration,
+          }).start();          
     }
 
-    componentWillReceiveProps(nextProps) {
-        // Animate down to the floor when hit by the ball
-        if(nextProps.falling && this.props.falling != nextProps.falling) {
-            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(this.props.row));
-            this.animTopListener = this.state.animateTop.addListener(({value}) => {this.topPosition = value});  
-            this.dropAnimation = Animated.timing(this.state.animateTop, {
-                toValue: Constants.FLOOR_HEIGHT - Constants.BOX_TILE_SIZE + 10,
-                easing: Easing.back(),
-                duration: 700,
-              });
-              this.dropAnimation.start(); 
-        // Animate into the next row when moving to next level       
-        } else if(!this.state.animated || this.props.row != nextProps.row) {
-            let starting_row = this.state.animated ? this.props.row : 0;
-            this.state.animateTop = new Animated.Value(Utils.rowToTopPosition(starting_row));            
-            this.rowAnimation = Animated.spring(this.state.animateTop, {
-                toValue: Utils.rowToTopPosition(nextProps.row),                
-                bounciness: 10,
-                speed: 2
-              });
-            this.rowAnimation.start();
-            this.setState({animated: true});
-        // Animate +1 when current level finished and powerup is on the floor
-        } else if(nextProps.collecting && this.props.collecting != nextProps.collecting) {
-            this.state.animateCollection = new Animated.Value(0);
-            this.collectAnimation = Animated.timing(this.state.animateCollection, {
-                toValue: 1,
-                easing: Easing.linear,
-                duration: Utils.randomValueRounded(600, 900)
-            });
-            this.collectAnimation.start();
+    return [top, drop];
+}
+
+const useAnimateCollecting = (duration1, duration2) => {
+    const top = useAnimatedValue(0);
+
+    const collect = () => {
+        Animated.timing(top, {
+            toValue: 1,
+            easing: Easing.linear,
+            duration: Utils.randomValueRounded(duration1, duration2)
+        }).start();        
+    }
+
+    return [top, collect];
+}
+
+function BallPowerUp(props) {    
+    const [rowAnimationTop, setRow] = useTopPosition(props.row);
+    const [dropAnimationTop, setDrop] = useAnimateDrop(props.row, FLOOR_BOX_POSITION, 700);
+    const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
+    const radius  = useRadiusPulse(12, 15, 300);
+
+    useEffect(() => {
+        setRow(props.row);           
+    }, [props.row]);
+
+    useEffect(() => {
+        if(props.falling) {
+            setDrop();      
         }
-    }
+    }, [props.falling]);
 
-    render() { 
-        let color = !this.props.falling ? "white" : "#8CB453";   
-        let topPosition = this.state.animateTop;
-        let leftPosition = Utils.colToLeftPosition(this.props.col);
-        let opacity = 1;
-        let BOX_TILE_SIZE = Constants.BOX_TILE_SIZE;
-        if(this.props.collecting) {
-            topPosition = this.state.animateCollection.interpolate({
-                inputRange: [0, 1],
-                outputRange: [this.topPosition, this.topPosition - 500]
-            });   
-            opacity = this.state.animateCollection.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1, 0]
-              });  
-        } 
-        return (
-            <Animated.View style={[styles.boxcontainer, {
-                top: topPosition,
-                left: leftPosition,
-                opacity: opacity
-                }]}>
-                <Svg height={BOX_TILE_SIZE} width={BOX_TILE_SIZE} >
-                    {!this.props.falling && 
-                    <Circle
-                            cx={BOX_TILE_SIZE / 2}
-                            cy={BOX_TILE_SIZE / 2}
-                            r={this.state.radius}
-                            stroke={color}
-                            strokeWidth="3"
-                            fill="#202020"
-                        />
-                    }
-                    {!this.props.collecting &&
-                    <Circle
-                        cx={BOX_TILE_SIZE / 2}
-                        cy={BOX_TILE_SIZE / 2}
-                        r="7"
+    useEffect(() => {
+        if(props.collecting) {
+            setCollecting();           
+        }
+    }, [props.collecting]);
+
+    const {col, falling, collecting} = props;
+    let color = !falling ? "white" : "#8CB453";       
+    
+    let leftPosition = Utils.colToLeftPosition(col);
+    let opacity = 1;
+    let BOX_MIDDLE = Constants.BOX_TILE_SIZE / 2;
+
+    // Top position will change based on state of the power-up
+    let topPosition = rowAnimationTop;
+    if(collecting) {
+        topPosition = collectingAnimationTop.interpolate({
+            inputRange: [0, 1],
+            outputRange: [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 500]
+        });           
+        opacity = collectingAnimationTop.interpolate({
+            inputRange: [0, 1],
+            outputRange: [1, 0]
+            });  
+    } else if(falling) {
+        topPosition = dropAnimationTop;
+    } 
+    return (
+        <Animated.View style={[styles.boxcontainer, {
+            top: topPosition,
+            left: leftPosition,
+            opacity: opacity
+            }]}>
+            <Svg height={Constants.BOX_TILE_SIZE} width={Constants.BOX_TILE_SIZE} >
+                {!props.falling && 
+                <Circle
+                        cx={BOX_MIDDLE}
+                        cy={BOX_MIDDLE}
+                        r={radius}
                         stroke={color}
-                        fill={color}
+                        strokeWidth="3"
+                        fill="#202020"
                     />
-                    }
-                    {this.props.collecting &&
-                    <SVGText
-                        dx={BOX_TILE_SIZE / 2}
-                        dy={BOX_TILE_SIZE / 2}
-                        stroke={color}
-                        fill={color}
-                        opacity={opacity}
-                    >+1
-                    </SVGText>
-                    }
-                </Svg>
-            </Animated.View>
-        );
-    }
+                }
+                {!props.collecting &&
+                <Circle
+                    cx={BOX_MIDDLE}
+                    cy={BOX_MIDDLE}
+                    r="7"
+                    stroke={color}
+                    fill={color}
+                />
+                }                
+                {props.collecting &&
+                <SVGText
+                    dx={BOX_MIDDLE}
+                    dy={BOX_MIDDLE}
+                    stroke={color}
+                    fill={color}
+                    opacity={opacity}
+                >+1
+                </SVGText>
+                }
+            </Svg>
+        </Animated.View>
+    );
 }
 
 const styles = StyleSheet.create({
