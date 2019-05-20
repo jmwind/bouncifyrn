@@ -130,7 +130,7 @@ const useOpacityPulse = (speed = 50) => {
     return [opacity, pulse];
 }
 
-const useTopPosition = (row = 0) => {
+const useAnimateRow = (row = 0) => {
     const [rowPosition, setRowPosition] = useState(row);    
     const animatedTop = useAnimatedValue(Utils.rowToTopPosition(row - 1));
 
@@ -147,7 +147,7 @@ const useTopPosition = (row = 0) => {
 
 function BoxTile(props) {
     const [exploding, setExploding] = useState(false);
-    const [animateTop, setRow] = useTopPosition(props.row);
+    const [animateTop, setRow] = useAnimateRow(props.row);
     const [animateOpacity, startOpacityPulse] = useOpacityPulse(50);
 
     useEffect(() => {
@@ -281,7 +281,7 @@ const useAnimateCollecting = (duration1, duration2) => {
 }
 
 function BallPowerUp(props) {    
-    const [rowAnimationTop, setRow] = useTopPosition(props.row);
+    const [rowAnimationTop, setRow] = useAnimateRow(props.row);
     const [dropAnimationTop, setDrop] = useAnimateDrop(props.row, FLOOR_BOX_POSITION, 700);
     const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
     const radius  = useRadiusPulse(12, 15, 300);
