@@ -47,8 +47,8 @@ react-native run-ios
 - [x] clean up exploded boxes more aggresively
 - [x] ball can stop outside the side bounds of screen
 - [x] replace all the crappy array indeces with x,y 
-- [ ] bug where ball can fit between spaces between boxes. Collision detection needs more resolution.
-- [ ] listener and animated logic is gross. as state, global, vs pattern for animated lifecycles
+- [x] bug where ball can fit between spaces between boxes. Collision detection needs more resolution.
+- [x] listener and animated logic is gross. as state, global, vs pattern for animated lifecycles
 
 🍄
 
@@ -78,13 +78,15 @@ react-native run-ios
 - [x] Add a "bricks" mode where levels are full shapes with pre-set number of balls (good demo mode)
 - [x] Add speed-up button that appears after all balls are in play
 - [x] Save the two game type scores separately
-- [ ] Refactor entities into types
+- [x] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
 - [x] Organize constants as per best practices for React
+- [x] Move to 0.59 and use cool hooks!
+- [ ] Refactor entities into types
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
 - [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
 - [x] Animation of powerups to the landing transition
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
-- [x] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
+
 - [ ] Get working on Android
