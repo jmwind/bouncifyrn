@@ -1,10 +1,11 @@
-import React, { PureComponent, useState, useEffect, useRef, useCallback } from "react";
-import { StyleSheet, View, Text, Dimensions, Animated, Easing } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import Utils from "./utils";
 import { Constants, FLOOR_BOX_POSITION } from "./constants";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
+import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse} from "./hooks";
 
 function Ball(props) {
     const x = props.position.x - (Constants.RADIUS / 2);
@@ -94,7 +95,6 @@ function AimLine(props) {
     );
 }
 
-
 function SpeedUpButton(props) {        
     const {speed, row, column, available} = props;        
     return (
@@ -110,39 +110,6 @@ function SpeedUpButton(props) {
             </Animatable.Text>                   
         </View>            
     );
-}
-
-const useAnimatedValue = (initialValue) => {
-    const ref = useRef(new Animated.Value(initialValue))
-    return ref.current
-}
-
-const useOpacityPulse = (speed = 50) => {
-    const opacity = useAnimatedValue(0);
-
-    const pulse = () => {
-        Animated.sequence([
-            Animated.timing(opacity, {toValue: 0.6, easing: Easing.linear, duration: speed}),
-            Animated.timing(opacity, {toValue: 0, easing: Easing.linear, duration: speed})
-        ]).start();
-    }
-
-    return [opacity, pulse];
-}
-
-const useAnimateRow = (row = 0) => {
-    const [rowPosition, setRowPosition] = useState(row);    
-    const animatedTop = useAnimatedValue(Utils.rowToTopPosition(row - 1));
-
-    useEffect(() => {
-        Animated.spring(animatedTop, {
-            toValue: Utils.rowToTopPosition(rowPosition),                
-            bounciness: 15,
-            speed: 8
-          }).start();       
-    });
-    
-    return [animatedTop, setRowPosition];
 }
 
 function BoxTile(props) {
@@ -188,103 +155,11 @@ function BoxTile(props) {
     }
 }
 
-function useAnimatedValueListener(handler, element = global){
-    // Create a ref that stores handler
-    const savedHandler = useRef();
-    
-    // Update ref.current value if handler changes.
-    useEffect(() => {
-      savedHandler.current = handler;
-    }, [handler]);
-  
-    useEffect(
-      () => {
-        // Make sure element supports addEventListener
-        const isSupported = element && element.addListener;
-        if (!isSupported) return;
-        
-        const eventListener = event => savedHandler.current(event);    
-        element.addListener(eventListener);
-        
-        return () => {
-          element.removeListener(eventListener);
-        };
-      },
-      [element]
-    );
-  };
-
-const useRadiusPulse = (radius1 = 14, radius2 = 12, delay = 100) => {
-    const animatedRadius = useAnimatedValue(radius1);
-    const radius = useRef(radius1);
-
-    const handler = useCallback(
-        ({ value }) => {
-          radius.current = value;
-        }
-    );
-    
-    useAnimatedValueListener(handler, animatedRadius);    
-
-    pulse = () => {
-        Animated.loop(
-            Animated.sequence([
-              Animated.timing(animatedRadius, {
-                toValue: radius1,
-                duration: delay,
-                ease: Easing.linear,
-                useNativeDriver: true
-              }),
-              Animated.timing(animatedRadius, {
-                toValue: radius2,
-                duration: delay,
-                ease: Easing.linear,
-                useNativeDriver: true
-              })
-            ])
-          ).start(); 
-    }
-
-    useEffect(() => {
-        pulse();            
-    });
-
-    return radius.current;
-}
-
-const useAnimateDrop = (row, position, duration) => {
-    const top = useAnimatedValue(Utils.rowToTopPosition(row));
-
-    const drop = () => {
-        Animated.timing(top, {
-            toValue: position,
-            easing: Easing.back(),
-            duration: duration,
-          }).start();          
-    }
-
-    return [top, drop];
-}
-
-const useAnimateCollecting = (duration1, duration2) => {
-    const top = useAnimatedValue(0);
-
-    const collect = () => {
-        Animated.timing(top, {
-            toValue: 1,
-            easing: Easing.linear,
-            duration: Utils.randomValueRounded(duration1, duration2)
-        }).start();        
-    }
-
-    return [top, collect];
-}
-
 function BallPowerUp(props) {    
     const [rowAnimationTop, setRow] = useAnimateRow(props.row);
-    const [dropAnimationTop, setDrop] = useAnimateDrop(props.row, FLOOR_BOX_POSITION, 700);
+    const [dropAnimationTop, setDrop] = useAnimateDrop(700);
     const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
-    const radius  = useRadiusPulse(12, 15, 300);
+    const radius  = useRadiusPulse(14, 18, 300);
 
     useEffect(() => {
         setRow(props.row);           
@@ -302,9 +177,8 @@ function BallPowerUp(props) {
         }
     }, [props.collecting]);
 
-    const {col, falling, collecting} = props;
-    let color = !falling ? "white" : "#8CB453";       
-    
+    const {col, row, falling, collecting} = props;
+    let color = !falling ? "white" : "#8CB453";           
     let leftPosition = Utils.colToLeftPosition(col);
     let opacity = 1;
     let BOX_MIDDLE = Constants.BOX_TILE_SIZE / 2;
@@ -321,7 +195,10 @@ function BallPowerUp(props) {
             outputRange: [1, 0]
             });  
     } else if(falling) {
-        topPosition = dropAnimationTop;
+        topPosition = dropAnimationTop.interpolate({
+            inputRange: [0, 1],
+            outputRange: [Utils.rowToTopPosition(row), FLOOR_BOX_POSITION]
+        });
     } 
     return (
         <Animated.View style={[styles.boxcontainer, {
