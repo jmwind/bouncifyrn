@@ -130,6 +130,9 @@ export function moveToNextLevel(entities, dispatch) {
         for(var boxId in boxes) {
             delete entities[boxes[boxId]];
         }
+        // each new box level will show a new pattern and give the player
+        // more balls but with the caveat that each box tile will have 
+        // more hits required. 
         scorebar.balls += 25;
         let level = Levels[Utils.randomValueRounded(0, Levels.length - 1)];
         for(j = 0; j < 9; j++) {

@@ -1,3 +1,11 @@
+/**
+ * These are the brick patterns for the fixed 8x9 board. A '0' is an empty box tile while
+ * anything else will become a box tile with a number of hits as determined by the bricks
+ * game settings.
+ * 
+ * To add a new level, first add the level matrix and second add the level to the Levels list
+ * at the bottom of this file.
+ */
 const level1 = [
     [0,1,1,1,1,1,1,0],
     [0,0,0,0,0,0,0,0],

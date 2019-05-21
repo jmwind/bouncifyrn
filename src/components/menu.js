@@ -29,27 +29,27 @@ export default class MainMenu extends PureComponent {
           this.props.gamesPlayed > 0 &&
           <View style={styles.textContainer}>
             <Animatable.Text 
-              style={styles.lastScore} animation="pulse" 
+              style={styles.lastScore} animation="" 
               iterationCount="infinite" direction="alternate">Last Score
             </Animatable.Text>
             <Animatable.Text 
-              style={styles.lastScore} animation="pulse" 
+              style={styles.lastScore} animation="" 
               iterationCount="infinite" direction="alternate">{this.props.lastScore}
             </Animatable.Text>
             <Animatable.Text 
-              style={styles.score} animation="pulse" 
+              style={styles.score} animation="" 
               iterationCount="infinite" direction="alternate">Best Lines
             </Animatable.Text>
             <Animatable.Text 
-              style={styles.score} animation="pulse" 
+              style={styles.score} animation="" 
               iterationCount="infinite" direction="alternate">{this.props.topScore}
             </Animatable.Text>
             <Animatable.Text 
-              style={styles.score} animation="pulse" 
+              style={styles.score} animation="" 
               iterationCount="infinite" direction="alternate">Best Bricks
             </Animatable.Text>
             <Animatable.Text 
-              style={styles.score} animation="pulse" 
+              style={styles.score} animation="" 
               iterationCount="infinite" direction="alternate">{this.props.topScoreBricks}
             </Animatable.Text>
           </View>
