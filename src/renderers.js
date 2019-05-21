@@ -129,25 +129,26 @@ function BoxTile(props) {
         startOpacityPulse();
     }, [props.hits]);   
 
-    const {hits, col, row} = props;        
+    const {hits, col, row} = props;  
+    const color = Utils.hitsToColor(hits);
+    const x = Utils.colToLeftPosition(col);
+    const y = Utils.rowToTopPosition(row);
     if(exploding) {       
         return (     
             <Explosion 
-                backgroundColor={Utils.hitsToColor(hits)} 
+                backgroundColor={color} 
                 count={35} 
-                origin={{x: Utils.colToLeftPosition(col), y: Utils.rowToTopPosition(row)}} />            
+                origin={{x: x, y: y}} />            
         );
     } else {
         return (               
             <Animated.View style={[styles.boxcontainer, {
-                backgroundColor: Utils.hitsToColor(hits),
+                backgroundColor: color,
                 top: animateTop,
-                left: Utils.colToLeftPosition(col),
-                opacity: animateOpacity.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [1, 0]})
+                left: x,
+                opacity: animateOpacity.interpolate({inputRange: [0, 1], outputRange: [1, 0]})
                 }]}> 
-                <Text style={{color: "#262626", fontSize: 16}}>
+                <Text style={styles.boxtext}>
                     {hits}
                 </Text>
             </Animated.View>
@@ -257,6 +258,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex:1,    
+  },
+  boxtext: {
+    color: "#262626", 
+    fontSize: 16
   },
   scorebar: {
       position: "absolute",

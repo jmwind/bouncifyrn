@@ -82,6 +82,7 @@ react-native run-ios
 - [x] Organize constants as per best practices for React
 - [x] Move to 0.59 and use cool hooks!
 - [ ] Refactor entities into types
+- [ ] Add getting started instructions to the game and a swiped down animation lottie
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
 - [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
