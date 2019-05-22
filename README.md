@@ -89,5 +89,6 @@ react-native run-ios
 - [x] Animation of powerups to the landing transition
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
+- [ ] Path finding algorithm to call the balls "home". Not useful, but fun to try.
 
 - [ ] Get working on Android
