@@ -160,7 +160,7 @@ function BallPowerUp(props) {
     const [rowAnimationTop, setRow] = useAnimateRow(props.row);
     const [dropAnimationTop, setDrop] = useAnimateDrop(700);
     const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
-    const radius  = useRadiusPulse(14, 16, 300);
+    const radius  = useRadiusPulse(12, 16, 300);
 
     useEffect(() => {
         setRow(props.row);           
