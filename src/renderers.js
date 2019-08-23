@@ -39,7 +39,7 @@ function Floor(props) {
                 height: Dimensions.get("window").height,
                 backgroundColor: "#262626"
             }}>
-            {current_hits >= 0 &&
+            {current_hits > 0 &&
             <View style={{justifyContent: "center", alignItems: "center", height: Dimensions.get("window").height - props.height - margin }}>
                 <Svg width={size} height={size} >
                     <Circle
@@ -60,15 +60,17 @@ function Floor(props) {
                         strokeDashoffset={Animated.multiply(angle, radius)}
                         strokeDasharray={`${circumference} ${circumference}`}/>
                     <SVGText
-                        dx={size / 2}
-                        dy={size / 2}
+                        x={size / 2}
+                        y={size / 2}
+                        dx="-.5em"
+                        dy="+.3em"
                         fontSize="18"
                         verticalAlign="middle"
                         textAnchor="middle"
                         stroke="white"
                         fill="white"                        
                     >
-                        {percent_hit}%
+                        {percent_hit} %
                     </SVGText>
                 </Svg>
                 
