@@ -81,6 +81,9 @@ react-native run-ios
 - [x] Wall rebounding aiming (eg, bounce the aim line off the wall to help with gnarly angles)
 - [x] Organize constants as per best practices for React
 - [x] Move to 0.59 and use cool hooks!
+- [x] Move to the community packages for async and other deprecations
+- [~] Add level progress indicator and use % complete instead of # of blocks for brick level completion
+- [ ] Add level progress bonuses and threshold win animations
 - [ ] Refactor entities into types
 - [ ] Add getting started instructions to the game and a swiped down animation lottie
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
@@ -90,5 +93,4 @@ react-native run-ios
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
 - [ ] Path finding algorithm to call the balls "home". Not useful, but fun to try.
-
 - [ ] Get working on Android

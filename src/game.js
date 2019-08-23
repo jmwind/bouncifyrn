@@ -28,6 +28,7 @@ export default class BouncifyGame extends PureComponent {
   componentWillMount = () => {
     this.entities = {
       floor: { 
+        total_hits: 0,
         height: Constants.FLOOR_HEIGHT, 
         renderer: <Floor /> },          
       scorebar: { 

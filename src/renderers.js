@@ -15,20 +15,66 @@ function Ball(props) {
     );
 }
 
-function Floor(props) {    
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+function Floor(props) {  
+    const {total_hits, current_hits} = props;  
+    const percent_hit = Math.trunc(current_hits*100/total_hits);
+    const percent_hit_animated = new Animated.Value(percent_hit);
+    const size = 125;
+    const margin = 15;
+    const strokeWidth = 20;
+    const radius = (size - strokeWidth - margin) / 2;
+    const circumference = radius * 2 * Math.PI;
+    const angle = percent_hit_animated.interpolate({
+        inputRange: [0, 100],
+        outputRange: [0, 2 * Math.PI]
+    });    
     return (
         <View
-            style={
-            {
+            style={{
                 position: "absolute",
                 left: 0,
                 top: props.height,
                 width: Dimensions.get("window").width,
                 height: Dimensions.get("window").height,
                 backgroundColor: "#262626"
-            }
-            }
-        />            
+            }}>
+            {current_hits >= 0 &&
+            <View style={{justifyContent: "center", alignItems: "center", height: Dimensions.get("window").height - props.height - margin }}>
+                <Svg width={size} height={size} >
+                    <Circle
+                        stroke="#265BF6"
+                        strokeWidth={strokeWidth}
+                        cx={size / 2} 
+                        cy={size / 2} 
+                        r={radius}                         
+                        fill="none"
+                    />
+                    <AnimatedCircle 
+                        stroke="#404040"
+                        strokeWidth={strokeWidth}
+                        cx={size / 2} 
+                        cy={size / 2} 
+                        r={radius}                         
+                        fill="none"
+                        strokeDashoffset={Animated.multiply(angle, radius)}
+                        strokeDasharray={`${circumference} ${circumference}`}/>
+                    <SVGText
+                        dx={size / 2}
+                        dy={size / 2}
+                        fontSize="18"
+                        verticalAlign="middle"
+                        textAnchor="middle"
+                        stroke="white"
+                        fill="white"                        
+                    >
+                        {percent_hit}%
+                    </SVGText>
+                </Svg>
+                
+            </View>
+            }                    
+        </View>            
     );    
 }
 

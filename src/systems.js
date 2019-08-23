@@ -51,6 +51,7 @@ function collidesWithBox(entities, ball) {
                 }                          
             } else {
                 box.hits--;
+                entities.floor.current_hits++;
                 if(box.hits <= 0) {
                     box.explode = true;
                 }
@@ -181,6 +182,20 @@ export function moveToNextLevel(entities, dispatch) {
             }
         }
     }
+    countPointsInLevel(entities);
+}
+
+function countPointsInLevel(entities) {    
+    let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
+    let total_hits = 0;
+    for(var boxId in boxes) {
+        let box = entities[boxes[boxId]];
+        if(box.hits) {
+            total_hits += box.hits;
+        }
+    }
+    entities.floor.total_hits = total_hits;
+    entities.floor.current_hits = 0;
 }
 
 function deleteFallenBallPowerups(entities) {
