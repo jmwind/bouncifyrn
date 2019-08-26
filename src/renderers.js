@@ -70,10 +70,12 @@ function Floor(props) {
                         stroke="white"
                         fill="white"                        
                     >
-                        {percent_hit} %
+                        {/* Ugly hack: percent sign overlaps with single digit text and not with multi */}                        
+                        {percent_hit}
+                        {percent_hit < 10 && " %"}
+                        {percent_hit >= 10 && "%"}
                     </SVGText>
-                </Svg>
-                
+                </Svg>                              
             </View>
             }                    
         </View>            

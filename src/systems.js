@@ -77,7 +77,7 @@ function moveToNextLevelWithDelay(entities, dispatch) {
 }
 
 export function moveToNextLevel(entities, dispatch) {
-    const { scorebar, ball, speedbutton } = entities;
+    const { scorebar, ball, speedbutton, floor } = entities;
     let boxes = Object.keys(entities).filter(key => key.startsWith("box"));
     let max_row = 0;
 
@@ -112,7 +112,7 @@ export function moveToNextLevel(entities, dispatch) {
     // recalculate the boxes that are left
     boxes = Object.keys(entities).filter(key => key.startsWith("box"));
 
-    let gameover = false;
+    let gameover = false;    
     if(scorebar.mode == Constants.MODE_LINES && max_row >= Constants.LAST_ROW) {  
         gameover = true;              
     } else if(scorebar.mode == Constants.MODE_BRICKS && boxes.length > 10) {
