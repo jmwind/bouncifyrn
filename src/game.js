@@ -8,7 +8,7 @@
  */
 
 import React, { PureComponent } from "react";
-import { StyleSheet, Modal } from "react-native";
+import { StyleSheet, Modal, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, SpeedUpButton } from "./renderers";
 import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp } from "./systems"
@@ -18,6 +18,16 @@ import { Constants } from "./constants"
 export default class BouncifyGame extends PureComponent {
   constructor() {
     super();
+
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+    Constants.FLOOR_HEIGHT = height - (Constants.FLOOR_HEIGHT_SIZE);
+    Constants.BOX_TILE_SIZE = (width - ((Constants.COLUMS + 1 ) * Constants.BOX_TILE_SPACE)) / Constants.COLUMS;
+    // top and bottom rows can't have boxes so substract 2 from available space
+    Constants.ROWS = Math.floor(
+      (Constants.FLOOR_HEIGHT - Constants.SCOREBOARD_HEIGHT) / 
+      (Constants.BOX_TILE_SIZE + Constants.BOX_TILE_SPACE)) - 2;
+
     this.state = {
       running: false,
       gameOver: false,
@@ -29,10 +39,10 @@ export default class BouncifyGame extends PureComponent {
     this.entities = {
       floor: { 
         total_hits: 0,
-        height: Constants.FLOOR_HEIGHT, 
+        height: Constants.FLOOR_HEIGHT,
         renderer: <Floor /> },          
       scorebar: { 
-        height: 90, 
+        height: Constants.SCOREBOARD_HEIGHT, 
         best: this.props.topScore, 
         mode: this.props.mode,
         state: Constants.STOPPED,               

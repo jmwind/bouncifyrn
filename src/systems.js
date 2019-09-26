@@ -113,7 +113,7 @@ export function moveToNextLevel(entities, dispatch) {
     boxes = Object.keys(entities).filter(key => key.startsWith("box"));
 
     let gameover = false;    
-    if(scorebar.mode == Constants.MODE_LINES && max_row >= Constants.LAST_ROW) {  
+    if(scorebar.mode == Constants.MODE_LINES && max_row > Constants.ROWS) {  
         gameover = true;              
     } else if(scorebar.mode == Constants.MODE_BRICKS && boxes.length > 10) {
         gameover = true;
@@ -136,8 +136,8 @@ export function moveToNextLevel(entities, dispatch) {
         // more hits required. 
         scorebar.balls += 25;
         let level = Levels[Utils.randomValueRounded(0, Levels.length - 1)];
-        for(j = 0; j < 9; j++) {
-            for (i = 0; i < 8; i++) {
+        for(j = 0; j < Constants.ROWS; j++) {
+            for (i = 0; i < Constants.COLUMS; i++) {
                 if(level[j][i] == 0) continue;
                 let key = Utils.randomKey();
                 let new_hits = Utils.randomValueRounded(3, scorebar.balls/2);
@@ -154,7 +154,7 @@ export function moveToNextLevel(entities, dispatch) {
     } else {
         // create new row of boxes and power-ups
         let powerup = false;
-        let cols = 8;
+        let cols = Constants.COLUMS;
         for (i = 0; i < cols; i++) {        
             let key = Utils.randomKey();
             let col = i;

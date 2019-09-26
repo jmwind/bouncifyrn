@@ -195,6 +195,8 @@ function BoxTile(props) {
             <Animated.View style={[styles.boxcontainer, {
                 backgroundColor: color,
                 top: animateTop,
+                width: Constants.BOX_TILE_SIZE,
+                height: Constants.BOX_TILE_SIZE,
                 left: x,
                 opacity: animateOpacity.interpolate({inputRange: [0, 1], outputRange: [1, 0]})
                 }]}> 
@@ -302,9 +304,7 @@ const styles = StyleSheet.create({
     position: "absolute"
   },
   boxcontainer: {
-    position: "absolute",
-    width: Constants.BOX_TILE_SIZE,
-    height: Constants.BOX_TILE_SIZE,
+    position: "absolute",    
     justifyContent: 'center',
     alignItems: 'center',
     flex:1,    

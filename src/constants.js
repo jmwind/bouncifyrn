@@ -1,9 +1,10 @@
-export const Constants = {
+export var Constants = {
     // Collision detection
     NO_COLISION: 0,
     SIDE: 1,
     TOP_BOTTOM: 2,
-    LAST_ROW: 11,
+    ROWS: 10,
+    COLUMS: 8,
 
     // Sizings
     RADIUS: 7,
@@ -11,6 +12,8 @@ export const Constants = {
     BOX_TILE_SIZE: 40,
     BOX_TILE_SPACE: 6,
     FLOOR_HEIGHT: 640,
+    FLOOR_HEIGHT_SIZE: 172,
+    // 8x9 on most screens, but have to check
     
     // Game modes
     MODE_LINES: 100,
