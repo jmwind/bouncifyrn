@@ -65,7 +65,6 @@ function Floor(props) {
                         dx="-.5em"
                         dy="+.3em"
                         fontSize="18"
-                        verticalAlign="middle"
                         textAnchor="middle"
                         stroke="white"
                         fill="white"                        
