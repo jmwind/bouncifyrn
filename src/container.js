@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { View, StyleSheet, AsyncStorage } from "react-native";
 import MainMenu from "./components/menu";
 import BouncifyGame from "./game";
-import { Constants } from "./constants";
+import { Config } from "./config";
 
 const TOP_SCORE_KEY = "topScore";
 const TOP_SCORE_BRICKS_KEY = "topScoreBricks";
@@ -16,7 +16,7 @@ export default class Container extends PureComponent {
       topScore: 0,
       topScoreBricks: 0,
       gamesPlayed: 0,
-      mode: Constants.MODE_LINES
+      mode: Config.MODE_LINES
     };
   }
 
@@ -43,12 +43,12 @@ export default class Container extends PureComponent {
         gamesPlayed: this.state.gamesPlayed + 1,
         lastScore: lastScore
       });
-      if(mode == Constants.MODE_LINES && lastScore > this.state.topScore) {
+      if(mode == Config.MODE_LINES && lastScore > this.state.topScore) {
         this.setState({
           topScore: lastScore
         });
         AsyncStorage.setItem(TOP_SCORE_KEY, lastScore.toString());
-      } else if(mode == Constants.MODE_BRICKS && lastScore > this.state.topScoreBricks) {
+      } else if(mode == Config.MODE_BRICKS && lastScore > this.state.topScoreBricks) {
         this.setState({
           topScoreBricks: lastScore
         });
@@ -69,7 +69,7 @@ export default class Container extends PureComponent {
           topScoreBricks={topScoreBricks} />
         <BouncifyGame
           visible={gameStarted}
-          topScore={mode == Constants.MODE_LINES ? topScore : topScoreBricks}
+          topScore={mode == Config.MODE_LINES ? topScore : topScoreBricks}
           mode={mode}
           onClose={(lastScore) => this.toggleGame(false, lastScore, mode)}
         />

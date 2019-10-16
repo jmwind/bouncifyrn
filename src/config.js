@@ -1,4 +1,4 @@
-export var Constants = {
+export var Config = {
     // Collision detection
     NO_COLISION: 0,
     SIDE: 1,
@@ -35,4 +35,4 @@ export const COLORS = [
     "#449b8e", // dull green 151+
 ];
 
-export const FLOOR_BOX_POSITION = Constants.FLOOR_HEIGHT - Constants.BOX_TILE_SIZE + 10;
+export const FLOOR_BOX_POSITION = Config.FLOOR_HEIGHT - Config.BOX_TILE_SIZE + 10;

@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import Utils from "./utils";
-import { Constants, FLOOR_BOX_POSITION } from "./constants";
+import { Config, FLOOR_BOX_POSITION } from "./config";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse} from "./hooks";
 
 function Ball(props) {
-    const x = props.position.x - (Constants.RADIUS / 2);
-    const y = props.position.y - (Constants.RADIUS / 2);
+    const x = props.position.x - (Config.RADIUS / 2);
+    const y = props.position.y - (Config.RADIUS / 2);
     return (
       <View style={[styles.ball, { left: x, top: y, backgroundColor: props.color }]} />
     );
@@ -111,7 +111,7 @@ function AimLine(props) {
     if (length == 0) {
         return null
     }
-    let RADIUS = Constants.RADIUS;
+    let RADIUS = Config.RADIUS;
     let width = Dimensions.get('window').width;
     let height = Dimensions.get('window').height;
     let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
@@ -129,8 +129,8 @@ function AimLine(props) {
             x += (-x) * 2;              
         }
         let y = start.y + (((delta.y) / numCircles) * i * drawLength);
-        if(y < (Constants.SCOREBOARD_HEIGHT)) {
-            y -= (y - Constants.SCOREBOARD_HEIGHT) * 2;
+        if(y < (Config.SCOREBOARD_HEIGHT)) {
+            y -= (y - Config.SCOREBOARD_HEIGHT) * 2;
         }
         return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
     });
@@ -194,8 +194,8 @@ function BoxTile(props) {
             <Animated.View style={[styles.boxcontainer, {
                 backgroundColor: color,
                 top: animateTop,
-                width: Constants.BOX_TILE_SIZE,
-                height: Constants.BOX_TILE_SIZE,
+                width: Config.BOX_TILE_SIZE,
+                height: Config.BOX_TILE_SIZE,
                 left: x,
                 opacity: animateOpacity.interpolate({inputRange: [0, 1], outputRange: [1, 0]})
                 }]}> 
@@ -233,7 +233,7 @@ function BallPowerUp(props) {
     let color = !falling ? "white" : "#8CB453";           
     let leftPosition = Utils.colToLeftPosition(col);
     let opacity = 1;
-    let BOX_MIDDLE = Constants.BOX_TILE_SIZE / 2;
+    let BOX_MIDDLE = Config.BOX_TILE_SIZE / 2;
 
     // Top position will change based on state of the power-up
     let topPosition = rowAnimationTop;
@@ -258,7 +258,7 @@ function BallPowerUp(props) {
             left: leftPosition,
             opacity: opacity
             }]}>
-            <Svg height={Constants.BOX_TILE_SIZE} width={Constants.BOX_TILE_SIZE} >
+            <Svg height={Config.BOX_TILE_SIZE} width={Config.BOX_TILE_SIZE} >
                 {!props.falling && 
                 <Circle
                         cx={BOX_MIDDLE}
@@ -297,9 +297,9 @@ const styles = StyleSheet.create({
   ball: {
     borderColor: "#CCC",
     borderWidth: 1,
-    borderRadius: Constants.RADIUS * 2,
-    width: Constants.RADIUS * 2,
-    height: Constants.RADIUS * 2,
+    borderRadius: Config.RADIUS * 2,
+    width: Config.RADIUS * 2,
+    height: Config.RADIUS * 2,
     position: "absolute"
   },
   boxcontainer: {

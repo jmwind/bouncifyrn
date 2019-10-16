@@ -1,4 +1,4 @@
-import { COLORS, Constants } from "./constants";
+import { COLORS, Config } from "./config";
 
 export default utils = {
     getDistance: function (p1, p2) {
@@ -34,16 +34,16 @@ export default utils = {
     },
 
     colToLeftPosition: function(col) {
-        return Constants.BOX_TILE_SPACE + 
-            ((col * Constants.BOX_TILE_SPACE) + 
-            (col * Constants.BOX_TILE_SIZE));    
+        return Config.BOX_TILE_SPACE + 
+            ((col * Config.BOX_TILE_SPACE) + 
+            (col * Config.BOX_TILE_SIZE));    
     },
 
     rowToTopPosition: function(row) {
-        return Constants.SCOREBOARD_HEIGHT + 
-            Constants.BOX_TILE_SPACE + 
-            ((row * Constants.BOX_TILE_SPACE) + 
-            (row * Constants.BOX_TILE_SIZE));
+        return Config.SCOREBOARD_HEIGHT + 
+            Config.BOX_TILE_SPACE + 
+            ((row * Config.BOX_TILE_SPACE) + 
+            (row * Config.BOX_TILE_SIZE));
     },
 
     hitsToColor: function(hits) {

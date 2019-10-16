@@ -13,7 +13,7 @@ import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, SpeedUpButton } from "./renderers";
 import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp } from "./systems"
 import Utils from "./utils";
-import { Constants } from "./constants"
+import { Config } from "./config"
 
 export default class BouncifyGame extends PureComponent {
   constructor() {
@@ -21,12 +21,12 @@ export default class BouncifyGame extends PureComponent {
 
     let width = Dimensions.get('window').width;
     let height = Dimensions.get('window').height;
-    Constants.FLOOR_HEIGHT = height - (Constants.FLOOR_HEIGHT_SIZE);
-    Constants.BOX_TILE_SIZE = (width - ((Constants.COLUMS + 1 ) * Constants.BOX_TILE_SPACE)) / Constants.COLUMS;
+    Config.FLOOR_HEIGHT = height - (Config.FLOOR_HEIGHT_SIZE);
+    Config.BOX_TILE_SIZE = (width - ((Config.COLUMS + 1 ) * Config.BOX_TILE_SPACE)) / Config.COLUMS;
     // top and bottom rows can't have boxes so substract 2 from available space
-    Constants.ROWS = Math.floor(
-      (Constants.FLOOR_HEIGHT - Constants.SCOREBOARD_HEIGHT) / 
-      (Constants.BOX_TILE_SIZE + Constants.BOX_TILE_SPACE)) - 2;
+    Config.ROWS = Math.floor(
+      (Config.FLOOR_HEIGHT - Config.SCOREBOARD_HEIGHT) / 
+      (Config.BOX_TILE_SIZE + Config.BOX_TILE_SPACE)) - 2;
 
     this.state = {
       running: false,
@@ -39,13 +39,13 @@ export default class BouncifyGame extends PureComponent {
     this.entities = {
       floor: { 
         total_hits: 0,
-        height: Constants.FLOOR_HEIGHT,
+        height: Config.FLOOR_HEIGHT,
         renderer: <Floor /> },          
       scorebar: { 
-        height: Constants.SCOREBOARD_HEIGHT, 
+        height: Config.SCOREBOARD_HEIGHT, 
         best: this.props.topScore, 
         mode: this.props.mode,
-        state: Constants.STOPPED,               
+        state: Config.STOPPED,               
         level: 0, 
         balls: 1, 
         new_balls: 0, 
@@ -54,9 +54,9 @@ export default class BouncifyGame extends PureComponent {
         renderer: <ScoreBar />},               
       ball: { 
         color: "white", 
-        state: Constants.STOPPED, 
-        start: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
-        position: Utils.newPosition(300, Constants.FLOOR_HEIGHT - Constants.RADIUS*2), 
+        state: Config.STOPPED, 
+        start: Utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
+        position: Utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
         speed: Utils.newPosition(1.0, 1.0), 
         direction: Utils.newPosition(0, 0), 
         renderer: <Ball />},
@@ -77,7 +77,7 @@ export default class BouncifyGame extends PureComponent {
     }
     if(nextProps.mode) {
       this.entities.scorebar.mode = nextProps.mode;
-      if(nextProps.mode == Constants.MODE_BRICKS) {
+      if(nextProps.mode == Config.MODE_BRICKS) {
         this.entities.scorebar.balls = 75;
       } else {
         this.entities.scorebar.balls = 1;
