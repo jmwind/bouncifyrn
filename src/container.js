@@ -4,6 +4,7 @@ import MainMenu from "./components/menu";
 import AsyncStorage from '@react-native-community/async-storage';
 import BouncifyGame from "./game";
 import { Config } from "./config";
+import utils from "./utils";
 
 const TOP_SCORE_KEY = "topScore";
 const TOP_SCORE_BRICKS_KEY = "topScoreBricks";
@@ -19,6 +20,7 @@ export default class Container extends PureComponent {
       gamesPlayed: 0,
       mode: Config.MODE_LINES
     };
+    utils.initializeGameSizing();
   }
 
   componentDidMount() {
@@ -28,10 +30,10 @@ export default class Container extends PureComponent {
         }
     });
     AsyncStorage.getItem(TOP_SCORE_BRICKS_KEY).then((val) => {
-      if(val != null) {
-        this.setState({ topScoreBricks: parseInt(val) });
-      }
-  })     
+        if(val != null) {
+          this.setState({ topScoreBricks: parseInt(val) });
+        }
+    });     
   }
 
   toggleGame = (gameStarted, lastScore, mode) => {    

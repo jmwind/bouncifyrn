@@ -34,21 +34,12 @@ cd bouncifyrn
 
 npm install
 
-react-native link
-
 react-native run-ios
 ```
 
 ## TODOs
 
-🦟
-
-- [x] title placement has overlaps, ensure at least one and powerups
-- [x] clean up exploded boxes more aggresively
-- [x] ball can stop outside the side bounds of screen
-- [x] replace all the crappy array indeces with x,y 
-- [x] bug where ball can fit between spaces between boxes. Collision detection needs more resolution.
-- [x] listener and animated logic is gross. as state, global, vs pattern for animated lifecycles
+This is a play-by-play of the small steps taken from a blank screen to getting an addictive game built and running.
 
 🍄
 
@@ -82,15 +73,16 @@ react-native run-ios
 - [x] Organize constants as per best practices for React
 - [x] Move to 0.59 and use cool hooks!
 - [x] Move to the community packages for async and other deprecations
-- [~] Add level progress indicator and use % complete instead of # of blocks for brick level completion
+- [x] Get working on Android
+- [ ] Add level progress indicator and use % complete instead of # of blocks for brick level completion (IN-PROGRESS)
+- [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts) (IN-PROGRESS)
 - [ ] Add level progress bonuses and threshold win animations
 - [ ] Refactor entities into types
 - [ ] Add getting started instructions to the game and a swiped down animation lottie
-- [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts)
 - [ ] Get with the times, go Typescript!
 - [ ] First ball landing spot calculation instead of having the same ball decide on next launch location
-- [x] Animation of powerups to the landing transition
+- [ ] Animation of powerups to the first ball landing transition
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
 - [ ] Path finding algorithm to call the balls "home". Not useful, but fun to try.
-- [ ] Get working on Android
+

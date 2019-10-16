@@ -7,7 +7,7 @@
  * @lint-ignore-every XPLATJSCOPYRIGHT1
  */
 
-import React, { PureComponent } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Modal, Dimensions } from "react-native";
 import { GameEngine } from "react-native-game-engine";
 import { Ball, Floor, ScoreBar, SpeedUpButton } from "./renderers";
@@ -15,93 +15,37 @@ import { StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateB
 import Utils from "./utils";
 import { Config } from "./config"
 
-export default class BouncifyGame extends PureComponent {
-  constructor() {
-    super();
+export default function BouncifyGame(props) {
+  const [running, setRunning] = useState(false);
+  const [lastScore, setLastScore] = useState(0);
+  const entities = useRef(Utils.newGameEntities(props.topScore, props.mode));
 
-    let width = Dimensions.get('window').width;
-    let height = Dimensions.get('window').height;
-    Config.FLOOR_HEIGHT = height - (Config.FLOOR_HEIGHT_SIZE);
-    Config.BOX_TILE_SIZE = (width - ((Config.COLUMS + 1 ) * Config.BOX_TILE_SPACE)) / Config.COLUMS;
-    // top and bottom rows can't have boxes so substract 2 from available space
-    Config.ROWS = Math.floor(
-      (Config.FLOOR_HEIGHT - Config.SCOREBOARD_HEIGHT) / 
-      (Config.BOX_TILE_SIZE + Config.BOX_TILE_SPACE)) - 2;
+  useEffect(() => {
+    setRunning(props.visible);
+  }, [props.visible]);
 
-    this.state = {
-      running: false,
-      gameOver: false,
-      lastScore: 0
-    };    
-  }
+  useEffect(() => {
+    entities.current.scorebar.mode = props.mode;
+    if(props.mode == Config.MODE_BRICKS) {
+      entities.current.scorebar.balls = 75;
+    } else {
+      entities.current.scorebar.balls = 1;
+    } 
+  }, [props.mode]);
 
-  componentWillMount = () => {
-    this.entities = {
-      floor: { 
-        total_hits: 0,
-        height: Config.FLOOR_HEIGHT,
-        renderer: <Floor /> },          
-      scorebar: { 
-        height: Config.SCOREBOARD_HEIGHT, 
-        best: this.props.topScore, 
-        mode: this.props.mode,
-        state: Config.STOPPED,               
-        level: 0, 
-        balls: 1, 
-        new_balls: 0, 
-        balls_in_play: 0, 
-        score: 0, 
-        renderer: <ScoreBar />},               
-      ball: { 
-        color: "white", 
-        state: Config.STOPPED, 
-        start: Utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
-        position: Utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
-        speed: Utils.newPosition(1.0, 1.0), 
-        direction: Utils.newPosition(0, 0), 
-        renderer: <Ball />},
-      speedbutton: {
-          available: false,
-          speed: 1,
-          row: 0,
-          column: 7,
-          renderer: <SpeedUpButton />}              
-      };
-  }
-
-  componentWillReceiveProps = nextProps => {
-    if(nextProps.visible) {
-      this.setState({
-        running: true
-      });
-    }
-    if(nextProps.mode) {
-      this.entities.scorebar.mode = nextProps.mode;
-      if(nextProps.mode == Config.MODE_BRICKS) {
-        this.entities.scorebar.balls = 75;
-      } else {
-        this.entities.scorebar.balls = 1;
-      }   
-    }
-    if(nextProps.topScore) {
-      this.entities.scorebar.best = nextProps.topScore;
-    }
-  }
+  useEffect(() => {
+    entities.current.scorebar.best = props.topScore;
+  }, [props.topScore]);  
 
   gameOver = score => {
-    this.setState({
-      running: false,
-      lastScore: score
-    });
-    this.entities.scorebar.level = 0;
-    this.entities.scorebar.balls = 1;
+    setLastScore(score);
 
     setTimeout(() => {
-      this.setState({
-        gameOver: true
-      });
-      if (this.props.onClose) {
-        this.props.onClose(this.state.lastScore);
+      setRunning(false);
+      entities.current.scorebar.level = 0;
+      entities.current.scorebar.balls = 1;  
+      if (props.onClose) {
+        props.onClose(lastScore);
       }
     }, 250);
   };
@@ -112,28 +56,26 @@ export default class BouncifyGame extends PureComponent {
     }
   };
 
-  render() {
-    return (
-      <Modal
-        transparent={false}
-        animationType="slide"
-        visible={this.props.visible}        
-      >
-        <GameEngine
-          style={styles.container}
-          running={this.state.running}
-          onEvent={this.handleEvent}
-          // Systems are called during the animation loop and responsible for updating the game state (eg, entities)      
-          systems={[StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp]}
-          // Entities are the objects in the game. The game emgine will iterate over the objects and call their renderer 
-          // during each animation frame. Attributes are passed to each entity as props. This initial list of entities
-          // is below but the bulk of the game happens witin the systems as they add/remove entities based on the 
-          // state of the game.
-          entities={this.entities}>
-        </GameEngine>
-      </Modal>
-    );
-  }
+  return (
+    <Modal
+      transparent={false}
+      animationType="slide"
+      visible={running}        
+    >
+      <GameEngine
+        style={styles.container}
+        running={running}
+        onEvent={handleEvent}
+        // Systems are called during the animation loop and responsible for updating the game state (eg, entities)      
+        systems={[StartGame, MoveBall, SpawnBall, AimBallsStart, AimBallsRelease, CreateBallTail, SpeedUp]}
+        // Entities are the objects in the game. The game emgine will iterate over the objects and call their renderer 
+        // during each animation frame. Attributes are passed to each entity as props. This initial list of entities
+        // is below but the bulk of the game happens witin the systems as they add/remove entities based on the 
+        // state of the game.
+        entities={entities.current}>
+      </GameEngine>
+    </Modal>
+  );
 }
 
 const styles = StyleSheet.create({
