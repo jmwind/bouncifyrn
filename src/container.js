@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
-import { View, StyleSheet, AsyncStorage } from "react-native";
+import { View, StyleSheet } from "react-native";
 import MainMenu from "./components/menu";
+import AsyncStorage from '@react-native-community/async-storage';
 import BouncifyGame from "./game";
 import { Config } from "./config";
 
