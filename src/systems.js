@@ -365,7 +365,7 @@ const AimBallsStart = (entities, { touches, screen }) => {
 
 const AimBallsRelease = (entities, { time, touches }) => {
     const { scorebar, ball, aimline } = entities;
-    if(scorebar.state == Config.STOPPED && aimline) {
+    if(scorebar.state == Config.STOPPED && aimline && aimline.drag_vector) {
         touches.filter(t => t.type === "end").forEach(t => {
             const { aimline } = entities;
             let d = Utils.getDistance(aimline.drag_vector.start, aimline.drag_vector.final);
