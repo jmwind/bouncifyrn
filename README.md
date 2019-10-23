@@ -73,7 +73,7 @@ This is a play-by-play of the small steps taken from a blank screen to getting a
 - [x] Organize constants as per best practices for React
 - [x] Move to 0.59 and use cool hooks!
 - [x] Move to the community packages for async and other deprecations
-- [x] Get working on Android
+- [x] Get working on Android!! 💪🏼
 - [ ] Add level progress indicator and use % complete instead of # of blocks for brick level completion (IN-PROGRESS)
 - [ ] Fix all the crappy hard coded sizes and make it work on iPad (flexible layouts) (IN-PROGRESS)
 - [ ] Add level progress bonuses and threshold win animations
