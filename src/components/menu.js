@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import Button from "./button";
 import Item from "./item";
-import { Config } from "../config";
+import { GameMode } from "../config";
 import * as Animatable from "react-native-animatable";
 
 
@@ -54,10 +54,10 @@ export default class MainMenu extends PureComponent {
             </Animatable.Text>
           </View>
         }
-        <Button onPress={_ => this.props.onPlayGame(Config.MODE_LINES)}>
+        <Button onPress={_ => this.props.onPlayGame(GameMode.MODE_LINES)}>
           {this.props.gamesPlayed ? 'Restart Lines' : 'Play Lines'}
         </Button>
-        <Button onPress={_ => this.props.onPlayGame(Config.MODE_BRICKS)}>
+        <Button onPress={_ => this.props.onPlayGame(GameMode.MODE_BRICKS)}>
           {this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}
         </Button>
         <Item

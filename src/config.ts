@@ -1,0 +1,49 @@
+export let Config = {
+  // Collision Detection
+  // TODO: move these values to the CollisionDetection enum and refactor where they're reassigned
+  ROWS: 10,
+  COLUMNS: 8,
+
+  // Sizings
+  // TODO: move these values to the Sizings enum and refactor where they're reassigned
+  FLOOR_HEIGHT: 640,
+  BOX_TILE_SIZE: 40,
+};
+
+export enum GameMode {
+  MODE_LINES = 100,
+  MODE_BRICKS = 200,
+}
+
+export enum GameState {
+  MOVING = 100,
+  STOPPED = 200,
+  STARTED = 300,
+}
+
+// 8x9 on most screens, but have to check
+export enum Sizing {
+  RADIUS = 7,
+  SCOREBOARD_HEIGHT = 90,
+  BOX_TILE_SPACE = 6,
+  FLOOR_HEIGHT_SIZE = 172,
+}
+
+export enum CollisionDetection {
+  NO_COLISION = 0,
+  SIDE = 1,
+  TOP_BOTTOM = 2,
+}
+
+export enum Color {
+  YELLOW = '#DFB44F', // yellow 1-10
+  GREEN = '#8CB453', // green 11-20
+  RED = '#EA225E', // red 21-30,
+  LIGHT_BLUE = '#59B9F9', // light blue 31-50,
+  DARK_BLUE = '#265BF6', // darker blue 51-99,
+  PURPLE = '#7112F5', // purple 100-150
+  TEAL = '#449b8e', // dull green 151+
+}
+
+export const FLOOR_BOX_POSITION =
+  Config.FLOOR_HEIGHT - Config.BOX_TILE_SIZE + 10;

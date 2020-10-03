@@ -1,7 +1,7 @@
 import React from "react";
-import { COLORS, Config } from "./config";
-import { Floor, ScoreBar, Ball, SpeedUpButton } from "./renderers";
 import { Dimensions } from "react-native";
+import { Color, Sizing, GameState, Config } from "./config";
+import { Floor, ScoreBar, Ball, SpeedUpButton } from "./renderers";
 
 export default utils = {
     getDistance: function (p1, p2) {
@@ -37,33 +37,33 @@ export default utils = {
     },
 
     colToLeftPosition: function(col) {
-        return Config.BOX_TILE_SPACE + 
-            ((col * Config.BOX_TILE_SPACE) + 
+        return Sizing.BOX_TILE_SPACE + 
+            ((col * Sizing.BOX_TILE_SPACE) + 
             (col * Config.BOX_TILE_SIZE));    
     },
 
     rowToTopPosition: function(row) {
-        return Config.SCOREBOARD_HEIGHT + 
-            Config.BOX_TILE_SPACE + 
-            ((row * Config.BOX_TILE_SPACE) + 
+        return Sizing.SCOREBOARD_HEIGHT + 
+        Sizing.BOX_TILE_SPACE + 
+            ((row * Sizing.BOX_TILE_SPACE) + 
             (row * Config.BOX_TILE_SIZE));
     },
 
     hitsToColor: function(hits) {
         if(hits <= 10) {
-            return COLORS[0];
+            return Color.YELLOW;
         } else if(hits <=20) {
-            return COLORS[1];
+            return Color.GREEN;
         } else if(hits <= 30) {
-            return COLORS[2];
+            return Color.RED;
         } else if(hits <= 50) {
-            return COLORS[3]
+            return Color.LIGHT_BLUE
         } else if(hits <= 99) {
-            return COLORS[4];
+            return Color.DARK_BLUE;
         } else if(hits <= 150) {
-            return COLORS[5];
+            return Color.PURPLE;
         }
-        return COLORS[6];    
+        return Color.TEAL;    
     },
 
     newGameEntities: function(topScore, mode) {
@@ -73,10 +73,10 @@ export default utils = {
               height: Config.FLOOR_HEIGHT,
               renderer: <Floor /> },          
             scorebar: { 
-              height: Config.SCOREBOARD_HEIGHT, 
+              height: Sizing.SCOREBOARD_HEIGHT, 
               best: topScore, 
               mode: mode,
-              state: Config.STOPPED,               
+              state: GameState.STOPPED,               
               level: 0, 
               balls: 1, 
               new_balls: 0, 
@@ -85,9 +85,9 @@ export default utils = {
               renderer: <ScoreBar />},               
             ball: { 
               color: "white", 
-              state: Config.STOPPED, 
-              start: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
-              position: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
+              state: GameState.STOPPED, 
+              start: utils.newPosition(300, Config.FLOOR_HEIGHT - Sizing.RADIUS*2), 
+              position: utils.newPosition(300, Config.FLOOR_HEIGHT - Sizing.RADIUS*2), 
               speed: utils.newPosition(1.0, 1.0), 
               direction: utils.newPosition(0, 0), 
               renderer: <Ball />},
@@ -103,11 +103,11 @@ export default utils = {
     initializeGameSizing: function() {
         let width = Dimensions.get('window').width;
         let height = Dimensions.get('window').height;
-        Config.FLOOR_HEIGHT = height - (Config.FLOOR_HEIGHT_SIZE);
-        Config.BOX_TILE_SIZE = (width - ((Config.COLUMS + 1 ) * Config.BOX_TILE_SPACE)) / Config.COLUMS;
+        Config.FLOOR_HEIGHT = height - (Sizing.FLOOR_HEIGHT_SIZE);
+        Config.BOX_TILE_SIZE = (width - ((Config.COLUMNS + 1 ) * Sizing.BOX_TILE_SPACE)) / Config.COLUMNS;
         // top and bottom rows can't have boxes so substract 2 from available space
         Config.ROWS = Math.floor(
-            (Config.FLOOR_HEIGHT - Config.SCOREBOARD_HEIGHT) / 
-            (Config.BOX_TILE_SIZE + Config.BOX_TILE_SPACE)) - 2;
+            (Config.FLOOR_HEIGHT - Sizing.SCOREBOARD_HEIGHT) / 
+            (Config.BOX_TILE_SIZE + Sizing.BOX_TILE_SPACE)) - 2;
     }
 }

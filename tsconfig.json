@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "esnext",
+    "jsx": "react-native",
+    "noEmit": true,
+    "strict": true,
+    "allowJs": true, // TODO: remove this configuration once the whole app is migrated to TS
+
+    /* Additional Checks */
+    "lib": ["esnext"],
+
+    /* Module Resolution Options */
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
+}

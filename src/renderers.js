@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import Utils from "./utils";
-import { Config, FLOOR_BOX_POSITION } from "./config";
+import { Config, Sizing, FLOOR_BOX_POSITION } from "./config";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse} from "./hooks";
 
 function Ball(props) {
-    const x = props.position.x - (Config.RADIUS / 2);
-    const y = props.position.y - (Config.RADIUS / 2);
+    const x = props.position.x - (Sizing.RADIUS / 2);
+    const y = props.position.y - (Sizing.RADIUS / 2);
     return (
       <View style={[styles.ball, { left: x, top: y, backgroundColor: props.color }]} />
     );
@@ -111,10 +111,9 @@ function AimLine(props) {
     if (length == 0) {
         return null
     }
-    let RADIUS = Config.RADIUS;
     let width = Dimensions.get('window').width;
     let height = Dimensions.get('window').height;
-    let radius = Math.min(RADIUS*2/3, Math.max(RADIUS/2, RADIUS * length/(height/2))) ;
+    let radius = Math.min(Sizing.RADIUS*2/3, Math.max(Sizing.RADIUS/2, Sizing.RADIUS * length/(height/2))) ;
 
     let circles = Array(numCircles).fill().map((_, i) => {
         let start = props.start;
@@ -129,8 +128,8 @@ function AimLine(props) {
             x += (-x) * 2;              
         }
         let y = start.y + (((delta.y) / numCircles) * i * drawLength);
-        if(y < (Config.SCOREBOARD_HEIGHT)) {
-            y -= (y - Config.SCOREBOARD_HEIGHT) * 2;
+        if(y < (Sizing.SCOREBOARD_HEIGHT)) {
+            y -= (y - Sizing.SCOREBOARD_HEIGHT) * 2;
         }
         return (<Circle key={i} cx={x} cy={y} r={radius} fill="white"/>)
     });
@@ -297,9 +296,9 @@ const styles = StyleSheet.create({
   ball: {
     borderColor: "#CCC",
     borderWidth: 1,
-    borderRadius: Config.RADIUS * 2,
-    width: Config.RADIUS * 2,
-    height: Config.RADIUS * 2,
+    borderRadius: Sizing.RADIUS * 2,
+    width: Sizing.RADIUS * 2,
+    height: Sizing.RADIUS * 2,
     position: "absolute"
   },
   boxcontainer: {
