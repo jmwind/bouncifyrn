@@ -34,7 +34,14 @@ cd bouncifyrn
 
 npm install
 
-react-native run-ios
+npx react-native run-ios
+```
+
+Or you can pick another simulator by running
+```
+xcrun simctl list
+
+npx react-native run-ios --simulator "iPad Pro (12.9-inch)"
 ```
 
 ## TODOs
