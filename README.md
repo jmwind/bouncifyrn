@@ -8,15 +8,15 @@ to be terrible. This will be a fun test of the performance improvements coming i
 hooks coming in React Native 0.59!
 
 Beware, I'm not responsible for the hours you'll waste playing the game or evolving the game. It's
-a tad addictive. 
+a tad addictive.
 
-*Update: Feb 8, 2019*
+_Update: Feb 8, 2019_
 
 I was able to make a lot more progress than originally anticipated. It's still a very shitty first version, but quite the surprise honestly how far it got quickly. There are so many rough edges left to fill! Used [React Native Game Engine](https://github.com/bberak/react-native-game-engine) as a super light-weight starting point of a game loop. The code is crappy, but it works.
 
-*Update: March 15, 2019*
+_Update: March 15, 2019_
 
-Holy batman, the memory leaks are insane and it's time for performance work. With a bit of help from Siavash, animations and rebound aiming have been added and the game is almost there and ready for more hours of wasted time. 
+Holy batman, the memory leaks are insane and it's time for performance work. With a bit of help from Siavash, animations and rebound aiming have been added and the game is almost there and ready for more hours of wasted time.
 
 Original game is on the left and React Native version (source in this repo) on the right.
 
@@ -32,9 +32,9 @@ git clone https://github.com/jmwind/bouncifyrn.git
 
 cd bouncifyrn
 
-npm install
+yarn
 
-npx react-native run-ios
+yarn ios
 ```
 
 Or you can pick another simulator by running
@@ -92,4 +92,3 @@ This is a play-by-play of the small steps taken from a blank screen to getting a
 - [ ] Add tests and CI (buildkite and mac stadium?)
 - [ ] Automate production builds
 - [ ] Path finding algorithm to call the balls "home". Not useful, but fun to try.
-
