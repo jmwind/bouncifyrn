@@ -96,6 +96,8 @@ export default utils = {
                 speed: 1,
                 row: 0,
                 column: 7,
+                top: Config.FLOOR_HEIGHT + ((Dimensions.get('window').height - Config.FLOOR_HEIGHT) / 2) - Config.BOX_TILE_SIZE / 2,
+                left: (Dimensions.get('window').width / 2) + ((Dimensions.get('window').width / 3) - Config.BOX_TILE_SIZE / 2),
                 renderer: <SpeedUpButton />}              
             };
     },

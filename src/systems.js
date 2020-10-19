@@ -423,8 +423,8 @@ const SpeedUp = (entities,  { touches, time }) => {
     }
     touches.filter(t => t.type === "press").forEach(t => {                
         if(speedbutton.available) {
-            top = Utils.rowToTopPosition(speedbutton.row);
-            left = Utils.colToLeftPosition(speedbutton.column);
+            top = speedbutton.top;
+            left = speedbutton.left;
             eventX = t.event.pageX;
             eventY = t.event.pageY;
             if(eventX > left && eventX < left + Config.BOX_TILE_SIZE && eventY > top && eventY < top + Config.BOX_TILE_SIZE) {            
