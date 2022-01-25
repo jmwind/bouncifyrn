@@ -60,7 +60,7 @@ function useAnimatedValueListener(handler, element = global){
     );
   };
 
-const useRadiusPulse = (radius1 = 14, radius2 = 12, delay = 100) => {
+const useRadiusPulse = (radius1 = 11, radius2 = 18, delay = 300) => {
     const animatedRadius = useAnimatedValue(radius1);
     const radius = useRef(radius1);
 
@@ -74,19 +74,19 @@ const useRadiusPulse = (radius1 = 14, radius2 = 12, delay = 100) => {
 
     const pulse = () => {
         Animated.loop(
-            Animated.sequence([
-              Animated.timing(animatedRadius, {
-                toValue: radius1,
-                duration: delay,
-                ease: Easing.linear,
-                useNativeDriver: true
-              }),
+            Animated.sequence([              
               Animated.timing(animatedRadius, {
                 toValue: radius2,
                 duration: delay,
-                ease: Easing.linear,
+                ease: Easing.ease,
                 useNativeDriver: true
-              })
+              }),
+              Animated.timing(animatedRadius, {
+                toValue: radius1,
+                duration: delay,
+                ease: Easing.ease,
+                useNativeDriver: true
+              }),
             ])
           ).start(); 
     }

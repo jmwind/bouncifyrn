@@ -105,7 +105,7 @@ function ScoreBar(props) {
 function AimLine(props) {    
     const {start, end} = props;
     const drawLength = 1.0; // Ratio of aim vector to display
-    const numCircles = 20;
+    const numCircles = 25;
     let delta = Utils.getPointsDeltas(start, end);
     let length = Utils.getDistance(start, end);
     if (length == 0) {
@@ -211,7 +211,7 @@ function BallPowerUp(props) {
     const [rowAnimationTop, setRow] = useAnimateRow(props.row);
     const [dropAnimationTop, setDrop] = useAnimateDrop(700);
     const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
-    const radius  = useRadiusPulse(12, 16, 300);
+    const radius  = useRadiusPulse(10, 16, 400);
 
     useEffect(() => {
         setRow(props.row);           
@@ -240,7 +240,7 @@ function BallPowerUp(props) {
     if(collecting) {
         topPosition = collectingAnimationTop.interpolate({
             inputRange: [0, 1],
-            outputRange: [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 500]
+            outputRange: [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 600]
         });           
         opacity = collectingAnimationTop.interpolate({
             inputRange: [0, 1],
@@ -249,7 +249,7 @@ function BallPowerUp(props) {
     } else if(falling) {
         topPosition = dropAnimationTop.interpolate({
             inputRange: [0, 1],
-            outputRange: [Utils.rowToTopPosition(row), FLOOR_BOX_POSITION]
+            outputRange: [Utils.rowToTopPosition(row), FLOOR_BOX_POSITION + 30]
         });
     } 
     return (
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'           
   },
   besttitle: {
-    fontSize: 14,
+    fontSize: 12,
     color: 'white'
   },
   bestscore: {
