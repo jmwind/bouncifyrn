@@ -23,22 +23,21 @@ function collidesWithBox(entities, ball) {
          
          let box_y = Utils.rowToTopPosition(box.row) - Config.BOX_TILE_SPACE;
          let box_x = Utils.colToLeftPosition(box.col) - Config.BOX_TILE_SPACE;
-         let box_size = Config.BOX_TILE_SIZE + Config.BOX_TILE_SPACE;
+         let box_size = Config.BOX_TILE_SIZE + Config.BOX_TILE_SPACE + 2;
          let next_position = Utils.newPosition(
-            ( ball.speed.x * ball.direction.x ),
-            ( ball.speed.y * ball.direction.y )
+            ball.position.x + ( (ball.speed.x + 5) * ball.direction.x ),
+            ball.position.y + ( (ball.speed.y + 5) * ball.direction.y )
          );  
         let collision = Config.NO_COLISION;
-        
-        if (ball.position.x + Config.RADIUS + next_position.x > box_x && 
-            ball.position.x + next_position.x < box_x + box_size && 
-            ball.position.y + Config.RADIUS > box_y && 
-            ball.position.y < box_y + box_size) {                
+        if (next_position.x >= box_x && 
+            next_position.x <= box_x + box_size && 
+            ball.position.y >= box_y && 
+            ball.position.y <= box_y + box_size) {                
                 collision = Config.SIDE;
-        } else if (ball.position.x + Config.RADIUS > box_x && 
-                ball.position.x < box_x + box_size && 
-                ball.position.y + Config.RADIUS + next_position.y > box_y && 
-                ball.position.y + next_position.y < box_y + box_size) {
+        } else if (ball.position.x >= box_x && 
+                ball.position.x <= box_x + box_size && 
+                next_position.y >= box_y && 
+                next_position.y <= box_y + box_size) {
                 collision = Config.TOP_BOTTOM;
         }
 
@@ -136,7 +135,7 @@ export function moveToNextLevel(entities, dispatch) {
         // more hits required. 
         scorebar.balls += 25;
         let level = Levels[Utils.randomValueRounded(0, Levels.length - 1)];
-        for(j = 0; j < Config.ROWS; j++) {
+        for(j = 0; j < Config.ROWS - 1; j++) {
             for (i = 0; i < Config.COLUMS; i++) {
                 if(level[j][i] == 0) continue;
                 let key = Utils.randomKey();
@@ -376,8 +375,8 @@ const AimBallsRelease = (entities, { time, touches }) => {
                 ball.direction.x = (delta.x/d);
                 ball.start_direction = Utils.clonePosition(ball.direction);
                 // This should account for the difference in ball direction in the axes
-                ball.speed.x = 15;
-                ball.speed.y = 15;
+                ball.speed.x = 10;
+                ball.speed.y = 10;
                 ball.start = Utils.clonePosition(ball.position);
                 ball.state = Config.MOVING;
                 ball.last_ball_start_time = time.current; 

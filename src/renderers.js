@@ -149,11 +149,11 @@ function SpeedUpButton(props) {
     return (
         available &&
         <View style={[styles.boxcontainer, {
-                top: Utils.rowToTopPosition(row),
-                left: Utils.colToLeftPosition(column)
+                top: Utils.rowToTopPosition(row) + Config.BOX_TILE_SPACE,
+                left: Utils.colToLeftPosition(column) + + Config.BOX_TILE_SPACE
                 }]}>
             <Animatable.Text 
-            style={{color: "white", fontSize: 20}} animation="pulse" 
+            style={{color: "white", fontSize: 22}} animation="swing" 
             iterationCount="infinite" direction="alternate">
                 {speed}x
             </Animatable.Text>                   

@@ -45,7 +45,7 @@ export default function BouncifyGame(props) {
       entities.current.scorebar.level = 0;
       entities.current.scorebar.balls = 1;  
       if (props.onClose) {
-        props.onClose(lastScore);
+        props.onClose(score);
       }
     }, 250);
   };
