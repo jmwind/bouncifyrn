@@ -337,10 +337,10 @@ PODS:
     - React-jsi (= 0.66.4)
     - React-logger (= 0.66.4)
     - React-perflogger (= 0.66.4)
-  - RNCAsyncStorage (1.15.16):
+  - RNCAsyncStorage (1.17.12):
     - React-Core
-  - RNSVG (12.1.1):
-    - React
+  - RNSVG (12.5.1):
+    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -528,11 +528,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: e3ffca672dd3772536cb844274094b0e2c31b187
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
-  RNCAsyncStorage: 6ed7eefcf176fee8cd7039a44ca56f0247a650bb
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNCAsyncStorage: 09fc8595e6d6f6d5abf16b23a56b257d9c6b7c5b
+  RNSVG: d7d7bc8229af3842c9cfc3a723c815a52cdd1105
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: dfa5baf30b13887bd590179d77f8496cba5813c5
+PODFILE CHECKSUM: 6095d9d7c37e1832703605bfd4bf44186fc741e3
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
