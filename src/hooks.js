@@ -12,8 +12,8 @@ const useOpacityPulse = (speed = 50) => {
 
     const pulse = () => {
         Animated.sequence([
-            Animated.timing(opacity, {toValue: 0.6, easing: Easing.linear, duration: speed}),
-            Animated.timing(opacity, {toValue: 0, easing: Easing.linear, duration: speed})
+            Animated.timing(opacity, {toValue: 0.6, easing: Easing.linear, duration: speed, useNativeDriver: false}),
+            Animated.timing(opacity, {toValue: 0, easing: Easing.linear, duration: speed, useNativeDriver: false})
         ]).start();
     }
 
@@ -28,7 +28,8 @@ const useAnimateRow = (row = 0) => {
         Animated.spring(animatedTop, {
             toValue: Utils.rowToTopPosition(rowPosition),                
             bounciness: 18,
-            speed: 8
+            speed: 8,
+            useNativeDriver: false
           }).start();       
     }, [rowPosition]);
     
@@ -106,6 +107,7 @@ const useAnimateDrop = (duration) => {
             toValue: 1,
             easing: Easing.back(),
             duration: duration,
+            useNativeDriver: false
           }).start();
     }
 
@@ -119,7 +121,8 @@ const useAnimateCollecting = (duration1, duration2) => {
         Animated.timing(top, {
             toValue: 1,
             easing: Easing.linear,
-            duration: Utils.randomValueRounded(duration1, duration2)
+            duration: Utils.randomValueRounded(duration1, duration2),
+            useNativeDriver: false
         }).start();        
     }
 

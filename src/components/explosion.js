@@ -50,7 +50,8 @@ class Explosion extends React.PureComponent {
     this.exploAnimation = Animated.timing(this.animation, {
       toValue: 1,
       duration: fallSpeed,
-      easing: Easing.linear
+      easing: Easing.linear,
+      useNativeDriver: false
     });
     this.exploAnimation.start((() => {
       // Clear items after explosion so that associated views are gc'd

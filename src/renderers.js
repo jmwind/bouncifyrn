@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
 import Utils from "./utils";
-import { Config, FLOOR_BOX_POSITION } from "./config";
+import { Config, FLOOR_BALL_POSITION, FLOOR_BOX_POSITION } from "./config";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
 import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse} from "./hooks";
@@ -249,7 +249,7 @@ function BallPowerUp(props) {
     } else if(falling) {
         topPosition = dropAnimationTop.interpolate({
             inputRange: [0, 1],
-            outputRange: [Utils.rowToTopPosition(row), FLOOR_BOX_POSITION + 30]
+            outputRange: [Utils.rowToTopPosition(row), Config.FLOOR_HEIGHT - Config.BOX_TILE_SIZE/2 - 7]
         });
     } 
     return (
@@ -342,11 +342,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'           
   },
   besttitle: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'white'
   },
   bestscore: {
-    fontSize: 22,
+    fontSize: 20,
     color: 'white'
   },
   currentscore: {

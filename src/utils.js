@@ -1,5 +1,5 @@
 import React from "react";
-import { COLORS, Config } from "./config";
+import { COLORS, Config,  } from "./config";
 import { Floor, ScoreBar, Ball, SpeedUpButton } from "./renderers";
 import { Dimensions } from "react-native";
 
@@ -86,8 +86,8 @@ export default utils = {
             ball: { 
               color: "white", 
               state: Config.STOPPED, 
-              start: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
-              position: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2), 
+              start: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2 + 2),
+              position: utils.newPosition(300, Config.FLOOR_HEIGHT - Config.RADIUS*2 + 2), 
               speed: utils.newPosition(1.0, 1.0), 
               direction: utils.newPosition(0, 0), 
               renderer: <Ball />},
