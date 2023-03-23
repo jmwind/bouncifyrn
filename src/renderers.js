@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Dimensions, Animated } from "react-native";
 import { Svg, Circle, Text as SVGText } from "react-native-svg";
+import {Canvas, Circle as SkiaCircle, Group} from "@shopify/react-native-skia";
 import Utils from "./utils";
 import { Config, FLOOR_BALL_POSITION, FLOOR_BOX_POSITION } from "./config";
 import * as Animatable from "react-native-animatable";
@@ -11,7 +12,9 @@ function Ball(props) {
     const x = props.position.x - (Config.RADIUS / 2);
     const y = props.position.y - (Config.RADIUS / 2);
     return (
-      <View style={[styles.ball, { left: x, top: y, backgroundColor: props.color }]} />
+        <Canvas style={[styles.ball, { left: x, top: y, backgroundColor: props.color }]}>
+             
+        </Canvas>
     );
 }
 
@@ -296,8 +299,8 @@ function BallPowerUp(props) {
 const styles = StyleSheet.create({
   ball: {
     borderColor: "#CCC",
-    borderWidth: 1,
-    borderRadius: Config.RADIUS * 2,
+    borderWidth: 0,
+    borderRadius: 8,
     width: Config.RADIUS * 2,
     height: Config.RADIUS * 2,
     position: "absolute"
