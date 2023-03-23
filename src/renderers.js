@@ -6,7 +6,7 @@ import Utils from "./utils";
 import { Config, FLOOR_BALL_POSITION, FLOOR_BOX_POSITION } from "./config";
 import * as Animatable from "react-native-animatable";
 import Explosion from "./components/explosion";
-import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse} from "./hooks";
+import {useAnimateCollecting, useAnimateDrop, useAnimateRow, useOpacityPulse, useRadiusPulse, useWobble} from "./hooks";
 
 function Ball(props) {
     const x = props.position.x - (Config.RADIUS / 2);
@@ -40,7 +40,7 @@ function Floor(props) {
                 top: props.height,
                 width: Dimensions.get("window").width,
                 height: Dimensions.get("window").height,
-                backgroundColor: "#262626"
+                backgroundColor: "#363636"
             }}>
             {current_hits > 0 &&
             <View style={{justifyContent: "center", alignItems: "center", height: Dimensions.get("window").height - props.height - margin }}>
@@ -168,6 +168,7 @@ function BoxTile(props) {
     const [exploding, setExploding] = useState(false);
     const [animateTop, setRow] = useAnimateRow(props.row);
     const [animateOpacity, startOpacityPulse] = useOpacityPulse(50);
+    const [angle, startWobble] = useWobble();
 
     useEffect(() => {
         setRow(props.row);           
@@ -179,6 +180,7 @@ function BoxTile(props) {
     
     useEffect(() => {
         startOpacityPulse();
+        startWobble();
     }, [props.hits]);   
 
     const {hits, col, row} = props;  
@@ -200,7 +202,8 @@ function BoxTile(props) {
                 width: Config.BOX_TILE_SIZE,
                 height: Config.BOX_TILE_SIZE,
                 left: x,
-                opacity: animateOpacity.interpolate({inputRange: [0, 1], outputRange: [1, 0]})
+                opacity: animateOpacity.interpolate({inputRange: [0, 1], outputRange: [1, 0]}),
+                transform: [{ rotateZ: `${angle.value}deg` }]
                 }]}> 
                 <Text style={styles.boxtext}>
                     {hits}
@@ -324,7 +327,7 @@ const styles = StyleSheet.create({
       alignItems: 'stretch',
       justifyContent: 'space-between',
       width: Dimensions.get("window").width,
-      backgroundColor: "#262626"
+      backgroundColor: "#363636"
   },
   bestcontainer: {  
     flex: 1,

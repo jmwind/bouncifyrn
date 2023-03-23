@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Utils from "./utils";
 import { Animated, Easing } from "react-native";
+import { useSharedValue, withSequence, withRepeat, withTiming } from 'react-native-reanimated';
 
 const useAnimatedValue = (initialValue) => {
     const ref = useRef(new Animated.Value(initialValue))
@@ -18,6 +19,20 @@ const useOpacityPulse = (speed = 50) => {
     }
 
     return [opacity, pulse];
+}
+
+const useWobble = () => {
+    const angle = useSharedValue(0);
+
+    const wobble = () => {
+      angle.value = withSequence(
+        withTiming(-10, { duration: 50 }),
+        withRepeat(withTiming(10, { duration: 100 }), 4, true),
+        withTiming(0, { duration: 50 })
+      );
+    }
+
+    return [angle, wobble];
 }
 
 const useAnimateRow = (row = 0) => {
@@ -129,4 +144,4 @@ const useAnimateCollecting = (duration1, duration2) => {
     return [top, collect];
 }
 
-export { useAnimateRow, useOpacityPulse, useRadiusPulse, useAnimateCollecting, useAnimateDrop };
+export { useAnimateRow, useOpacityPulse, useRadiusPulse, useAnimateCollecting, useAnimateDrop, useWobble };
