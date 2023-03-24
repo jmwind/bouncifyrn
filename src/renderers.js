@@ -15,6 +15,7 @@ import {
   useRadiusPulse,
   useWobble,
 } from './hooks';
+import {interpolate} from 'react-native-reanimated';
 
 function Ball(props) {
   const x = props.position.x - Config.RADIUS / 2;
@@ -203,6 +204,7 @@ function BoxTile(props) {
   const color = Utils.hitsToColor(hits);
   const x = Utils.colToLeftPosition(col);
   const y = Utils.rowToTopPosition(row);
+  const opacity = interpolate(animateOpacity.value, [0, 1], [1, 0]);
   if (exploding) {
     return (
       <Explosion backgroundColor={color} count={35} origin={{x: x, y: y}} />
@@ -218,10 +220,7 @@ function BoxTile(props) {
             width: Config.BOX_TILE_SIZE,
             height: Config.BOX_TILE_SIZE,
             left: x,
-            opacity: animateOpacity.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0],
-            }),
+            opacity: opacity,
             transform: [{rotateZ: `${angle.value}deg`}],
           },
         ]}>

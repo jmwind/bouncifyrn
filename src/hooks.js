@@ -14,23 +14,13 @@ const useAnimatedValue = initialValue => {
 };
 
 const useOpacityPulse = (speed = 50) => {
-  const opacity = useAnimatedValue(0);
+  const opacity = useSharedValue(0);
 
   const pulse = () => {
-    Animated.sequence([
-      Animated.timing(opacity, {
-        toValue: 0.6,
-        easing: Easing.linear,
-        duration: speed,
-        useNativeDriver: false,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        easing: Easing.linear,
-        duration: speed,
-        useNativeDriver: false,
-      }),
-    ]).start();
+    opacity.value = withSequence(
+      withTiming(0.6, {duration: speed}),
+      withTiming(0, {duration: speed}),
+    );
   };
 
   return [opacity, pulse];
