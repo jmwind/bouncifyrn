@@ -186,9 +186,11 @@ function BoxTile(props) {
   const [animateTop, setRow] = useAnimateRow(props.row);
   const [animateOpacity, startOpacityPulse] = useOpacityPulse(50);
   const [angle, startWobble] = useWobble();
+  const [initalized, setInitialized] = useState(false);
 
   useEffect(() => {
     setRow(props.row);
+    setInitialized(true);
   }, [props.row]);
 
   useEffect(() => {
@@ -197,7 +199,9 @@ function BoxTile(props) {
 
   useEffect(() => {
     startOpacityPulse();
-    startWobble();
+    if (initalized) {
+      startWobble();
+    }
   }, [props.hits]);
 
   const {hits, col, row} = props;

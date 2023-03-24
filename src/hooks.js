@@ -47,7 +47,7 @@ const useAnimateRow = (row = 0) => {
   useEffect(() => {
     Animated.spring(animatedTop, {
       toValue: Utils.rowToTopPosition(rowPosition),
-      bounciness: 18,
+      bounciness: 12,
       speed: 8,
       useNativeDriver: false,
     }).start();
