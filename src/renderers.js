@@ -216,8 +216,8 @@ function BoxTile(props) {
 function BallPowerUp(props) {    
     const [rowAnimationTop, setRow] = useAnimateRow(props.row);
     const [dropAnimationTop, setDrop] = useAnimateDrop(700);
-    const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 900);
-    const radius  = useRadiusPulse(10, 16, 400);
+    const [collectingAnimationTop, setCollecting] = useAnimateCollecting(600, 2000);
+    const radius  = useRadiusPulse(10, 13, 400);
 
     useEffect(() => {
         setRow(props.row);           
@@ -279,7 +279,7 @@ function BallPowerUp(props) {
                 <Circle
                     cx={BOX_MIDDLE}
                     cy={BOX_MIDDLE}
-                    r="7"
+                    r="8"
                     stroke={color}
                     fill={color}
                 />

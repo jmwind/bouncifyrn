@@ -265,7 +265,7 @@ const MoveBall = (entities, { screen, dispatch }) => {
             next_direction.y *= -1; 
         }
 
-        if(next_position.y > (floor.height - Config.RADIUS*2)) {        
+        if(next_position.y > (floor.height - Config.RADIUS)) {        
             scorebar.balls_returned++;
             // there's only one ball that is the tracer ball and will remain on the floor while
             // all other balls will dissapear when they hit the floor.
