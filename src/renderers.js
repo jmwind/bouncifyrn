@@ -41,22 +41,13 @@ function Floor(props) {
     outputRange: [0, 2 * Math.PI],
   });
   return (
-    <View
-      style={{
-        position: 'absolute',
-        left: 0,
-        top: props.height,
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-        backgroundColor: '#363636',
-      }}>
+    <View style={[styles.floorcontainer, {top: props.height}]}>
       {current_hits > 0 && (
         <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: Dimensions.get('window').height - props.height - margin,
-          }}>
+          style={[
+            styles.floor,
+            {height: Dimensions.get('window').height - props.height - margin},
+          ]}>
           <Svg width={size} height={size}>
             <Circle
               stroke="#265BF6"
@@ -178,7 +169,7 @@ function SpeedUpButton(props) {
           },
         ]}>
         <Animatable.Text
-          style={{color: 'white', fontSize: 22}}
+          style={styles.speedupbutton}
           animation="swing"
           iterationCount="infinite"
           direction="alternate">
@@ -345,6 +336,17 @@ const styles = StyleSheet.create({
     height: Config.RADIUS * 2,
     position: 'absolute',
   },
+  floor: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  floorcontainer: {
+    position: 'absolute',
+    left: 0,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+    backgroundColor: '#363636',
+  },
   boxcontainer: {
     position: 'absolute',
     justifyContent: 'center',
@@ -406,6 +408,10 @@ const styles = StyleSheet.create({
   ballpowerup: {
     position: 'absolute',
     flex: 1,
+  },
+  speedupbutton: {
+    color: 'white',
+    fontSize: 22,
   },
 });
 

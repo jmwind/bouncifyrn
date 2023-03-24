@@ -8,6 +8,7 @@ export default class Item extends PureComponent {
     this.state = {
       pressed: false,
     };
+    this.text = React.createRef();
   }
   onPressIn = () => {
     if (!this.props.onPress) {
@@ -18,7 +19,7 @@ export default class Item extends PureComponent {
       pressed: true,
     });
 
-    this.refs.text.transitionTo({
+    this.text.current.transitionTo({
       scale: 0.95,
     });
   };
@@ -32,7 +33,7 @@ export default class Item extends PureComponent {
       pressed: false,
     });
 
-    this.refs.text.transitionTo({
+    this.text.current.transitionTo({
       scale: 1,
     });
   };
@@ -49,7 +50,7 @@ export default class Item extends PureComponent {
         onPressOut={this.onPressOut}>
         <Animatable.Text
           style={[styles.item, this.getColor()]}
-          ref={'text'}
+          ref={this.text}
           textBreakStrategy={'simple'}>
           {this.props.children}
         </Animatable.Text>

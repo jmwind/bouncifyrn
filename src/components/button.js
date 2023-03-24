@@ -6,17 +6,18 @@ export default class Button extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
+    this.buttonContainer = React.createRef();
   }
 
   onPressIn = () => {
-    this.refs.buttonContainer.transitionTo({
+    this.buttonContainer.current.transitionTo({
       opacity: 0.7,
       transform: [{scale: 0.95}],
     });
   };
 
   onPressOut = e => {
-    this.refs.buttonContainer.transitionTo({
+    this.buttonContainer.current.transitionTo({
       opacity: 1,
       transform: [{scale: 1}],
     });
@@ -33,7 +34,7 @@ export default class Button extends PureComponent {
       <Animatable.View
         useNativeDriver
         style={[styles.buttonContainer, this.props.style]}
-        ref={'buttonContainer'}>
+        ref={this.buttonContainer}>
         <TouchableOpacity
           style={styles.textContainer}
           activeOpacity={1}
