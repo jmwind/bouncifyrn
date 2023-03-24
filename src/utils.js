@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import {COLORS, Config} from './config';
 import {Floor, ScoreBar, Ball, SpeedUpButton} from './renderers';
