@@ -6,6 +6,7 @@ import {
   withSequence,
   withRepeat,
   withTiming,
+  withSpring,
 } from 'react-native-reanimated';
 
 const useAnimatedValue = initialValue => {
@@ -42,15 +43,13 @@ const useWobble = () => {
 
 const useAnimateRow = (row = 0) => {
   const [rowPosition, setRowPosition] = useState(row);
-  const animatedTop = useAnimatedValue(Utils.rowToTopPosition(row - 1));
+  const animatedTop = useSharedValue(Utils.rowToTopPosition(row - 1));
 
   useEffect(() => {
-    Animated.spring(animatedTop, {
-      toValue: Utils.rowToTopPosition(rowPosition),
-      bounciness: 12,
-      speed: 8,
-      useNativeDriver: false,
-    }).start();
+    animatedTop.value = withSpring(Utils.rowToTopPosition(rowPosition), {
+      mass: 0.2,
+      stiffness: 40,
+    });
   }, [rowPosition, animatedTop]);
 
   return [animatedTop, setRowPosition];

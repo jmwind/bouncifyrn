@@ -209,6 +209,7 @@ function BoxTile(props) {
   const x = Utils.colToLeftPosition(col);
   const y = Utils.rowToTopPosition(row);
   const opacity = interpolate(animateOpacity.value, [0, 1], [1, 0]);
+  const top = animateTop.value;
   if (exploding) {
     return (
       <Explosion backgroundColor={color} count={35} origin={{x: x, y: y}} />
@@ -220,7 +221,7 @@ function BoxTile(props) {
           styles.boxcontainer,
           {
             backgroundColor: color,
-            top: animateTop,
+            top: top,
             width: Config.BOX_TILE_SIZE,
             height: Config.BOX_TILE_SIZE,
             left: x,
@@ -266,7 +267,7 @@ function BallPowerUp(props) {
   let BOX_MIDDLE = Config.BOX_TILE_SIZE / 2;
 
   // Top position will change based on state of the power-up
-  let topPosition = rowAnimationTop;
+  let topPosition = rowAnimationTop.value;
   if (collecting) {
     topPosition = collectingAnimationTop.interpolate({
       inputRange: [0, 1],
