@@ -237,12 +237,12 @@ function BoxTile(props) {
 
 function BallPowerUp(props) {
   const [rowAnimationTop, setRow] = useAnimateRow(props.row);
-  const [dropAnimationTop, setDrop] = useAnimateDrop(700);
+  const [dropAnimationTop, setDrop] = useAnimateDrop(1200);
   const [collectingAnimationTop, setCollecting] = useAnimateCollecting(
     600,
     2000,
   );
-  const radius = useRadiusPulse(10, 14, 400);
+  const [radius, startPulse, stopPulse] = useRadiusPulse(11, 15, 400);
 
   useEffect(() => {
     setRow(props.row);
@@ -250,6 +250,7 @@ function BallPowerUp(props) {
 
   useEffect(() => {
     if (props.falling) {
+      stopPulse();
       setDrop();
     }
   }, [props.falling]);
@@ -260,31 +261,31 @@ function BallPowerUp(props) {
     }
   }, [props.collecting]);
 
+  useEffect(() => {
+    startPulse();
+  }, []);
+
   const {col, row, falling, collecting} = props;
   let color = !falling ? 'white' : '#8CB453';
   let leftPosition = Utils.colToLeftPosition(col);
   let opacity = 1;
-  let BOX_MIDDLE = Config.BOX_TILE_SIZE / 2;
+  const BOX_MIDDLE = Config.BOX_TILE_SIZE / 2;
+  const TOP = Utils.rowToTopPosition(row);
+  const FLOOR = Config.FLOOR_HEIGHT - Config.BOX_TILE_SIZE / 2 - 7;
 
   // Top position will change based on state of the power-up
   let topPosition = rowAnimationTop.value;
   if (collecting) {
-    topPosition = collectingAnimationTop.interpolate({
-      inputRange: [0, 1],
-      outputRange: [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 600],
-    });
-    opacity = collectingAnimationTop.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0],
-    });
+    if (collectingAnimationTop.value > 0) {
+      topPosition = interpolate(
+        collectingAnimationTop.value,
+        [0, 1],
+        [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 600],
+      );
+      opacity = interpolate(collectingAnimationTop.value, [0, 1], [1, 0]);
+    }
   } else if (falling) {
-    topPosition = dropAnimationTop.interpolate({
-      inputRange: [0, 1],
-      outputRange: [
-        Utils.rowToTopPosition(row),
-        Config.FLOOR_HEIGHT - Config.BOX_TILE_SIZE / 2 - 7,
-      ],
-    });
+    topPosition = interpolate(dropAnimationTop.value, [0, 1], [TOP, FLOOR]);
   }
   return (
     <Animated.View
@@ -301,7 +302,7 @@ function BallPowerUp(props) {
           <Circle
             cx={BOX_MIDDLE}
             cy={BOX_MIDDLE}
-            r={radius}
+            r={radius.value}
             stroke={color}
             strokeWidth="3"
             fill="#202020"
