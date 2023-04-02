@@ -23,10 +23,9 @@ export default function BouncifyGame(props) {
 
   useEffect(() => {
     entities.current.scorebar.mode = props.mode;
+    entities.current.scorebar.balls = 1;
     if (props.mode === Config.MODE_BRICKS) {
       entities.current.scorebar.balls = 75;
-    } else {
-      entities.current.scorebar.balls = 1;
     }
   }, [props.mode]);
 
@@ -39,6 +38,9 @@ export default function BouncifyGame(props) {
       setRunning(false);
       entities.current.scorebar.level = 0;
       entities.current.scorebar.balls = 1;
+      if (props.mode === Config.MODE_BRICKS) {
+        entities.current.scorebar.balls = 75;
+      }
       if (props.onClose) {
         props.onClose(score);
       }
