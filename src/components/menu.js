@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
     margin: 10,
-    borderRadius: 10,
     elevation: 5,
   },
   lastScoreContainer: {
