@@ -78,13 +78,13 @@ const useAnimateDrop = duration => {
   return [top, drop];
 };
 
-const useAnimateCollecting = (duration1, duration2) => {
+const useAnimateCollecting = duration => {
   const top = useSharedValue(0);
-  const duration = useState(Utils.randomValueRounded(duration1, duration2));
 
   const collect = () => {
     top.value = withTiming(1, {
       duration: duration,
+      easing: Easing.linear,
     });
   };
 

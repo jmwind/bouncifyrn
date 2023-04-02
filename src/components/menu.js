@@ -1,9 +1,10 @@
 import React, {PureComponent} from 'react';
-import {ScrollView, View, Linking, StyleSheet} from 'react-native';
+import {ScrollView, View, Linking, StyleSheet, Text} from 'react-native';
 import Button from './button';
 import Item from './item';
 import {Config} from '../config';
 import * as Animatable from 'react-native-animatable';
+import Utils from './../utils';
 
 export default class MainMenu extends PureComponent {
   render() {
@@ -21,49 +22,31 @@ export default class MainMenu extends PureComponent {
           </Animatable.Text>
         )}
         {this.props.gamesPlayed > 0 && (
-          <View style={styles.textContainer}>
-            <Animatable.Text
-              style={styles.lastScore}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              Last Score
-            </Animatable.Text>
-            <Animatable.Text
-              style={styles.lastScore}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              {this.props.lastScore}
-            </Animatable.Text>
-            <Animatable.Text
-              style={styles.score}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              Best Lines
-            </Animatable.Text>
-            <Animatable.Text
-              style={styles.score}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              {this.props.topScore}
-            </Animatable.Text>
-            <Animatable.Text
-              style={styles.score}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              Best Bricks
-            </Animatable.Text>
-            <Animatable.Text
-              style={styles.score}
-              animation=""
-              iterationCount="infinite"
-              direction="alternate">
-              {this.props.topScoreBricks}
-            </Animatable.Text>
+          <View>
+            <View style={styles.lastScoreContainer}>
+              <Text style={styles.bestScoreTitle}>Last Score</Text>
+              <Text style={styles.bestScoreValue}>{this.props.lastScore}</Text>
+            </View>
+            <View style={styles.bestcontainer}>
+              <View
+                style={[
+                  styles.scoreContainer,
+                  {backgroundColor: Utils.hitsToColor(0)},
+                ]}>
+                <Text style={styles.scoreTitle}>Top Lines</Text>
+                <Text style={styles.scoreValue}>{this.props.topScore}</Text>
+              </View>
+              <View
+                style={[
+                  styles.scoreContainer,
+                  {backgroundColor: Utils.hitsToColor(20)},
+                ]}>
+                <Text style={styles.scoreTitle}>Top Bricks</Text>
+                <Text style={styles.scoreValue}>
+                  {this.props.topScoreBricks}
+                </Text>
+              </View>
+            </View>
           </View>
         )}
         <Button onPress={_ => this.props.onPlayGame(Config.MODE_LINES)}>
@@ -76,7 +59,14 @@ export default class MainMenu extends PureComponent {
           onPress={_ =>
             Linking.openURL('https://github.com/jmwind/bouncifyrn')
           }>
-          ❤️ @jmwind 🙃
+          👉🏼 How to play 👈🏽
+        </Item>
+        <Item
+          style={styles.madeby}
+          onPress={_ =>
+            Linking.openURL('https://github.com/jmwind/bouncifyrn')
+          }>
+          by @jmwind
         </Item>
       </ScrollView>
     );
@@ -96,6 +86,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
   },
+  madeby: {
+    marginTop: 40,
+    backgroundColor: 'red',
+  },
   title: {
     marginTop: 10,
     marginBottom: 10,
@@ -104,23 +98,51 @@ const styles = StyleSheet.create({
     fontSize: 70,
     color: '#FFF',
   },
-  score: {
-    marginTop: 3,
-    marginBottom: 3,
-    marginLeft: 30,
-    marginRight: 30,
-    fontSize: 24,
-    color: '#FFF',
+  scoreContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    margin: 10,
+    borderRadius: 10,
+    elevation: 5,
   },
-  lastScore: {
-    marginTop: 3,
-    marginBottom: 3,
-    marginLeft: 30,
-    marginRight: 30,
-    fontSize: 52,
-    color: '#FFF',
+  lastScoreContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
+
+    borderRadius: 10,
+    elevation: 5,
+    flexGrow: 0,
   },
-  textContainer: {
+  scoreTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#262626',
+  },
+  scoreValue: {
+    fontSize: 42,
+    fontWeight: 'bold',
+    color: '#262626',
+  },
+  bestScoreTitle: {
+    fontSize: 38,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'white',
+  },
+  bestScoreValue: {
+    fontSize: 92,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  bestcontainer: {
+    flex: 1,
+    flexGrow: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
 });

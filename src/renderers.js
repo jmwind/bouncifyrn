@@ -239,8 +239,7 @@ function BallPowerUp(props) {
   const [rowAnimationTop, setRow] = useAnimateRow(props.row);
   const [dropAnimationTop, setDrop] = useAnimateDrop(1200);
   const [collectingAnimationTop, setCollecting] = useAnimateCollecting(
-    600,
-    2000,
+    Utils.randomValueRounded(800, 1400),
   );
   const [radius, startPulse, stopPulse] = useRadiusPulse(11, 15, 400);
 
@@ -276,14 +275,12 @@ function BallPowerUp(props) {
   // Top position will change based on state of the power-up
   let topPosition = rowAnimationTop.value;
   if (collecting) {
-    if (collectingAnimationTop.value > 0) {
-      topPosition = interpolate(
-        collectingAnimationTop.value,
-        [0, 1],
-        [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 600],
-      );
-      opacity = interpolate(collectingAnimationTop.value, [0, 1], [1, 0]);
-    }
+    topPosition = interpolate(
+      collectingAnimationTop.value,
+      [0, 1],
+      [FLOOR_BOX_POSITION, FLOOR_BOX_POSITION - 600],
+    );
+    opacity = interpolate(collectingAnimationTop.value, [0, 1], [1, 0]);
   } else if (falling) {
     topPosition = interpolate(dropAnimationTop.value, [0, 1], [TOP, FLOOR]);
   }
