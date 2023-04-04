@@ -37,6 +37,16 @@ const useWobble = () => {
   return [angle, wobble];
 };
 
+const useWipeUpDown = () => {
+  const angle = useSharedValue(0);
+
+  const wobble = () => {
+    angle.value = withRepeat(withTiming(50, {duration: 500}), -1, true);
+  };
+
+  return [angle, wobble];
+};
+
 const useAnimateRow = (row = 0) => {
   const [rowPosition, setRowPosition] = useState(row);
   const animatedTop = useSharedValue(Utils.rowToTopPosition(row - 1));
@@ -98,4 +108,5 @@ export {
   useAnimateCollecting,
   useAnimateDrop,
   useWobble,
+  useWipeUpDown,
 };
