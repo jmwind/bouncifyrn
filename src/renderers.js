@@ -120,6 +120,7 @@ function ScoreBar(props) {
       {balls_in_play === 0 && level === 1 && (
         <Animated.View
           style={[
+            // eslint-disable-next-line react-native/no-inline-styles
             {
               position: 'absolute',
               top: wheight - 150 + offset.value,

@@ -41,7 +41,7 @@ const useWipeUpDown = () => {
   const angle = useSharedValue(0);
 
   const wobble = () => {
-    angle.value = withRepeat(withTiming(50, {duration: 500}), -1, true);
+    angle.value = withRepeat(withTiming(30, {duration: 1000}), -1, true);
   };
 
   return [angle, wobble];

@@ -55,12 +55,7 @@ export default class MainMenu extends PureComponent {
         <Button onPress={_ => this.props.onPlayGame(Config.MODE_BRICKS)}>
           {this.props.gamesPlayed ? 'Restart Bricks' : 'Play Bricks'}
         </Button>
-        <Item
-          onPress={_ =>
-            Linking.openURL('https://github.com/jmwind/bouncifyrn')
-          }>
-          👉🏼 How to play 👈🏽
-        </Item>
+
         <Item
           style={styles.madeby}
           onPress={_ =>
